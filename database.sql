@@ -48,7 +48,7 @@ create table Message(
 );
 
 create table Comments(
-	ID int auto_increment primary key
+	ID int auto_increment primary key,
 	Message varchar(255),
 	SensorID int not null references Sensor(ID)
 );
