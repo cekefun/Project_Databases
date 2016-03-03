@@ -62,7 +62,8 @@ create table House(
 create table Sensor(
 	ID int auto_increment primary key,
 	Apparature varchar(50) not null,
-	InstalledOn int not null references House(ID)
+	InstalledOn int not null references House(ID),
+	Active bool not null
 );
 
 create table MinuteData(
