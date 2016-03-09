@@ -1,0 +1,30 @@
+Dingen die gedaan zijn:
+  iedereen gecontacteerd
+  database design en sql klaar
+  MINUTEN WORDEN EEN DAG BIJGEHOUDEN
+  ALLES PER SENSOR BIJHOUDEN
+
+Dingen die verdeeld moeten worden:
+
+Wie doet welke queries
+
+	Week als view		(extra nummer 1)
+	AggregatieQueries		Luna (tijdelijk)
+	Data LookUpQueries		Federico
+	Messages Op Wall Queries	Tjebbe
+	Login Query			Lorin
+	Triggers			Cédric
+
+Wie doet welke code
+	scriptje om alles te installeren
+
+	URLS Designen
+
+	database inladen in django 		ZO SNEL MOGELIJK
+	queries omzetten voor django
+	
+	tabellen met google graphs
+	Javascript om URLS te vragen
+	HTML voor website
+	CSS voor design website
+	
