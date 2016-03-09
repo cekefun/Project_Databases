@@ -1,0 +1,230 @@
+<?xml version='1.0'?>
+<diagram>
+	<elements>
+		<entityid id="0" posX="255" posY="169" name="User"></entityid>
+		<entityid id="1" posX="46" posY="367" name="Admin"></entityid>
+		<isaid id="2" posX="250" posY="233"></isaid>
+		<attributeid id="3" posX="101" posY="80" type="key" name="ID" required="true" unique="true" datatype="integer" length="50"></attributeid>
+		<attributeid id="4" posX="256" posY="35" type="normal" name="FirstName" required="false" unique="false" datatype="varchar" length="50"></attributeid>
+		<attributeid id="5" posX="187" posY="60" type="normal" name="Password" required="true" unique="false" datatype="varchar" length="50"></attributeid>
+		<entityid id="6" posX="736" posY="127" name="House"></entityid>
+		<entityid id="7" posX="792" posY="412" name="Sensor"></entityid>
+		<relationshipid id="8" posX="59" posY="188" name="Friend"></relationshipid>
+		<relationshipid id="9" posX="485" posY="157" name="Owns"></relationshipid>
+		<attributeid id="10" posX="738" posY="50" type="key" name="ID" required="true" unique="true" datatype="integer" length="50"></attributeid>
+		<attributeid id="11" posX="874" posY="53" type="normal" name="Address" required="true" unique="true" datatype="varchar" length="300"></attributeid>
+		<relationshipid id="12" posX="818" posY="241" name="Installed"></relationshipid>
+		<attributeid id="13" posX="848" posY="545" type="key" name="ID" required="true" unique="true" datatype="integer" length="50"></attributeid>
+		<attributeid id="14" posX="719" posY="503" type="normal" name="Apparature" required="false" unique="false" datatype="varchar" length="50"></attributeid>
+		<weakentityid id="15" posX="1047" posY="60" name="YearData"></weakentityid>
+		<attributeid id="16" posX="1253" posY="34" type="normal" name="Value" required="false" unique="false" datatype="integer" length="50"></attributeid>
+		<weakrelationshipid id="17" posX="961" posY="223" name="Sends"></weakrelationshipid>
+		<attributeid id="18" posX="1256" posY="77" type="key" name="CreationTimeStamp" required="true" unique="false" datatype="date" length="50"></attributeid>
+		<entityid id="19" posX="223" posY="401" name="Message"></entityid>
+		<attributeid id="20" posX="368" posY="368" type="key" name="ID" required="true" unique="true" datatype="integer" length="50"></attributeid>
+		<attributeid id="21" posX="399" posY="423" type="normal" name="Content" required="false" unique="false" datatype="varchar" length="320"></attributeid>
+		<relationshipid id="22" posX="376" posY="262" name="Posts"></relationshipid>
+		<entityid id="23" posX="82" posY="650" name="Wall"></entityid>
+		<relationshipid id="24" posX="170" posY="537" name="IsPostedOn"></relationshipid>
+		<attributeid id="25" posX="222" posY="666" type="key" name="Name" required="true" unique="true" datatype="varchar" length="100"></attributeid>
+		<relationshipid id="26" posX="47" posY="522" name="Moderates"></relationshipid>
+		<attributeid id="27" posX="304" posY="69" type="normal" name="LastName" required="false" unique="false" datatype="varchar" length="50"></attributeid>
+		<attributeid id="28" posX="387" posY="60" type="normal" name="e-mail" required="false" unique="false" datatype="varchar" length="300"></attributeid>
+		<weakentityid id="29" posX="1152" posY="164" name="MonthData"></weakentityid>
+		<weakrelationshipid id="30" posX="1023" posY="265" name="Sends"></weakrelationshipid>
+		<attributeid id="31" posX="1296" posY="122" type="normal" name="Value" required="false" unique="false" datatype="integer" length="50"></attributeid>
+		<attributeid id="32" posX="1278" posY="176" type="key" name="CreationTimeStamp" required="true" unique="false" datatype="date" length="50"></attributeid>
+		<weakentityid id="33" posX="1156" posY="302" name="DayData"></weakentityid>
+		<weakrelationshipid id="34" posX="994" posY="349" name="Sends"></weakrelationshipid>
+		<attributeid id="35" posX="1276" posY="238" type="normal" name="Value" required="false" unique="false" datatype="integer" length="50"></attributeid>
+		<attributeid id="36" posX="1322" posY="310" type="key" name="CreationTimeStamp" required="true" unique="false" datatype="date" length="50"></attributeid>
+		<weakentityid id="37" posX="1140" posY="436" name="HourData"></weakentityid>
+		<weakrelationshipid id="38" posX="940" posY="421" name="Sends"></weakrelationshipid>
+		<attributeid id="39" posX="1269" posY="400" type="normal" name="Value" required="false" unique="false" datatype="integer" length="50"></attributeid>
+		<attributeid id="40" posX="1310" posY="488" type="key" name="CreationTimeStamp" required="true" unique="false" datatype="date" length="50"></attributeid>
+		<weakrelationshipid id="41" posX="923" posY="524" name="Sends"></weakrelationshipid>
+		<weakentityid id="42" posX="1095" posY="579" name="MinuteData"></weakentityid>
+		<attributeid id="43" posX="1262" posY="610" type="normal" name="Value" required="false" unique="false" datatype="integer" length="50"></attributeid>
+		<attributeid id="44" posX="1197" posY="666" type="key" name="CreationTimeStamp" required="true" unique="false" datatype="date" length="50"></attributeid>
+		<relationshipid id="45" posX="87" posY="815" name="SubWallOf"></relationshipid>
+		<attributeid id="46" posX="510" posY="71" type="normal" name="UserName" required="false" unique="true" datatype="varchar" length="50"></attributeid>
+		<attributeid id="47" posX="748" posY="556" type="normal" name="Titel" required="false" unique="false" datatype="varchar" length="50"></attributeid>
+		<attributeid id="48" posX="796" posY="589" type="normal" name="Description" required="false" unique="false" datatype="varchar" length="355"></attributeid>
+		<entityid id="49" posX="601" posY="356" name="Comments"></entityid>
+		<relationshipid id="50" posX="697" posY="313" name="About"></relationshipid>
+		<attributeid id="51" posX="568" posY="287" type="key" name="ID" required="true" unique="false" datatype="integer" length="50"></attributeid>
+		<attributeid id="52" posX="545" posY="414" type="normal" name="Content" required="false" unique="false" datatype="varchar" length="355"></attributeid>
+		<attributeid id="79" posX="632" posY="522" type="normal" name="Active" required="false" unique="false" datatype="varchar" length="50"></attributeid>
+	</elements>
+	<entity id="0">
+		<attributelist>
+			<attribute id="3"></attribute>
+			<attribute id="4"></attribute>
+			<attribute id="5"></attribute>
+			<attribute id="27"></attribute>
+			<attribute id="28"></attribute>
+			<attribute id="46"></attribute>
+		</attributelist>
+	</entity>
+	<isa id="2">
+		<superentity id="0"></superentity>
+		<subentitylist>
+			<subentity id="1"></subentity>
+		</subentitylist>
+	</isa>
+	<entity id="6">
+		<attributelist>
+			<attribute id="10"></attribute>
+			<attribute id="11"></attribute>
+		</attributelist>
+	</entity>
+	<entity id="7">
+		<attributelist>
+			<attribute id="13"></attribute>
+			<attribute id="14"></attribute>
+			<attribute id="47"></attribute>
+			<attribute id="48"></attribute>
+			<attribute id="79"></attribute>
+		</attributelist>
+	</entity>
+	<relationship id="8">
+		<rolelist>
+			<role mincard="0" maxcard="N" name="" entityid="0" refintegrity="false"></role>
+			<role mincard="0" maxcard="N" name="" entityid="0" refintegrity="false"></role>
+		</rolelist>
+	</relationship>
+	<relationship id="9">
+		<rolelist>
+			<role mincard="1" maxcard="1" name="" entityid="0" refintegrity="false"></role>
+			<role mincard="0" maxcard="N" name="" entityid="6" refintegrity="false"></role>
+		</rolelist>
+	</relationship>
+	<relationship id="12">
+		<rolelist>
+			<role mincard="1" maxcard="1" name="" entityid="6" refintegrity="true"></role>
+			<role mincard="0" maxcard="N" name="" entityid="7" refintegrity="false"></role>
+		</rolelist>
+	</relationship>
+	<weakentity id="15">
+		<attributelist>
+			<attribute id="16"></attribute>
+			<attribute id="18"></attribute>
+		</attributelist>
+		<dependencylist>
+			<dependencyref relationshipid="17"></dependencyref>
+		</dependencylist>
+	</weakentity>
+	<weakrelationship id="17">
+		<rolelist>
+			<role mincard="1" maxcard="N" name="" entityid="15" refintegrity="false"></role>
+			<role mincard="1" maxcard="1" name="" entityid="7" refintegrity="false"></role>
+		</rolelist>
+	</weakrelationship>
+	<entity id="19">
+		<attributelist>
+			<attribute id="20"></attribute>
+			<attribute id="21"></attribute>
+		</attributelist>
+	</entity>
+	<relationship id="22">
+		<rolelist>
+			<role mincard="1" maxcard="1" name="" entityid="0" refintegrity="false"></role>
+			<role mincard="0" maxcard="N" name="" entityid="19" refintegrity="false"></role>
+		</rolelist>
+	</relationship>
+	<entity id="23">
+		<attributelist>
+			<attribute id="25"></attribute>
+		</attributelist>
+	</entity>
+	<relationship id="24">
+		<rolelist>
+			<role mincard="1" maxcard="N" name="" entityid="19" refintegrity="false"></role>
+			<role mincard="1" maxcard="1" name="" entityid="23" refintegrity="true"></role>
+		</rolelist>
+	</relationship>
+	<relationship id="26">
+		<rolelist>
+			<role mincard="0" maxcard="N" name="" entityid="1" refintegrity="false"></role>
+			<role mincard="1" maxcard="N" name="" entityid="23" refintegrity="false"></role>
+		</rolelist>
+	</relationship>
+	<weakentity id="29">
+		<attributelist>
+			<attribute id="31"></attribute>
+			<attribute id="32"></attribute>
+		</attributelist>
+		<dependencylist>
+			<dependencyref relationshipid="30"></dependencyref>
+		</dependencylist>
+	</weakentity>
+	<weakrelationship id="30">
+		<rolelist>
+			<role mincard="1" maxcard="N" name="" entityid="29" refintegrity="false"></role>
+			<role mincard="1" maxcard="1" name="" entityid="7" refintegrity="false"></role>
+		</rolelist>
+	</weakrelationship>
+	<weakentity id="33">
+		<attributelist>
+			<attribute id="35"></attribute>
+			<attribute id="36"></attribute>
+		</attributelist>
+		<dependencylist>
+			<dependencyref relationshipid="34"></dependencyref>
+		</dependencylist>
+	</weakentity>
+	<weakrelationship id="34">
+		<rolelist>
+			<role mincard="1" maxcard="1" name="" entityid="7" refintegrity="false"></role>
+			<role mincard="1" maxcard="N" name="" entityid="33" refintegrity="false"></role>
+		</rolelist>
+	</weakrelationship>
+	<weakentity id="37">
+		<attributelist>
+			<attribute id="39"></attribute>
+			<attribute id="40"></attribute>
+		</attributelist>
+		<dependencylist>
+			<dependencyref relationshipid="38"></dependencyref>
+		</dependencylist>
+	</weakentity>
+	<weakrelationship id="38">
+		<rolelist>
+			<role mincard="1" maxcard="1" name="" entityid="7" refintegrity="false"></role>
+			<role mincard="1" maxcard="N" name="" entityid="37" refintegrity="false"></role>
+		</rolelist>
+	</weakrelationship>
+	<weakrelationship id="41">
+		<rolelist>
+			<role mincard="1" maxcard="1" name="" entityid="7" refintegrity="false"></role>
+			<role mincard="1" maxcard="N" name="" entityid="42" refintegrity="false"></role>
+		</rolelist>
+	</weakrelationship>
+	<weakentity id="42">
+		<attributelist>
+			<attribute id="43"></attribute>
+			<attribute id="44"></attribute>
+		</attributelist>
+		<dependencylist>
+			<dependencyref relationshipid="41"></dependencyref>
+		</dependencylist>
+	</weakentity>
+	<relationship id="45">
+		<rolelist>
+			<role mincard="0" maxcard="1" name="" entityid="23" refintegrity="false"></role>
+			<role mincard="0" maxcard="N" name="" entityid="23" refintegrity="false"></role>
+		</rolelist>
+	</relationship>
+	<entity id="49">
+		<attributelist>
+			<attribute id="51"></attribute>
+			<attribute id="52"></attribute>
+		</attributelist>
+	</entity>
+	<relationship id="50">
+		<rolelist>
+			<role mincard="1" maxcard="1" name="" entityid="7" refintegrity="true"></role>
+			<role mincard="0" maxcard="N" name="" entityid="49" refintegrity="false"></role>
+		</rolelist>
+	</relationship>
+</diagram>
