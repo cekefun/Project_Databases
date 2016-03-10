@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+table {
+	border-collapse: collapse;
+	width: 60%;
+}
+
+th, td {
+	text-align: left;
+	padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+</style>
+</head>
+<body>
+	{% if minutedata_list %}
+		<h2>All minute data</h2>
+		<div style="overflow-x:auto;">
+		<table>
+			<tr>
+				<th>Creation date</th>
+				<th>Sensor ID</th>
+				<th>Value</th>
+			</tr>
+		{% for minutedatasample in minutedata_list %}
+			<tr>
+				<td>{{minutedatasample.CreationTimestamp}}</td>
+				<td>{{minutedatasample.SensorID}}</td>
+				<td>{{minutedatasample.Value}}</td>
+			</tr>
+		{% endfor %}
+		</table>
+		</div>
+	{% else %}
+		<p>There are no data samples in the database.</p>
+	{% endif %}
+</body>
+</html>
