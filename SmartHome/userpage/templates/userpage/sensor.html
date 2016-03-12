@@ -37,18 +37,132 @@ input[type=submit]:hover {
 	background-color: #45a049;
 }
 
+.checkmark {
+    display:inline-block;
+    width: 22px;
+    height:22px;
+    -ms-transform: rotate(45deg); /* IE 9 */
+    -webkit-transform: rotate(45deg); /* Chrome, Safari, Opera */
+    transform: rotate(45deg);
+}
+
+.checkmark_circle {
+    position: absolute;
+    width:22px;
+    height:22px;
+    background-color: green;
+    border-radius:11px;
+    left:0;
+    top:0;
+}
+
+.checkmark_stem {
+    position: absolute;
+    width:3px;
+    height:9px;
+    background-color:#fff;
+    left:11px;
+    top:6px;
+}
+
+.checkmark_kick {
+    position: absolute;
+    width:4px;
+    height:3px;
+    background-color:#fff;
+    left:8px;
+    top:12px;
+}
+
+
+.crossmark {
+    display:inline-block;
+    width: 22px;
+    height:22px;
+    -ms-transform: rotate(45deg); /* IE 9 */
+    -webkit-transform: rotate(45deg); /* Chrome, Safari, Opera */
+    transform: rotate(45deg);
+}
+
+.crossmark_circle {
+    position: absolute;
+    width:22px;
+    height:22px;
+    background-color: red;
+    border-radius:11px;
+    left:0;
+    top:0;
+}
+
+.crossmark_slash {
+    position: absolute;
+    width:3px;
+    height:11px;
+    background-color:#fff;
+    left:9px;
+    top:5px;
+}
+
+.crossmark_backslash {
+    position: absolute;
+    width:11px;
+    height:3px;
+    background-color:#fff;
+    left:5px;
+    top:9px;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #000078;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover:not(.active) {
+    background-color: #0000C0;
+}
+
+li .active:hover {
+    background-color: #4CAF50;
+}
+
+.active {
+    background-color: green;
+}
 
 tr:nth-child(even){background-color: #f2f2f2}
 </style>
 </head>
 <body>
+<ul>
+  <li><a href="../">Home</a></li>
+  <li><a class="active" href="">Sensors</a></li>
+  <li><a href="../minute">MinuteData</a></li>
+  <li><a href="../hour">HourData</a></li>
+  <li><a href="../day">DayData</a></li>
+  <li><a href="../month">MonthData</a></li>
+  <li><a href="../year">YearData</a></li>
+</ul>
 	{% if sensor_list %}
-		<h2>Sensors</h2>
 		<div style="overflow-x:auto;">
 		<table>
 			<tr>
 				<th>Sensor ID</th>
-				<th>Apparature</th>
+				<th>Name</th>
 				<th>Installed on</th>
 				<th>Active</th>
 			</tr>
@@ -57,7 +171,24 @@ tr:nth-child(even){background-color: #f2f2f2}
 				<td>{{sensor.ID}}</td>
 				<td>{{sensor.Apparature}}</td>
 				<td>{{sensor.InstalledOn}}</td>
-				<td>{{sensor.Active}}</td>
+
+				{% if sensor.Active%}
+				<td>
+					<span class="checkmark">
+						<div class="checkmark_circle"></div>
+						<div class="checkmark_stem"></div>
+						<div class="checkmark_kick"></div>
+					</span>
+				</td>
+				{% else %}
+				<td>
+					<span class="crossmark">
+					    <div class="crossmark_circle"></div>
+					    <div class="crossmark_slash"></div>
+					    <div class="crossmark_backslash"></div>
+					</span>
+				</td>
+				{% endif %}
 			</tr>
 		{% endfor %}
 		</table>

@@ -6,6 +6,8 @@ urlpatterns = [
 	url(r'^$', views.indexpage, name='indexpage'),
 	url(r'^sensors/', views.sensors, name='sensors'),
 	url(r'^minute/', views.minuteusage, name ='minuteuse'),
-    url(r'^daily/', views.dailyusage, name='dailyuse'),
-    url(r'^monthly/', views.monthlyusage, name='monthlyuse')
+    url(r'^hour/', views.hourlyusage, name='hourlyuse'),
+    url(r'^day/', views.dailyusage, name='dailyuse'),
+    url(r'^month/', views.monthlyusage, name='monthlyuse'),
+    url(r'^year/', views.yearlyusage, name='yearlyuse'),
 ]

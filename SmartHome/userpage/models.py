@@ -9,15 +9,15 @@ class Sensor:
 		self.ID = 0
 		self.Apparature = ""
 		self.InstalledOn = 0
-		self.Active = "False"
+		self.Active = 0
 
 	def __init__(self, databasetuple):
 		self.ID = str(databasetuple[0])
 		self.Apparature = str(databasetuple[1])
 		self.InstalledOn = str(databasetuple[2])
-		self.Active = "True"
-		if (str(databasetuple[3]) == "0"):
-			self.Active = "False"
+		self.Active = databasetuple[3]
+		# if (str(databasetuple[3]) == "0"):
+		# 	self.Active = "False"
 
 	def __repr__(self): #used for testing
 		returnstring = "ID: "
@@ -27,7 +27,7 @@ class Sensor:
 		returnstring += " InstalledOn: "
 		returnstring += self.InstalledOn
 		returnstring += " Active: "
-		returnstring += self.Active
+		returnstring += str(self.Active)
 		return returnstring
 
 
@@ -118,3 +118,85 @@ class MinuteData:
 			self.results.append(MinuteDataSample(i))
 
 		return self.getTuples()
+
+class HourData:
+	def __init__(self):
+		self.results = []
+		self.cursor = connection.cursor()
+
+	def clean(self):
+		self.results = []
+
+	def getTuples(self):
+		return self.results
+
+	def selectAll(self):
+		self.clean()
+		self.cursor.execute("select * from HourData order by CreationTimestamp;")
+
+		rows = self.cursor.fetchall()
+		for i in rows:
+			self.results.append(HourDataSample(i))
+		return self.getTuples()	
+
+class DayData:
+	def __init__(self):
+		self.results = []
+		self.cursor = connection.cursor()
+
+	def clean(self):
+		self.results = []
+
+	def getTuples(self):
+		return self.results
+
+	def selectAll(self):
+		self.clean()
+		self.cursor.execute("select * from DayData order by CreationTimestamp;")
+
+		rows = self.cursor.fetchall()
+		for i in rows:
+			self.results.append(DayDataSample(i))
+		return self.getTuples()
+
+
+class MonthData:
+	def __init__(self):
+		self.results = []
+		self.cursor = connection.cursor()
+
+	def clean(self):
+		self.results = []
+
+	def getTuples(self):
+		return self.results
+
+	def selectAll(self):
+		self.clean()
+		self.cursor.execute("select * from MonthData order by CreationTimestamp;")
+
+		rows = self.cursor.fetchall()
+		for i in rows:
+			self.results.append(MonthDataSample(i))
+		return self.getTuples()	
+
+
+class YearData:
+	def __init__(self):
+		self.results = []
+		self.cursor = connection.cursor()
+
+	def clean(self):
+		self.results = []
+
+	def getTuples(self):
+		return self.results
+
+	def selectAll(self):
+		self.clean()
+		self.cursor.execute("select * from YearData order by CreationTimestamp;")
+
+		rows = self.cursor.fetchall()
+		for i in rows:
+			self.results.append(YearDataSample(i))
+		return self.getTuples()	

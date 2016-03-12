@@ -51,14 +51,14 @@ tr:nth-child(even){background-color: #f2f2f2}
 <ul>
   <li><a href="../">Home</a></li>
   <li><a href="../sensors">Sensors</a></li>
-  <li><a class="active" href="">MinuteData</a></li>
+  <li><a href="../minute">MinuteData</a></li>
   <li><a href="../hour">HourData</a></li>
   <li><a href="../day">DayData</a></li>
   <li><a href="../month">MonthData</a></li>
-  <li><a href="../year">YearData</a></li>
+  <li><a class="active" href="">YearData</a></li>
 </ul>
 
-	{% if minutedata_list %}
+	{% if yeardata_list %}
 		<div style="overflow-x:auto;">
 		<table>
 			<tr>
@@ -66,11 +66,11 @@ tr:nth-child(even){background-color: #f2f2f2}
 				<th>Sensor ID</th>
 				<th>Value</th>
 			</tr>
-		{% for minutedatasample in minutedata_list %}
+		{% for yeardatasample in yeardata_list %}
 			<tr>
-				<td>{{minutedatasample.CreationTimestamp}}</td>
-				<td>{{minutedatasample.SensorID}}</td>
-				<td>{{minutedatasample.Value}}</td>
+				<td>{{yeardatasample.CreationTimestamp}}</td>
+				<td>{{yeardatasample.SensorID}}</td>
+				<td>{{yeardatasample.Value}}</td>
 			</tr>
 		{% endfor %}
 		</table>

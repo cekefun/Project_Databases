@@ -8,7 +8,11 @@ from models import *
 
 def indexpage(request):
 
-	return HttpResponse("Will contain a choice to view certain things, such as the daily data, overview, etc...")	
+	template = loader.get_template("userpage/index.html")
+	context = {}
+	return HttpResponse(template.render(context, request))
+
+	# return HttpResponse("Will contain a choice to view certain things, such as the daily data, overview, etc...")	
 
 def minuteusage(request):
 	minutedata = MinuteData()
@@ -21,10 +25,51 @@ def minuteusage(request):
 	return HttpResponse(template.render(context, request))
 
 
+def hourlyusage(request):
+	hourdata = HourData()
+	resultobjects = hourdata.selectAll()
+
+	template = loader.get_template("userpage/hourusage.html")
+	context = {
+		'hourdata_list' : resultobjects,
+	}
+	return HttpResponse(template.render(context, request))
 
 def dailyusage(request):
 
-	return HttpResponse("Page to display the monthly data from a certain user.")
+	daydata = DayData()
+	resultobjects = daydata.selectAll()
+
+	template = loader.get_template("userpage/dayusage.html")
+	context = {
+		'daydata_list' : resultobjects,
+	}
+	return HttpResponse(template.render(context, request))
+
+
+
+def monthlyusage(request):
+
+	monthdata = MonthData()
+	resultobjects = monthdata.selectAll()
+
+	template = loader.get_template("userpage/monthusage.html")
+	context = {
+		'monthdata_list' : resultobjects,
+	}
+	return HttpResponse(template.render(context, request))
+
+
+def yearlyusage(request):
+
+	yeardata = YearData()
+	resultobjects = yeardata.selectAll()
+
+	template = loader.get_template("userpage/yearusage.html")
+	context = {
+		'yeardata_list' : resultobjects,
+	}
+	return HttpResponse(template.render(context, request))
 
 
 def sensors(request):
@@ -38,8 +83,3 @@ def sensors(request):
 	}
 	return HttpResponse(template.render(context, request))
 
-
-def monthlyusage(request):
-
-
-	return HttpResponse("Page to display the monthly data from a certain user.")
