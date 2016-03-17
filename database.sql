@@ -64,41 +64,43 @@ create table Sensor(
 	Apparature varchar(50) not null,
 	InstalledOn int not null references House(ID),
 	Active bool not null
+	CONSTRAINT UniqueName UNIQUE(Apparature,InstalledOn)
 );
 
 create table MinuteData(
 	CreationTimestamp timestamp not null,
 	SensorID int references Sensor(ID),
-	Value int not null,
+	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
 
 create table HourData(
 	CreationTimestamp timestamp not null,
 	SensorID int references Sensor(ID),
-	Value int not null,
+	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
 
 create table DayData(
 	CreationTimestamp timestamp not null,
 	SensorID int references Sensor(ID),
-	Value int not null,
+	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
 
 create table MonthData(
 	CreationTimestamp timestamp not null,
 	SensorID int references Sensor(ID),
-	Value int not null,
+	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
 
 create table YearData(
 	CreationTimestamp timestamp not null,
 	SensorID int references Sensor(ID),
-	Value int not null,
+	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
+
 
 
