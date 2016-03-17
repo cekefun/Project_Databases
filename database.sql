@@ -25,7 +25,7 @@ create table Wall(
 	Name varchar(50) primary key
 );
 
-create table SubWall(
+create table SubWallOf(
 	WallName1 varchar(50) references Wall(Name),
 	WallName2 varchar(50) references Wall(Name), 
 	primary key (WallName1, WallName2)
@@ -40,14 +40,11 @@ create table Moderates(
 create table Message(
 	ID int auto_increment primary key,
 	Content varchar(255), 
-	Description varchar(255),
-	Title varchar(50),
-	MeasurementUnit varchar(10),
 	PostedBy int references User(ID),
 	PostedOn varchar(50) references Wall(Name)
 );
 
-create table Comments(
+create table Comment(
 	ID int auto_increment primary key,
 	Message varchar(255),
 	SensorID int not null references Sensor(ID)
