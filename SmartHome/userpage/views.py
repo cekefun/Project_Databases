@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from models import *
 
@@ -83,3 +83,20 @@ def sensors(request):
 	}
 	return HttpResponse(template.render(context, request))
 
+#experimental code
+
+def jsonallsensors(request):
+
+	resultobject = SensorData()
+	resultobject.selectAll()
+
+	# print(resultobject.toJSON())
+	return HttpResponse(resultobject.toJSON())
+
+
+def jsonallminutedata(request):
+
+	resultobject = MinuteData()
+	resultobject.selectAll()
+
+	return HttpResponse(resultobject.toJSON())

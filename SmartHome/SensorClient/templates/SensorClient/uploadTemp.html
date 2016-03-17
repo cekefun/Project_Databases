@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<form enctype="multipart/form-data" action="uploaded" method="post">{% csrf_token %}
+	<p>
+    	<input type="file" name="file" id="fileToUpload" accept = ".csv">
+    </p>
+    <input type="submit" value="Upload CSV" name="submit">
+</form>
+
+</body>
+</html>

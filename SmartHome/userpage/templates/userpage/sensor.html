@@ -1,151 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-table {
-	border-collapse: collapse;
-	width: 60%;
-}
-
-th, td {
-	text-align: left;
-	padding: 8px;
-}
-
-input[type=text], select {
-	width: 30%;
-	padding: 12px 20px;
-	margin: 8px 0;
-	display: inline-block;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	box-sizing: border-box;
-}
-
-input[type=submit] {
-	width: 30%;
-	background-color: #4CAF50;
-	color: white;
-	padding: 14px 20px;
-	margin: 8px 0;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-}
-
-input[type=submit]:hover {
-	background-color: #45a049;
-}
-
-.checkmark {
-    display:inline-block;
-    width: 22px;
-    height:22px;
-    -ms-transform: rotate(45deg); /* IE 9 */
-    -webkit-transform: rotate(45deg); /* Chrome, Safari, Opera */
-    transform: rotate(45deg);
-}
-
-.checkmark_circle {
-    position: absolute;
-    width:22px;
-    height:22px;
-    background-color: green;
-    border-radius:11px;
-    left:0;
-    top:0;
-}
-
-.checkmark_stem {
-    position: absolute;
-    width:3px;
-    height:9px;
-    background-color:#fff;
-    left:11px;
-    top:6px;
-}
-
-.checkmark_kick {
-    position: absolute;
-    width:4px;
-    height:3px;
-    background-color:#fff;
-    left:8px;
-    top:12px;
-}
-
-
-.crossmark {
-    display:inline-block;
-    width: 22px;
-    height:22px;
-    -ms-transform: rotate(45deg); /* IE 9 */
-    -webkit-transform: rotate(45deg); /* Chrome, Safari, Opera */
-    transform: rotate(45deg);
-}
-
-.crossmark_circle {
-    position: absolute;
-    width:22px;
-    height:22px;
-    background-color: red;
-    border-radius:11px;
-    left:0;
-    top:0;
-}
-
-.crossmark_slash {
-    position: absolute;
-    width:3px;
-    height:11px;
-    background-color:#fff;
-    left:9px;
-    top:5px;
-}
-
-.crossmark_backslash {
-    position: absolute;
-    width:11px;
-    height:3px;
-    background-color:#fff;
-    left:5px;
-    top:9px;
-}
-
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #000078;
-}
-
-li {
-    float: left;
-}
-
-li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-li a:hover:not(.active) {
-    background-color: #0000C0;
-}
-
-li .active:hover {
-    background-color: #4CAF50;
-}
-
-.active {
-    background-color: green;
-}
-
-tr:nth-child(even){background-color: #f2f2f2}
-</style>
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static "userpage/defaultstyle.css" %}">
 </head>
 <body>
 <ul>
@@ -159,7 +16,7 @@ tr:nth-child(even){background-color: #f2f2f2}
 </ul>
 	{% if sensor_list %}
 		<div style="overflow-x:auto;">
-		<table>
+		<table class="sortable">
 			<tr>
 				<th>Sensor ID</th>
 				<th>Name</th>
@@ -172,7 +29,7 @@ tr:nth-child(even){background-color: #f2f2f2}
 				<td>{{sensor.Apparature}}</td>
 				<td>{{sensor.InstalledOn}}</td>
 
-				{% if sensor.Active%}
+				{% if sensor.Active %}
 				<td>
 					<span class="checkmark">
 						<div class="checkmark_circle"></div>
@@ -193,36 +50,109 @@ tr:nth-child(even){background-color: #f2f2f2}
 		{% endfor %}
 		</table>
 		</div>
+		<br><br><br><br><br>
 
-		<div>
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-		<form method="post">
-			<!-- <label for="something">u textbox :)</label> -->
-			{% csrf_token %}
-			<input type="text" id="sensorID" name="sensorID">
-			<br>
-			<input type="text" id="sensorApparature" name="sensorApparature">
-			<br>
-			<input type="text" id="sensorInstalledon" name="sensorInstalledon">
-			<br>
-			<input type="text" id="sensorActive" name="sensorActive">
-			<br>
-			<input type="submit" value="Submit">
-		</form>
-		<!--- <button onclick="SubmitSensorData()">Submit</button> -->
+		<div style="overflow-x:auto;">
+		<table id="tablesensorinfo" class=sortable>
+			<tr>
+				<th>Sensor ID</th>
+				<th>Name</th>
+				<th>Installed on</th>
+				<th>Active</th>
+			</tr>
+		</table>
 		</div>
+
 	{% else %}
 		<p>There are no sensors in the database.</p>
 	{% endif %}
 </body>
 </html>
 
+{% load staticfiles %}
+<script src="{% static "userpage/sortable.js" %}"></script>
 <script>
-function SumbitSensorData() {
+function LoadSensorData() {
+	var jsonhttp = new XMLHttpRequest();
+	var url = "/index/sensors/all";
 
+	jsonhttp.onreadystatechange = function() {
+		if (jsonhttp.readyState == 4 && jsonhttp.status == 200) {
+			// console.log(jsonhttp.responseText);
+			var sensordataobject = JSON.parse(jsonhttp.responseText);
+			DisplaySensorDataTable(sensordataobject);
+		}
+	}
+	jsonhttp.open("GET", url, true);
+	jsonhttp.send();
 }
+
+function DisplaySensorDataTable(dataobject) {
+	// console.log(dataobject);
+	var table = document.getElementById("tablesensorinfo");
+	for (i = 0; i < dataobject.sensors.length; i++) {
+		//create table entries
+		var tablerow = document.createElement("tr");
+		var tableelement1 = document.createElement("td");
+		var tableelement1text = document.createTextNode(dataobject.sensors[i].ID);
+		var tableelement2 = document.createElement("td");
+		var tableelement2text = document.createTextNode(dataobject.sensors[i].Apparature);
+		var tableelement3 = document.createElement("td");
+		var tableelement3text = document.createTextNode(dataobject.sensors[i].InstalledOn);
+		var tableelement4 = document.createElement("td");
+
+		tableelement1.appendChild(tableelement1text);
+		tableelement2.appendChild(tableelement2text);
+		tableelement3.appendChild(tableelement3text);
+		if (dataobject.sensors[i].Active == 1) {
+			tableelement4.appendChild(Checkmark());
+		}
+		else {
+			tableelement4.appendChild(Crossmark());
+		}
+
+		tablerow.appendChild(tableelement1);
+		tablerow.appendChild(tableelement2);
+		tablerow.appendChild(tableelement3);
+		tablerow.appendChild(tableelement4);
+		table.appendChild(tablerow);
+	}
+	sorttable.makeSortable(table);
+}
+
+function Checkmark() {
+	var checkmark = document.createElement("span");
+	checkmark.setAttribute("class", "checkmark");
+
+	var div1 = document.createElement("div");
+	div1.setAttribute("class", "checkmark_circle");
+	var div2 = document.createElement("div");
+	div2.setAttribute("class", "checkmark_stem");
+	var div3 = document.createElement("div");
+	div3.setAttribute("class", "checkmark_kick");
+
+	checkmark.appendChild(div1);
+	checkmark.appendChild(div2);
+	checkmark.appendChild(div3);
+	return checkmark;
+}
+
+function Crossmark() {
+	var crossmark = document.createElement("span");
+	crossmark.setAttribute("class", "crossmark");
+
+	var div1 = document.createElement("div");
+	div1.setAttribute("class", "crossmark_circle");
+	var div2 = document.createElement("div");
+	div2.setAttribute("class", "crossmark_slash");
+	var div3 = document.createElement("div");
+	div3.setAttribute("class", "crossmark_backslash");
+
+	crossmark.appendChild(div1);
+	crossmark.appendChild(div2);
+	crossmark.appendChild(div3);
+	return crossmark;
+}
+
+window.onload = LoadSensorData;
 </script>

@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, connection
+import json
 
 
 
@@ -30,6 +31,13 @@ class Sensor:
 		returnstring += str(self.Active)
 		return returnstring
 
+	#more random testing
+	def __iter__(self):
+		yield('ID',self.ID)
+		yield('Apparature',self.Apparature)
+		yield('InstalledOn',self.InstalledOn)
+		yield('Active',self.Active)
+
 
 class SensorDataSample:
 	def __init__(self):
@@ -42,6 +50,11 @@ class SensorDataSample:
 		self.SensorID = str(databasetuple[1])
 		self.Value = str(databasetuple[2])
 
+	def __iter__(self):
+		yield('CreationTimestamp', self.CreationTimestamp)
+		yield('SensorID', self.SensorID)
+		yield('Value', self.Value)
+
 class MinuteDataSample(SensorDataSample):
 	pass
 class HourDataSample(SensorDataSample):
@@ -52,6 +65,11 @@ class MonthDataSample(SensorDataSample):
 	pass
 class YearDataSample(SensorDataSample):
 	pass
+
+
+
+
+
 
 
 class SensorData:
@@ -84,6 +102,14 @@ class SensorData:
 			self.results.append(Sensor(i))
 
 		return self.getTuples()
+
+	def toJSON(self):
+		result = {}
+		result["sensors"] = []
+		for i in self.results:
+			result["sensors"].append(dict(i))
+		return json.dumps(result)
+
 
 
 class MinuteData:
@@ -119,6 +145,17 @@ class MinuteData:
 
 		return self.getTuples()
 
+	def toJSON(self):
+		result = {}
+		result["datasamples"] = []
+
+		for i in self.results:
+			result["datasamples"].append(dict(i))
+
+		return json.dumps(result)
+
+
+
 class HourData:
 	def __init__(self):
 		self.results = []
@@ -138,6 +175,8 @@ class HourData:
 		for i in rows:
 			self.results.append(HourDataSample(i))
 		return self.getTuples()	
+
+
 
 class DayData:
 	def __init__(self):
@@ -160,6 +199,7 @@ class DayData:
 		return self.getTuples()
 
 
+
 class MonthData:
 	def __init__(self):
 		self.results = []
@@ -179,6 +219,7 @@ class MonthData:
 		for i in rows:
 			self.results.append(MonthDataSample(i))
 		return self.getTuples()	
+
 
 
 class YearData:
