@@ -63,7 +63,10 @@ create table Sensor(
 	ID int auto_increment primary key,
 	Apparature varchar(50) not null,
 	InstalledOn int not null references House(ID),
-	Active bool not null
+	Active bool not null,
+	Title varchar(50),
+	Description varchar(255),
+	Unit varchar(10)
 	CONSTRAINT UniqueName UNIQUE(Apparature,InstalledOn)
 );
 
