@@ -39,7 +39,8 @@ create table Moderates(
 
 create table Message(
 	ID int auto_increment primary key,
-	Content varchar(255), 
+	Content varchar(255),
+	CreationTimestamp timestamp not null,
 	PostedBy int references User(ID),
 	PostedOn varchar(50) references Wall(Name)
 );
