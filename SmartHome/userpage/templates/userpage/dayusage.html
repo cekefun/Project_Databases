@@ -1,51 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-table {
-	border-collapse: collapse;
-	width: 60%;
-}
-
-th, td {
-	text-align: left;
-	padding: 8px;
-}
-
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #000078;
-}
-
-li {
-    float: left;
-}
-
-li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-li a:hover:not(.active) {
-    background-color: #0000C0;
-}
-
-li .active:hover {
-    background-color: #4CAF50;
-}
-
-.active {
-    background-color: green;
-}
-
-tr:nth-child(even){background-color: #f2f2f2}
-</style>
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static "userpage/defaultstyle.css" %}">
 </head>
 <body>
 <ul>
@@ -57,7 +14,6 @@ tr:nth-child(even){background-color: #f2f2f2}
   <li><a href="../month">MonthData</a></li>
   <li><a href="../year">YearData</a></li>
 </ul>
-
 	{% if daydata_list %}
 		<div style="overflow-x:auto;">
 		<table>
