@@ -4,6 +4,13 @@ from django.db import models, connection
 import json
 
 
+def SQL_MinuteDataByHouseholdID(householdID):
+	returncommand = "select MinuteData.CreationTimestamp, MinuteData.SensorID, MinuteData.Value "
+	returncommand += " from MinuteData, Sensor "
+	returncommand += " where Sensor.ID = MinuteData.SensorID AND Sensor.InstalledOn = " + str(householdID) + ";"
+
+	return returncommand;
+
 
 class Sensor:
 	def __init__(self):
@@ -134,6 +141,17 @@ class MinuteData:
 			self.results.append(MinuteDataSample(i))
 
 		return self.getTuples()
+
+	def selectByHouseholdID(self, householdID):
+		self.clean()
+
+		self.cursor.execute(SQL_MinuteDataByHouseholdID(householdID))
+		rows = self.cursor.fetchall()
+		for i in rows:
+			self.results.append(MinuteDataSample(i))
+
+		return self.getTuples()
+
 
 	def selectBySensorID(self, sensorID):
 		self.clean()

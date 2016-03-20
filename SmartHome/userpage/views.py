@@ -24,6 +24,10 @@ def minuteusage(request):
 	}
 	return HttpResponse(template.render(context, request))
 
+def JSON_minuteusagehouse(request, householdid):
+	minutedata = MinuteData()
+	minutedata.selectByHouseholdID(householdid)
+	return HttpResponse(minutedata.toJSON())
 
 def hourlyusage(request):
 	hourdata = HourData()
@@ -85,7 +89,7 @@ def sensors(request):
 
 #experimental code
 
-def jsonallsensors(request):
+def JSON_allsensors(request):
 
 	resultobject = SensorData()
 	resultobject.selectAll()
@@ -94,7 +98,7 @@ def jsonallsensors(request):
 	return HttpResponse(resultobject.toJSON())
 
 
-def jsonallminutedata(request):
+def JSON_allminutedata(request):
 
 	resultobject = MinuteData()
 	resultobject.selectAll()

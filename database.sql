@@ -25,7 +25,7 @@ create table Wall(
 	Name varchar(50) primary key
 );
 
-create table SubWall(
+create table SubWallOf(
 	WallName1 varchar(50) references Wall(Name),
 	WallName2 varchar(50) references Wall(Name), 
 	primary key (WallName1, WallName2)
@@ -39,15 +39,13 @@ create table Moderates(
 
 create table Message(
 	ID int auto_increment primary key,
-	Content varchar(255), 
-	Description varchar(255),
-	Title varchar(50),
-	MeasurementUnit varchar(10),
+	Content varchar(255),
+	CreationTimestamp timestamp not null,
 	PostedBy int references User(ID),
 	PostedOn varchar(50) references Wall(Name)
 );
 
-create table Comments(
+create table Comment(
 	ID int auto_increment primary key,
 	Message varchar(255),
 	SensorID int not null references Sensor(ID)
@@ -63,7 +61,10 @@ create table Sensor(
 	ID int auto_increment primary key,
 	Apparature varchar(50) not null,
 	InstalledOn int not null references House(ID),
-	Active bool not null
+	Active bool not null,
+	Title varchar(50),
+	Description varchar(255),
+	Unit varchar(10)
 	CONSTRAINT UniqueName UNIQUE(Apparature,InstalledOn)
 );
 
@@ -101,6 +102,5 @@ create table YearData(
 	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
-
 
 
