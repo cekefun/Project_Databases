@@ -64,7 +64,7 @@ create table Sensor(
 	Active bool not null,
 	Title varchar(50),
 	Description varchar(255),
-	Unit varchar(10)
+	Unit varchar(10),
 	CONSTRAINT UniqueName UNIQUE(Apparature,InstalledOn)
 );
 

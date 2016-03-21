@@ -24,8 +24,6 @@ class Sensor:
 		self.Apparature = str(databasetuple[1])
 		self.InstalledOn = str(databasetuple[2])
 		self.Active = databasetuple[3]
-		# if (str(databasetuple[3]) == "0"):
-		# 	self.Active = "False"
 
 	def __repr__(self): #used for testing
 		returnstring = "ID: "
@@ -135,7 +133,7 @@ class MinuteData:
 	def selectAll(self):
 		self.clean()
 
-		self.cursor.execute("select * from MinuteData order by CreationTimestamp;")
+		self.cursor.execute("select * from MinuteData order by SensorID;")
 		rows = self.cursor.fetchall()
 		for i in rows:
 			self.results.append(MinuteDataSample(i))

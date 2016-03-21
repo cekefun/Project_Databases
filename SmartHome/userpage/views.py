@@ -12,7 +12,7 @@ def indexpage(request):
 	context = {}
 	return HttpResponse(template.render(context, request))
 
-	# return HttpResponse("Will contain a choice to view certain things, such as the daily data, overview, etc...")	
+
 
 def minuteusage(request):
 	minutedata = MinuteData()
@@ -24,10 +24,12 @@ def minuteusage(request):
 	}
 	return HttpResponse(template.render(context, request))
 
+
 def JSON_minuteusagehouse(request, householdid):
 	minutedata = MinuteData()
 	minutedata.selectByHouseholdID(householdid)
 	return HttpResponse(minutedata.toJSON())
+
 
 def hourlyusage(request):
 	hourdata = HourData()
@@ -38,6 +40,7 @@ def hourlyusage(request):
 		'hourdata_list' : resultobjects,
 	}
 	return HttpResponse(template.render(context, request))
+
 
 def dailyusage(request):
 
@@ -94,7 +97,6 @@ def JSON_allsensors(request):
 	resultobject = SensorData()
 	resultobject.selectAll()
 
-	# print(resultobject.toJSON())
 	return HttpResponse(resultobject.toJSON())
 
 
