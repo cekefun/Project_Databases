@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart', 'controls']});
+      google.charts.setOnLoadCallback(drawStuff);
+
+      function drawStuff() {
+
+        var dashboard = new google.visualization.Dashboard(
+          document.getElementById('programmatic_dashboard_div'));
+
+        programmaticSlider = new google.visualization.ControlWrapper({
+          'controlType': 'ChartRangeFilter',
+          'containerId': 'programmatic_control_div',
+          'options': {
+            'filterColumnIndex': '1',
+            'ui': {'labelStacking': 'Vertical'}
+          }
+        });
+
+
+  
+      var data = new google.visualization.DataTable();
+	data.addColumn('string', 'Time');
+    	data.addColumn('number', 'scale');
+    	data.addColumn('number', 'Electric shower');
+	data.addColumn('number', 'Microwave');
+	data.addColumn('number', 'Lamp1');
+	data.addColumn('number', 'Lamp2');
+	data.addColumn('number', 'Oven');
+	data.addColumn('number', 'Tesla coil');
+	data.addColumn('number', 'fusion furnace');
+
+	data.addRows([
+        ['13:00',      	   1,		120,	     190,    	400,    700,   1000, 	 20000,    	900       ],
+        ['13:01',      	   2,		170,         240,    	 0,     600,   100,    	 50000,    	900       ],
+        ['13:02',      	   3,		300, 	     300,    	 0,     600,   100,    	 30000,     	1000      ],
+        ['13:04',      	   4,		500,   	     300,      	 0,      0,    100,      25000,    	4500      ],
+        ['13:05',      	   5,		500,         360,    	650,     0,    1000,   	 30000,  	3500      ],
+        ['13:06',      	   6,		1000,  	     1000,   	600,    800,   1000,  	 50000, 	10000     ],
+        ['13:07',      	   7,		1000,        766,    	400,    800,   900,	 10000,    	7000      ],
+	['13:08',      	   8,		800,	     700,	400,    700,   1000,     50000,		7000      ],
+	['13:09',      	   9,		500,	     600,       400,    600,   1000,     45000,   	6500  	  ],
+	['13:10',	  10, 		70,   	     60,	0,	600,   50,	 15000,		3000 	  ],
+
+      ]);
+
+	var columnsTable = new google.visualization.DataTable();
+    	columnsTable.addColumn('number', 'colIndex');
+    	columnsTable.addColumn('string', 'colLabel');
+    	var initState= {selectedValues: []};
+    	// put the columns into this data table (skip column 0 and 1)
+    	for (var i = 2; i < data.getNumberOfColumns(); i++) {
+        	columnsTable.addRow([i, data.getColumnLabel(i)]);
+    	}
+    	initState.selectedValues.push(data.getColumnLabel(4));
+
+       programmaticChart  = new google.visualization.ChartWrapper({
+        'chartType': 'LineChart',
+        'containerId': 'programmatic_chart_div',
+	 dataTable: data,
+        'options': {
+          'width': 1500,
+          'height': 700,
+          'legend': {position : 'right'},
+        }
+      });
+
+
+
+    var columnFilter = new google.visualization.ControlWrapper({
+        controlType: 'CategoryFilter',
+        containerId: 'colFilter_div',
+        dataTable: columnsTable,
+        options: {
+            filterColumnLabel: 'colLabel',
+            ui: {
+                label: 'Columns',
+                allowTyping: false,
+                allowMultiple: true,
+                allowNone: false,
+                selectedValuesLayout: 'belowStacked'
+            }
+        },
+        state: initState
+    });
+
+    function setChartView () {
+        var state = columnFilter.getState();
+        var row;
+        var view = {
+            columns: [0]
+        };
+        for (var i = 0; i < state.selectedValues.length; i++) {
+            row = columnsTable.getFilteredRows([{column: 1, value: state.selectedValues[i]}])[0];
+            view.columns.push(columnsTable.getValue(row, 0));
+        }
+        // sort the indices into their original order
+        view.columns.sort(function (a, b) {
+            return (a - b);
+        });
+        programmaticChart.setView(view);
+        programmaticChart.draw();
+    }
+    google.visualization.events.addListener(columnFilter, 'statechange', setChartView);
+ 
+
+    setChartView();
+    columnFilter.draw();
+      dashboard.bind(programmaticSlider, programmaticChart, columnFilter);
+      dashboard.draw(data);
+    }
+
+    </script>
+<style>
+ul1 {
+    position:fixed;
+    top: 0;
+    width: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #000078;
+}
+
+li1 {
+    float: left;
+}
+
+li1 a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li1 a:hover:not(.active) {
+    background-color: #0000C0;
+}
+
+li1 .active:hover {
+    background-color: #4CAF50;
+}
+
+.active {
+    background-color: green;
+}
+
+ul2 {
+    position:fixed;
+    top: 46px;
+    width: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #f9f9f9;
+}
+
+li2 {
+    float: left;
+}
+
+li2 a {
+    display: block;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li2 a:hover:not(.active) {
+    background-color: #f1f1f1;
+}
+
+li2 .active:hover {
+    background-color: #e9e9e9;
+}
+
+li2 .active {
+    background-color: #f1f1f1;
+}
+
+.dropbtn {
+    position:fixed;
+    top: 0;
+    right: 0;
+    background-color: #000078;
+    color: white;
+    padding: 14px 16px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown {
+    position:fixed;
+    top:0;
+    right: 0;
+    padding: 43px 4px;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    background-color: #f9f9f9;
+    min-width: 0;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a {
+    text-align:right;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #0000C0;
+}
+
+</style>
+</head>
+<body>
+
+<ul1>
+  <li1 style=float:left;><a href="Home.html">Home</a></li1>
+  <li1><a href="Sensors.html">Sensors</a></li1>
+  <li1><a class="active" href="Power_Usage.html">Power usage</a></li1>
+  <li1><a href="About.html">About</a></li1>
+</ul1>
+<ul2>
+  <li2 style=float:left;><a class="active" href="MinuteTable.html">Minute Data</a></li2>
+  <li2><a href="DayTable.html">Daily Data</a></li2>
+  <li2><a href="WeekTable.html">Weekly Data</a></li2>
+  <li2><a href="MonthTable.html">Monthly Data</a></li2>
+  <li2><a href="YearTable.html">Yearly Data</a></li2>
+</ul2>
+  <div class="dropdown" >
+	<button class="dropbtn" style="float:right">Account</button>
+        <div class="dropdown-content a">
+             <a href="log_in.html">Log Out</a>
+  	</div></div>
+
+    <div id="programmatic_dashboard_div" style="padding-top:80px ;border: 1px solid #ccc">
+      <table class="columns">
+        <tr>
+          <td>
+
+            <div id="programmatic_chart_div" ></div>
+
+          </td>
+	  <td>
+		<div id="colFilter_div"></div>
+	  </td>
+
+        </tr>
+          <td>
+            <div id="programmatic_control_div" style="padding-left: 200px;min-width: 1100px; min-height: 80px"></div>
+          </td>
+      </table>
+    </div>
+</body>
+</html>
