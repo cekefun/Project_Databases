@@ -53,7 +53,9 @@ create table Comment(
 
 create table House(
 	ID int auto_increment primary key,
-	Address varchar(255),
+	Street varchar (155),
+	Houseno int,
+	Town varchar (155),
 	OwnedBy int references User(ID)
 );
 
