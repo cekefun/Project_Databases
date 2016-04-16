@@ -8,6 +8,8 @@ from models import *
 
 def indexpage(request):
 
+	request.session['UserID'] = 'testing'
+	del request.session['UserID']
 	template = loader.get_template("userpage/index.html")
 	context = {}
 	return HttpResponse(template.render(context, request))
@@ -15,6 +17,11 @@ def indexpage(request):
 
 
 def minuteusage(request):
+	if ('UserID' in request.session):
+		print "key = ", request.session['UserID']
+	else:
+		print "the key doesn't exist for this session yet."
+
 	minutedata = MinuteData()
 	resultobjects = minutedata.selectAll()
 
@@ -29,6 +36,30 @@ def JSON_minuteusagehouse(request, householdid):
 	minutedata = MinuteData()
 	minutedata.selectByHouseholdID(householdid)
 	return HttpResponse(minutedata.toJSON())
+
+
+def JSON_hourusagehouse(request, householdid):
+	hourdata = HourData()
+	hourdata.selectByHouseholdID(householdid)
+	return HttpResponse(hourdata.toJSON())
+
+
+def JSON_dayusagehouse(request, householdid):
+	daydata = DayData()
+	daydata.selectByHouseholdID(householdid)
+	return HttpResponse(daydata.toJSON())
+
+
+def JSON_monthusagehouse(request, householdid):
+	monthdata = MonthData()
+	monthdata.selectByHouseholdID(householdid)
+	return HttpResponse(monthdata.toJSON())
+
+
+def JSON_yearusagehouse(request, householdid):
+	yeardata = YearData()
+	yeardata.selectByHouseholdID(householdid)
+	return HttpResponse(yeardata.toJSON())
 
 
 def hourlyusage(request):
@@ -106,3 +137,17 @@ def JSON_allminutedata(request):
 	resultobject.selectAll()
 
 	return HttpResponse(resultobject.toJSON())
+
+
+
+def Update_sensordata(request):
+	if (request.method == "POST"):
+		print request.POST.items()
+		updateObj = SensorData()
+		updateObj.updateAttribute(request.POST['id'], request.POST['columnname'], request.POST['newvalue'])
+		return HttpResponse("everything okay.")
+
+
+
+	else:
+		print "Not accessing this view with POST request.... shit"

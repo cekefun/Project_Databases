@@ -40,7 +40,7 @@ create table Moderates(
 create table Message(
 	ID int auto_increment primary key,
 	Content varchar(255),
-	CreationTimestamp timestamp not null,
+	CreationTimestamp datetime not null,
 	PostedBy int references User(ID),
 	PostedOn varchar(50) references Wall(Name)
 );
@@ -51,9 +51,18 @@ create table Comment(
 	SensorID int not null references Sensor(ID)
 );
 
+create table Address(
+	ID int auto_increment primary key,
+	StreetName varchar(50) not null,
+	StreetNumber int not null,
+	City varchar(50) not null,
+	Country varchar(50) not null,
+	PostalCode int not null
+);
+
 create table House(
 	ID int auto_increment primary key,
-	Address varchar(255),
+	AddressID int references Address(ID),
 	OwnedBy int references User(ID)
 );
 
@@ -65,42 +74,40 @@ create table Sensor(
 	Title varchar(50),
 	Description varchar(255),
 	Unit varchar(10),
-	CONSTRAINT UniqueName UNIQUE(Apparature,InstalledOn)
+	CONSTRAINT UniqueName UNIQUE(Title,InstalledOn)
 );
 
 create table MinuteData(
-	CreationTimestamp timestamp not null,
+	CreationTimestamp datetime not null,
 	SensorID int references Sensor(ID),
 	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
 
 create table HourData(
-	CreationTimestamp timestamp not null,
+	CreationTimestamp datetime not null,
 	SensorID int references Sensor(ID),
 	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
 
 create table DayData(
-	CreationTimestamp timestamp not null,
+	CreationTimestamp datetime not null,
 	SensorID int references Sensor(ID),
 	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
 
 create table MonthData(
-	CreationTimestamp timestamp not null,
+	CreationTimestamp datetime not null,
 	SensorID int references Sensor(ID),
 	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
 
 create table YearData(
-	CreationTimestamp timestamp not null,
+	CreationTimestamp datetime not null,
 	SensorID int references Sensor(ID),
 	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
-
-

@@ -5,4 +5,8 @@ class UploadFileForm(forms.Form):
 #        self.title = name
 #        self.file = filename
 #    title = forms.CharField()
-    file = forms.FileField()
+    Uplfile = forms.FileField()
+    household = forms.IntegerField()
+
+class UploadjsonForm(forms.Form):
+    Uplfile = forms.FileField()

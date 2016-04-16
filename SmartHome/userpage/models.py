@@ -4,12 +4,35 @@ from django.db import models, connection
 import json
 
 
-def SQL_MinuteDataByHouseholdID(householdID):
-	returncommand = "select MinuteData.CreationTimestamp, MinuteData.SensorID, MinuteData.Value "
-	returncommand += " from MinuteData, Sensor "
-	returncommand += " where Sensor.ID = MinuteData.SensorID AND Sensor.InstalledOn = " + str(householdID) + ";"
+def SQL_SensorDataByHouseholdID(tablename, householdID):
+	command = "select " + str(tablename) + ".CreationTimestamp, "
+	command += str(tablename) + ".SensorID, "
+	command += str(tablename) + ".Value "
+	command += "from " + str(tablename) + ", Sensor "
+	command += "where Sensor.ID = " + str(tablename) + (".SensorID ")
+	command += "AND Sensor.InstalledOn = " + str(householdID)
+	command += " order by SensorID, CreationTimestamp;"
 
-	return returncommand;
+	return command
+
+
+def SQL_SensorChangeAttribute(sensorID, attributename, value):
+	command = "update Sensor "
+	command += "set " + str(attributename) + "='" + str(value) + "' "
+	command += "where Sensor.ID = " + str(sensorID) + ";"
+
+	return command
+
+
+def dictfetchall(cursor):
+	"function that returns the results from an SQL query in dictionary format"
+	desc = cursor.description
+	return [
+		dict(zip([col[0] for col in desc], row))
+		for row in cursor.fetchall()
+	]
+
+
 
 
 class Sensor:
@@ -90,14 +113,18 @@ class SensorData:
 	def getTuples(self):
 		return self.results
 
+	def updateAttribute(self, sensorID, Attribute, newValue):
+
+		# print SQL_SensorChangeAttribute(sensorID, Attribute, newValue)
+		self.cursor.execute(SQL_SensorChangeAttribute(sensorID, Attribute, newValue))
+
 	def selectAll(self):
 		self.clean()
 		self.cursor.execute("select * from Sensor order by ID;")
-		rows = self.cursor.fetchall()
-		for i in rows:
-			self.results.append(Sensor(i))
 
+		self.results = dictfetchall(self.cursor)
 		return self.getTuples()
+
 
 	def selectByHouseHoldID(self, householdid):
 		self.clean()
@@ -133,7 +160,7 @@ class MinuteData:
 	def selectAll(self):
 		self.clean()
 
-		self.cursor.execute("select * from MinuteData order by SensorID;")
+		self.cursor.execute("select * from MinuteData order by SensorID, CreationTimestamp;")
 		rows = self.cursor.fetchall()
 		for i in rows:
 			self.results.append(MinuteDataSample(i))
@@ -143,7 +170,7 @@ class MinuteData:
 	def selectByHouseholdID(self, householdID):
 		self.clean()
 
-		self.cursor.execute(SQL_MinuteDataByHouseholdID(householdID))
+		self.cursor.execute(SQL_SensorDataByHouseholdID("MinuteData", householdID))
 		rows = self.cursor.fetchall()
 		for i in rows:
 			self.results.append(MinuteDataSample(i))
@@ -183,6 +210,17 @@ class HourData:
 	def getTuples(self):
 		return self.results
 
+	def selectByHouseholdID(self, householdID):
+		self.clean()
+		self.cursor.execute(SQL_SensorDataByHouseholdID("HourData", householdID))
+
+		rows = self.cursor.fetchall()
+		for i in rows:
+			self.results.append(HourDataSample(i))
+
+		return self.getTuples()
+
+
 	def selectAll(self):
 		self.clean()
 		self.cursor.execute("select * from HourData order by CreationTimestamp;")
@@ -192,6 +230,14 @@ class HourData:
 			self.results.append(HourDataSample(i))
 		return self.getTuples()	
 
+	def toJSON(self):
+		result = {}
+		result['datasamples'] = []
+
+		for i in self.results:
+			result["datasamples"].append(dict(i))
+
+		return json.dumps(result)
 
 
 class DayData:
@@ -214,6 +260,24 @@ class DayData:
 			self.results.append(DayDataSample(i))
 		return self.getTuples()
 
+	def selectByHouseholdID(self, householdID):
+		self.clean()
+		self.cursor.execute(SQL_SensorDataByHouseholdID("DayData", householdID))
+
+		rows = self.cursor.fetchall()
+		for i in rows:
+			self.results.append(DayDataSample(i))
+
+		return self.getTuples()
+
+	def toJSON(self):
+		result = {}
+		result['datasamples'] = []
+
+		for i in self.results:
+			result["datasamples"].append(dict(i))
+
+		return json.dumps(result)
 
 
 class MonthData:
@@ -236,6 +300,24 @@ class MonthData:
 			self.results.append(MonthDataSample(i))
 		return self.getTuples()	
 
+	def selectByHouseholdID(self, householdID):
+		self.clean()
+		self.cursor.execute(SQL_SensorDataByHouseholdID("MonthData", householdID))
+
+		rows = self.cursor.fetchall()
+		for i in rows:
+			self.results.append(MonthDataSample(i))
+
+		return self.getTuples()
+
+	def toJSON(self):
+		result = {}
+		result['datasamples'] = []
+
+		for i in self.results:
+			result["datasamples"].append(dict(i))
+
+		return json.dumps(result)
 
 
 class YearData:
@@ -257,3 +339,22 @@ class YearData:
 		for i in rows:
 			self.results.append(YearDataSample(i))
 		return self.getTuples()	
+
+	def selectByHouseholdID(self, householdID):
+		self.clean()
+		self.cursor.execute(SQL_SensorDataByHouseholdID("YearData", householdID))
+
+		rows = self.cursor.fetchall()
+		for i in rows:
+			self.results.append(YearDataSample(i))
+
+		return self.getTuples()
+
+	def toJSON(self):
+		result = {}
+		result['datasamples'] = []
+
+		for i in self.results:
+			result["datasamples"].append(dict(i))
+
+		return json.dumps(result)

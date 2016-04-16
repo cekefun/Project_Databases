@@ -7,9 +7,11 @@ import datetime
 import os.path
 
 import csv
+import json
+
 # Create your models here.
 
-def save_uploaded_file(f):
+def save_uploaded_csvfile(f):
     filename = str(datetime.time())
     if os.path.isfile(filename+".csv"):
         succes = False
@@ -23,6 +25,22 @@ def save_uploaded_file(f):
         for chunk in f.chunks():
             destination.write(chunk)
     return filename
+
+def save_uploaded_jsonfile(f):
+    filename = str(datetime.time())
+    if os.path.isfile(filename+".json"):
+        succes = False
+        i = 0
+        while not succes:
+            succes = not os.path.isfile(filename+str(i)+".json")
+            i += 1
+        filename += str(i)
+    filename += ".json"
+    with open(filename, 'w+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+    return filename
+
 
 
 class CSVDecoder:
@@ -61,3 +79,19 @@ class CSVDecoder:
     
         ifile.close()
         return True
+
+class jsonDecoder:
+    def __init__(self):
+        self.cursor = connection.cursor()
+    def Decode(self,filename):
+        json_data = open(filename)
+        data = json.load(json_data)
+        for i in data:
+            Houseid = i['id_household']
+            self.cursor.execute("INSERT INTO House (ID,Street,Houseno,Town,OwnedBy) VALUES (%s,%s,%s,%s,%s)",[Houseid,"FooLane",1,"BarTown",1])
+            self.cursor.execute("INSERT INTO Sensor (Apparature,InstalledOn,Active) VALUES (%s,%s,%s)",["Lights",Houseid,True])
+            for Appl in i['appliances']:
+                self.cursor.execute("INSERT INTO Sensor (Apparature,InstalledOn,Active) VALUES (%s,%s,%s)",[Appl,Houseid,True])
+        json_data.close()
+        return True
+        

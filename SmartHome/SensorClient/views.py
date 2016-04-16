@@ -1,39 +1,48 @@
 import os
 
 from django.shortcuts import render_to_response
-from .models import CSVDecoder , save_uploaded_file
-from .forms import UploadFileForm
+from django.views.decorators.csrf import csrf_exempt
+from .models import *
+from .forms import UploadFileForm , UploadjsonForm
 from django.template import RequestContext,loader
 from django.http import HttpResponse
 
 
 # Create your views here.
-
-def uploadPage(request):
+@csrf_exempt
+def uploadCSVPage(request):
     #template = loader.get_template("SensorClient/uploadTemp.html")
     
     return render_to_response('SensorClient/uploadTemp.html', context_instance=RequestContext(request))
 
     
-
+@csrf_exempt
 def upload(request):
-    template = loader.get_template("SensorClient/uploadTemp.html")
     if request.method == 'POST':
         form = UploadFileForm(request.POST,request.FILES)
         if form.is_valid():
-            name = save_uploaded_file(request.FILES['file'])
+            name = save_uploaded_csvfile(form.cleaned_data['Uplfile'])
             decoder = CSVDecoder()
-            decoder.Decode(name, 1)        #Die 1 moet ik nog aanpassen
+            decoder.Decode(name, form.cleaned_data['household'])
             os.remove(name)
-            return HttpResponse("Zou gedaan moeten zijn")
-    if request.method == 'PUT':
-        form = UploadFileForm(request.PUT,request.data)
-        if form.is_valid():
-            name = save_uploaded_file(request.data)
-            decoder = CSVDecoder()
-            decoder.Decode(name, 1)        #Die 1 moet ik nog aanpassen
-            os.remove(name)
-            return HttpResponse("Zou gedaan moeten zijn")
+            return uploadCSVPage(request)
+    return uploadCSVPage(request)
 
-    return HttpResponse("Zou mislukt moeten zijn")
+@csrf_exempt
+def uploadPage(request):
+    #template = loader.get_template("SensorClient/uploadTemp.html")
+    
+    return render_to_response('SensorClient/uploadFam.html', context_instance=RequestContext(request))
+
+@csrf_exempt
+def upload_json(request):
+    if request.method == 'POST':
+        form = UploadjsonForm(request.POST,request.FILES)
+        if form.is_valid():
+            name = save_uploaded_jsonfile(form.cleaned_data['Uplfile'])
+            decoder = jsonDecoder()
+            decoder.Decode(name)
+            os.remove(name)
+            return uploadPage(request)
+    return uploadPage(request)
 
