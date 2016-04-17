@@ -40,7 +40,11 @@ create table Moderates(
 create table Message(
 	ID int auto_increment primary key,
 	Content varchar(255),
+<<<<<<< HEAD
 	CreationTimestamp timestamp not null,
+=======
+	CreationTimestamp datetime not null,
+>>>>>>> origin/Django-Basic
 	PostedBy int references User(ID),
 	PostedOn varchar(50) references Wall(Name)
 );
@@ -51,11 +55,26 @@ create table Comment(
 	SensorID int not null references Sensor(ID)
 );
 
+<<<<<<< HEAD
 create table House(
 	ID int auto_increment primary key,
 	Street varchar (155),
 	Houseno int,
 	Town varchar (155),
+=======
+create table Address(
+	ID int auto_increment primary key,
+	StreetName varchar(50) not null,
+	StreetNumber int not null,
+	City varchar(50) not null,
+	Country varchar(50) not null,
+	PostalCode int not null
+);
+
+create table House(
+	ID int auto_increment primary key,
+	AddressID int references Address(ID),
+>>>>>>> origin/Django-Basic
 	OwnedBy int references User(ID)
 );
 
@@ -66,44 +85,72 @@ create table Sensor(
 	Active bool not null,
 	Title varchar(50),
 	Description varchar(255),
+<<<<<<< HEAD
 	Unit varchar(10)
 	CONSTRAINT UniqueName UNIQUE(Apparature,InstalledOn)
 );
 
 create table MinuteData(
 	CreationTimestamp timestamp not null,
+=======
+	Unit varchar(10),
+	CONSTRAINT UniqueName UNIQUE(Title,InstalledOn)
+);
+
+create table MinuteData(
+	CreationTimestamp datetime not null,
+>>>>>>> origin/Django-Basic
 	SensorID int references Sensor(ID),
 	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
 
 create table HourData(
+<<<<<<< HEAD
 	CreationTimestamp timestamp not null,
+=======
+	CreationTimestamp datetime not null,
+>>>>>>> origin/Django-Basic
 	SensorID int references Sensor(ID),
 	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
 
 create table DayData(
+<<<<<<< HEAD
 	CreationTimestamp timestamp not null,
+=======
+	CreationTimestamp datetime not null,
+>>>>>>> origin/Django-Basic
 	SensorID int references Sensor(ID),
 	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
 
 create table MonthData(
+<<<<<<< HEAD
 	CreationTimestamp timestamp not null,
+=======
+	CreationTimestamp datetime not null,
+>>>>>>> origin/Django-Basic
 	SensorID int references Sensor(ID),
 	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
 
 create table YearData(
+<<<<<<< HEAD
 	CreationTimestamp timestamp not null,
+=======
+	CreationTimestamp datetime not null,
+>>>>>>> origin/Django-Basic
 	SensorID int references Sensor(ID),
 	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> origin/Django-Basic
