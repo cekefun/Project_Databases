@@ -18,9 +18,8 @@
 
 		<br>
 		<div style="overflow-x:auto;">
-		<table id="tablesensorinfo">
-			<tr>
-				<!--  <th>Sensor ID</th>  -->
+		<table id="sensortableinfo">
+			<tr id="sensortableheader">
 				<th>Title</th>
 				<th>Apparature</th>
 				<th>Description</th>
@@ -30,12 +29,16 @@
 		</table>
 		</div>
 
+		<br><br>
+		<button id="btnAddNewSensor" onclick="createSensorForm(this)">Add new sensor</button>
+
 	{% else %}
 		<p>There are no sensors in the database.</p>
 	{% endif %}
 </body>
 </html>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script>
 // testscripts in this part
 
@@ -101,6 +104,73 @@ function updateActive(element) {
 	}
 }
 
+$.ajaxSetup({
+	beforeSend: function(xhr, settings) {
+		xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+	}
+});
+
+$('body').on("submit", "#formNewSensor", function(eventobj) {
+	eventobj.preventDefault();
+	$.ajax({
+		url: "addSensor/",
+		type: "post",
+		data: ($("#formNewSensor").serialize()+'&'+$.param({'InstalledOn': 1})),
+		succes: function() {
+			//show the add button and remove the form
+			//CAN BE CHANGED LATER TO HIDE/SHOW THE FORM ASWELL
+			$("#btnAddNewSensor").show();
+			$("#formNewSensor").remove();
+		}
+	});
+	$("#btnAddNewSensor").show();
+	$("#formNewSensor").remove();
+	LoadSensorData();
+});
+
+function createSensorForm(element) {
+	var formNode = document.createElement("form");
+	formNode.setAttribute("id", "formNewSensor");
+	formNode.setAttribute("action", "javascript:void(0);");
+	// formNode.setAttribute("method", "post");
+
+	var addFormInputElement = function lambda_addFormInputElement(name, elementToAppend) {
+		var formInput = document.createElement("input");
+		formInput.setAttribute("type", "text");
+		formInput.setAttribute("name", name);
+		var formInputText = document.createTextNode("" + name + ": ");
+		var formInputNewLine = document.createElement("br");
+
+		elementToAppend.appendChild(formInputText);
+		elementToAppend.appendChild(formInput);
+		elementToAppend.appendChild(formInputNewLine);
+	}
+
+	formNode.appendChild(document.createElement("br"));
+	addFormInputElement("Title", formNode);
+	addFormInputElement("Apparature", formNode);
+	addFormInputElement("Description", formNode);
+	addFormInputElement("Unit", formNode);
+
+
+	var formButton = document.createElement("input");
+	formButton.setAttribute("type", "submit");
+	formButton.setAttribute("value", "Submit");
+	formNode.appendChild(formButton);
+
+
+	// console.log(formNode);
+	document.body.appendChild(formNode);
+
+
+	//JQUERY
+	$("#btnAddNewSensor").hide();
+	console.log(document.body);
+
+	//PLAIN JSC
+	// var btnAdd = document.getElementById("btnAddNewSensor");
+	// btnAdd.parentNode.removeChild(btnAdd);
+}
 
 function getCookie(name) {
     var cookieValue = null;
@@ -117,12 +187,8 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
 </script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js">
 
-{% load staticfiles %}
-<script src="{% static "userpage/sortable.js" %}"></script>
 <script>
 function LoadSensorData() {
 	var jsonhttp = new XMLHttpRequest();
@@ -141,25 +207,28 @@ function LoadSensorData() {
 
 
 function DisplaySensorDataTable(dataobject) {
-	// console.log(dataobject);
-	var table = document.getElementById("tablesensorinfo");
+
+	var table = document.getElementById("sensortableinfo");
+	// console.log(table);
+	// console.log(table.childNodes);
+
+	var count = table.childNodes.length;
+	// console.log(count);
+
+	for (var i = 2; i < count; i++) {
+		// console.log(table.childNodes[2]);
+		table.removeChild(table.childNodes[2]);
+	}
 	
 	for (i = 0; i < dataobject.sensors.length; i++) {
 		//create table entries
 		var tablerow = document.createElement("tr");
 		tablerow.setAttribute("sensorID", dataobject.sensors[i].ID);
 		
-		/*
-		//ID
-		var tableelement_id = document.createElement("td");
-		tableelement_id.setAttribute("id", "ID");
-		var tableelement_id_text = document.createTextNode(dataobject.sensors[i].ID);
-		tableelement_id.appendChild(tableelement_id_text);
-		*/
 
 		//Apparature
 		var tableelement_apparature = document.createElement("td");
-		tableelement_apparature.setAttribute("ondblclick", "updateData(thi)");
+		tableelement_apparature.setAttribute("ondblclick", "updateData(this)");
 		tableelement_apparature.setAttribute("id","Apparature");
 		var tableelement_apparature_text = document.createTextNode(dataobject.sensors[i].Apparature);
 
@@ -207,9 +276,18 @@ function DisplaySensorDataTable(dataobject) {
 		tablerow.appendChild(tableelement_unit);
 		tablerow.appendChild(tableelement_active);
 
-		// console.log(tablerow);
 		table.appendChild(tablerow);
 	}
+}
+
+
+/* 
+	This function could be used, or just reload the whole table to be sure the sensor was added to the database
+*/
+function AddElementSensorTable(element) {
+	var table = document.getElementById("sensortableinfo");
+
+
 }
 
 function Checkmark() {
