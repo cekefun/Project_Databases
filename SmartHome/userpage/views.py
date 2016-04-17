@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
+from django.http import Http404
 from models import *
 
 # Create your views here.
@@ -142,12 +143,19 @@ def JSON_allminutedata(request):
 
 def Update_sensordata(request):
 	if (request.method == "POST"):
-		print request.POST.items()
+		# print request.POST.items()
 		updateObj = SensorData()
 		updateObj.updateAttribute(request.POST['id'], request.POST['columnname'], request.POST['newvalue'])
 		return HttpResponse("everything okay.")
-
-
-
 	else:
-		print "Not accessing this view with POST request.... shit"
+		# print "Not accessing this view with POST request.... shit"
+		return HttpResponse("<h1>Error 404: This page should be used with POST</h1>")
+
+def Add_newSensor(request):
+	if (request.method == "POST"):
+		print request.POST.items()
+		# newSensor = Sensor()
+		AddNewSensor(request.POST["InstalledOn"], request.POST["Title"], request.POST["Apparature"], request.POST["Description"], request.POST["Unit"])
+		return HttpResponse("Sensor added.")
+	else:
+		return HttpResponse("<h1>Error 404: This page should be used with POST</h1>")

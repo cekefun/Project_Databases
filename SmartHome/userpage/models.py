@@ -24,6 +24,17 @@ def SQL_SensorChangeAttribute(sensorID, attributename, value):
 	return command
 
 
+def SQL_AddSensor(InstalledOn, Title, Apparature, Description, Unit):
+	command = "insert into Sensor(ID, Active, InstalledOn, Title, Apparature, Description, Unit) values (0, 1, "
+	command += InstalledOn + ", "
+	command += "'" + Title + "', "
+	command += "'" + Apparature + "', "
+	command += "'" + Description + "', "
+	command += "'" + Unit + "');"
+
+	return command
+
+
 def dictfetchall(cursor):
 	"function that returns the results from an SQL query in dictionary format"
 	desc = cursor.description
@@ -34,6 +45,12 @@ def dictfetchall(cursor):
 
 
 
+
+
+def AddNewSensor(InstalledOn, Title, Apparature, Description, Unit):
+	dbCursor = connection.cursor()
+	dbCursor.execute(SQL_AddSensor(InstalledOn, Title, Apparature, Description, Unit))
+	return True
 
 class Sensor:
 	def __init__(self):
@@ -120,7 +137,7 @@ class SensorData:
 
 	def selectAll(self):
 		self.clean()
-		self.cursor.execute("select * from Sensor order by ID;")
+		self.cursor.execute("select * from Sensor order by Active DESC, Title;")
 
 		self.results = dictfetchall(self.cursor)
 		return self.getTuples()

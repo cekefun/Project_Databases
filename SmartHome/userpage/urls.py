@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'^year/(?P<householdid>[0-9]*)/$', views.JSON_yearusagehouse, name='yearusehouse'),
     # url(r'^sensors/(?P<householdid>[0-9]*/$)', views.JSON_sensorhouse, name='sensorhouse'),
     url(r'^sensors/updateSensor/$', views.Update_sensordata, name='updateSensordata'),
+    url(r'^sensors/addSensor/$', views.Add_newSensor, name="addNewSensor"),
 
     url(r'^sensors/all$', views.JSON_allsensors, name="jsonsensordata"), #used for testing
     url(r'^minute/all$', views.JSON_allminutedata, name='jsonminutedata'), #used for testing
