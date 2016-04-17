@@ -67,7 +67,7 @@ class CSVDecoder:
             else:
                 column = 0
                 for col in row: 
-                    self.cursor.execute("SELECT ID FROM Sensor WHERE InstalledOn = %s AND Apparature = %s",[HouseID,header[column]])
+                    self.cursor.execute("SELECT ID FROM Sensor WHERE InstalledOn = %s AND Title = %s",[HouseID,header[column]])
                     AppID = self.cursor.fetchone()
                     if AppID == None:
                         column += 1
@@ -88,10 +88,10 @@ class jsonDecoder:
         data = json.load(json_data)
         for i in data:
             Houseid = i['id_household']
-            self.cursor.execute("INSERT INTO House (ID,Street,Houseno,Town,OwnedBy) VALUES (%s,%s,%s,%s,%s)",[Houseid,"FooLane",1,"BarTown",1])
-            self.cursor.execute("INSERT INTO Sensor (Apparature,InstalledOn,Active) VALUES (%s,%s,%s)",["Lights",Houseid,True])
+            self.cursor.execute("INSERT INTO House (ID,AddressID,OwnedBy) VALUES (%s,%s,%s)",[Houseid,1,1])
+            self.cursor.execute("INSERT INTO Sensor (Title,InstalledOn,Active) VALUES (%s,%s,%s)",["Lights",Houseid,True])
             for Appl in i['appliances']:
-                self.cursor.execute("INSERT INTO Sensor (Apparature,InstalledOn,Active) VALUES (%s,%s,%s)",[Appl,Houseid,True])
+                self.cursor.execute("INSERT INTO Sensor (Title,InstalledOn,Active) VALUES (%s,%s,%s)",[Appl,Houseid,True])
         json_data.close()
         return True
         

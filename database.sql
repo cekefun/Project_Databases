@@ -68,10 +68,10 @@ create table House(
 
 create table Sensor(
 	ID int auto_increment primary key,
-	Apparature varchar(50) not null,
+	Apparature varchar(50),
 	InstalledOn int not null references House(ID),
 	Active bool not null,
-	Title varchar(50),
+	Title varchar(50) not null,
 	Description varchar(255),
 	Unit varchar(10),
 	CONSTRAINT UniqueName UNIQUE(Title,InstalledOn)
@@ -111,3 +111,6 @@ create table YearData(
 	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
+
+INSERT INTO User(FirstName,LastName,Email,UserName,Password) VALUES ('FOO','BAR','foo@bar.com','xxXFooBarXxx','password');
+INSERT INTO Address(Streetname,Streetnumber,City,Country,PostalCode) VALUES ('FooLane',1,'Bartown','Antarctica','000000000')

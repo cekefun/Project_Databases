@@ -81,7 +81,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'smarthome',
-        'USER' : 'defaultuser',
+        'USER' : 'django',
     }
 }
 
