@@ -89,9 +89,9 @@ class jsonDecoder:
         for i in data:
             Houseid = i['id_household']
             self.cursor.execute("INSERT INTO House (ID,AddressID,OwnedBy) VALUES (%s,%s,%s)",[Houseid,1,1])
-            self.cursor.execute("INSERT INTO Sensor (Title,InstalledOn,Active) VALUES (%s,%s,%s)",["Lights",Houseid,True])
+            self.cursor.execute("INSERT INTO Sensor (Title,InstalledOn) VALUES (%s,%s)",["Lights",Houseid])
             for Appl in i['appliances']:
-                self.cursor.execute("INSERT INTO Sensor (Title,InstalledOn,Active) VALUES (%s,%s,%s)",[Appl,Houseid,True])
+                self.cursor.execute("INSERT INTO Sensor (Title,InstalledOn) VALUES (%s,%s)",[Appl,Houseid])
         json_data.close()
         return True
         

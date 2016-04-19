@@ -63,17 +63,18 @@ create table Address(
 create table House(
 	ID int auto_increment primary key,
 	AddressID int references Address(ID),
+	PricePerUnit float DEFAULT '0',
 	OwnedBy int references User(ID)
 );
 
 create table Sensor(
 	ID int auto_increment primary key,
-	Apparature varchar(50),
+	Apparature varchar(50) DEFAULT '',
 	InstalledOn int not null references House(ID),
-	Active bool not null,
+	Active bool not null DEFAULT TRUE,
 	Title varchar(50) not null,
-	Description varchar(255),
-	Unit varchar(10),
+	Description varchar(255) DEFAULT '',
+	Unit varchar(10) DEFAULT 'kWh',
 	CONSTRAINT UniqueName UNIQUE(Title,InstalledOn)
 );
 
