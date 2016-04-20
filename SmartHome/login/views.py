@@ -20,8 +20,17 @@ def register(request):
         form=RegisterForm(request.POST)
         if form.is_valid():
             Register = Registerer()
+
+            if(not Register.SafeEmail(form.cleaned_data['Emailadres'])):
+                context = {'message' : 'E-mail already used'}
+                return HttpResponse(template.render(context,request))
+            if(not Register.SafeUser(form.cleaned_data['Usernaam'])):
+                context = {'message' : 'Username already used'}
+                return HttpResponse(template.render(context,request))
+            
             Register.Save(form.cleaned_data['Voornaam'],form.cleaned_data['Achternaam'],form.cleaned_data['Usernaam'],form.cleaned_data['Emailadres'],form.cleaned_data['Wachtwoord'])
             context = {'message':'SUCCES'}
             return HttpResponse(template.render(context,request))
-    return HttpResponse("Er is iets misgegaan")
+    context = {'message':'Please fill in all fields'}
+    return HttpResponse(template.render(context,request))
 	
