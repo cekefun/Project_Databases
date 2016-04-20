@@ -8,10 +8,10 @@ from django.http import HttpResponse
 # Create your views here.
 #
 
-def loginpage(request):
-    template = loader.get_template('login/Login.html')
-    context = RequestContext(request)
-    return HttpResponse(template.render(context,request))
+#def loginpage(request):
+#    template = loader.get_template('login/Login.html')
+#    context = RequestContext(request)
+#    return HttpResponse(template.render(context,request))
 
 def register(request):
     template = loader.get_template('login/Login.html')
@@ -31,6 +31,8 @@ def register(request):
             Register.Save(form.cleaned_data['Voornaam'],form.cleaned_data['Achternaam'],form.cleaned_data['Usernaam'],form.cleaned_data['Emailadres'],form.cleaned_data['Wachtwoord'])
             context = {'message':'SUCCES'}
             return HttpResponse(template.render(context,request))
-    context = {'message':'Please fill in all fields'}
+        context = {'message':'Please fill in all fields'}
+        return HttpResponse(template.render(context,request))
+    context = RequestContext(request)
     return HttpResponse(template.render(context,request))
 	
