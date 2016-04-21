@@ -14,8 +14,8 @@ $("body").on("submit", ".login-form", function(eventobj) {
 
 		success: function() {
 			// alert("Succesfull login.");
-			// console.log("Succesfull login.");
-			window.location.replace("../");
+			console.log("Succesfull login.");
+			window.location.replace("../index/");
 		},
 		error: function() {
 			document.getElementById("WachtwoordLogin").value = "";
