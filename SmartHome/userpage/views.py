@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
-from django.template import loader
+from django.template import loader, RequestContext
 from django.http import Http404
 from models import *
 
@@ -8,21 +8,13 @@ from models import *
 
 
 def indexpage(request):
-
-	request.session['UserID'] = 'testing'
-	del request.session['UserID']
 	template = loader.get_template("userpage/index.html")
-	context = {}
+	context = RequestContext(request)
 	return HttpResponse(template.render(context, request))
 
 
 
 def minuteusage(request):
-	if ('UserID' in request.session):
-		print "key = ", request.session['UserID']
-	else:
-		print "the key doesn't exist for this session yet."
-
 	minutedata = MinuteData()
 	resultobjects = minutedata.selectAll()
 
