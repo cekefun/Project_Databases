@@ -105,6 +105,12 @@ li2 .active:hover {
   background: #4CAF50;
 }
 
+.form .message2 {
+  margin: 15px 0 0;
+  color: #700000;
+  font-size: 15px;
+}
+
 .form .message {
   margin: 15px 0 0;
   color: #b3b3b3;

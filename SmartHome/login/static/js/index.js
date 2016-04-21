@@ -18,9 +18,8 @@ $("body").on("submit", ".login-form", function(eventobj) {
 			window.location.replace("../");
 		},
 		error: function() {
-			alert("Login failed.");
-			// console.log("Login failed.")
 			document.getElementById("WachtwoordLogin").value = "";
+			$("#ErrorPassword").show();
 		}
 	});
 
