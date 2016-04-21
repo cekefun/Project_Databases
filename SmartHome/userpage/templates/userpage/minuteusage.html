@@ -37,3 +37,27 @@
 	{% endif %}
 </body>
 </html>
+
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+
+<script>
+
+
+function getdata() {
+	var jsonhttp = new XMLHttpRequest();
+	var url = "1/";
+
+	jsonhttp.onreadystatechange = function() {
+		if (jsonhttp.readyState == 4 && jsonhttp.status == 200) {
+			var minutedata = JSON.parse(jsonhttp.responseText);
+
+			// function here with minutedata
+		}
+	}
+	jsonhttp.open("GET", url, true);
+	jsonhttp.send();
+}
+
+
+window.onload = getdata;
+</script>
