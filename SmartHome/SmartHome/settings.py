@@ -34,7 +34,7 @@ INSTALLED_APPS = [
     'userpage.apps.UserpageConfig',
     'login.apps.LoginConfig',
     'SensorClient.apps.SensorclientConfig',
-    'django.contrib.admin',
+    'admin.apps.AdminConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',

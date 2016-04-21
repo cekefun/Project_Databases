@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^admin/', include('admin.urls')),
     url(r'^index/', include('userpage.urls')),
     url(r'^login/', include('login.urls')),
     url(r'^upload/', include('SensorClient.urls')),

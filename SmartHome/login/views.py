@@ -8,10 +8,10 @@ from django.http import HttpResponse
 # Create your views here.
 #
 
-#def loginpage(request):
-#    template = loader.get_template('login/Login.html')
-#    context = RequestContext(request)
-#    return HttpResponse(template.render(context,request))
+def loginpage(request):
+    template = loader.get_template('login/Login.html')
+    context = RequestContext(request)
+    return HttpResponse(template.render(context,request))
 
 def register(request):
     template = loader.get_template('login/Login.html')
