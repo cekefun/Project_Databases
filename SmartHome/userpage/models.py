@@ -141,8 +141,16 @@ class SensorData:
 
 	def updateAttribute(self, sensorID, Attribute, newValue):
 
+		if (Attribute == "Title"):
+			self.cursor.execute("""select * from Sensor where Title='%s' and InstalledOn=(select InstalledOn from Sensor where ID=%s); """ % (newValue, sensorID))
+			result = self.cursor.fetchone()
+			if (result != None): #this means that there is already an entry with the same title in the same household
+				return False
+
+
 		# print SQL_SensorChangeAttribute(sensorID, Attribute, newValue)
 		self.cursor.execute(SQL_SensorChangeAttribute(sensorID, Attribute, newValue))
+		return True
 
 	def selectAll(self):
 		self.clean()
@@ -154,7 +162,7 @@ class SensorData:
 
 	def selectByHouseHoldID(self, householdid):
 		self.clean()
-		self.cursor.execute("select * from Sensor where InstalledOn = " + str(householdid) + " order by ID;")
+		self.cursor.execute("select * from Sensor where InstalledOn = " + str(householdid) + " order by Active DESC, Title;")
 		# rows = self.cursor.fetchall()
 		# for i in rows:
 		# 	self.results.append(Sensor(i))

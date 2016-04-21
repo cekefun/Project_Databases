@@ -134,8 +134,14 @@ def Update_sensordata(request):
 	if (request.method == "POST"):
 		# print request.POST.items()
 		updateObj = SensorData()
-		updateObj.updateAttribute(request.POST['id'], request.POST['columnname'], request.POST['newvalue'])
-		return HttpResponse("everything okay.")
+		HasUpdated = updateObj.updateAttribute(request.POST['id'], request.POST['columnname'], request.POST['newvalue'])
+		
+		if (HasUpdated == True):
+			return HttpResponse("everything okay.")
+		else:
+			response = HttpResponse("That title already exists for your household.")
+			response.status_code = 400
+			return response
 	else:
 		# print "Not accessing this view with POST request.... shit"
 		return HttpResponse("<h1>Error 404: This page should be used with POST</h1>")

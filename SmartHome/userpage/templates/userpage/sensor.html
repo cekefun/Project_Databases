@@ -56,15 +56,17 @@ function updateData(element) {
 		return;
 	var sensorID = element.parentNode.getAttribute("sensorID");
 
-	var url = "updateSensor/";
-	var xhttp = new XMLHttpRequest();
-	xhttp.open("POST", url, true);
-	xhttp.setRequestHeader("X-CSRFToken", getCookie('csrftoken')); // undermines cross site forgery
-	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); // this is needed for the request to be processed like a standard form
-	xhttp.send("id=" + sensorID + "&columnname=" + columnName + "&newvalue=" + newValue);
-
-	// console.log(xhttp.responseText);
-	element.innerHTML = newValue;
+	$.ajax({
+		url:"updateSensor/",
+		type:'POST',
+		data: ($.param({"id":sensorID})+'&'+$.param({"columnname":columnName})+'&'+$.param({"newvalue":newValue})),
+		success: function() {
+			element.innerHTML = newValue;
+		},
+		error: function(context) {
+			alert(context.responseText);
+		}
+	});
 }
 
 function updateActive(element) {
@@ -75,32 +77,33 @@ function updateActive(element) {
 		newValue = "1";
 
 	//update the active value in the database
-	var url = "updateSensor/";
-	var xhttp = new XMLHttpRequest();
-	xhttp.open("POST", url, true);
-	xhttp.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	xhttp.send("id=" + sensorID + "&columnname=" + columnName + "&newvalue=" + newValue);
 
-	//update the crossmark/checkmark
-	element.removeChild(element.firstChild);	
-	if (newValue == "1") {
-		element.appendChild(Checkmark());
-		element.setAttribute("value", "1");
-	}
-	else {
-		element.appendChild(Crossmark());
-		element.setAttribute("value", "0");
-	}
+	$.ajax({
+		url:'updateSensor/',
+		method:'POST',
+		data: ($.param({"id":sensorID})+'&'+$.param({"columnname":columnName})+'&'+$.param({"newvalue":newValue})),
+		success: function() {
+			element.removeChild(element.firstChild);	
+			if (newValue == "1") {
+				element.appendChild(Checkmark());
+				element.setAttribute("value", "1");
+			}
+			else {
+				element.appendChild(Crossmark());
+				element.setAttribute("value", "0");
+			}
+		},
+		error: function() {
+			alert("Could not change the active attribute of the sensor.")
+		}
+	});
 }
 
 function deleteSensor(element) {
-
 	var result = window.confirm("Are you sure you want to delete the sensor?")
 	if (result == false) {
 		return;
 	}
-
 
 	$.ajax({
 		url: 'deleteSensor',
@@ -125,10 +128,7 @@ $('body').on("submit", "#formNewSensor", function(eventobj) {
 		url: "addSensor/",
 		type: "post",
 		data: ($("#formNewSensor").serialize()),
-		// data: ($("#formNewSensor").serialize()+'&'+$.param({'InstalledOn': 1})),
 		success: function() {
-			//show the add button and remove the form
-			//CAN BE CHANGED LATER TO HIDE/SHOW THE FORM ASWELL
 			$("#btnAddNewSensor").show();
 			$("#formNewSensor").remove();
 			LoadSensorData();
@@ -140,7 +140,6 @@ function createSensorForm(element) {
 	var formNode = document.createElement("form");
 	formNode.setAttribute("id", "formNewSensor");
 	formNode.setAttribute("action", "javascript:void(0);");
-	// formNode.setAttribute("method", "post");
 
 	var addFormInputElement = function lambda_addFormInputElement(name, elementToAppend) {
 		var formInput = document.createElement("input");
@@ -166,14 +165,10 @@ function createSensorForm(element) {
 	formButton.setAttribute("value", "Submit");
 	formNode.appendChild(formButton);
 
-
-	// console.log(formNode);
 	document.body.appendChild(formNode);
 
-
-	//JQUERY
 	$("#btnAddNewSensor").hide();
-	console.log(document.body);
+	// console.log(document.body);
 }
 
 function getCookie(name) {
@@ -191,9 +186,7 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-</script>
 
-<script>
 function LoadSensorData() {
 	var jsonhttp = new XMLHttpRequest();
 	var url = "/index/sensors/current/";
@@ -285,16 +278,6 @@ function DisplaySensorDataTable(dataobject) {
 
 		table.appendChild(tablerow);
 	}
-}
-
-
-/* 
-	This function could be used, or just reload the whole table to be sure the sensor was added to the database
-*/
-function AddElementSensorTable(element) {
-	var table = document.getElementById("sensortableinfo");
-
-
 }
 
 function Checkmark() {
