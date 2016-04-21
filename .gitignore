@@ -1,0 +1,3 @@
+#ignore those damn temporary files when checking your status
+
+*.pyc

@@ -25,14 +25,10 @@ def SQL_SensorChangeAttribute(sensorID, attributename, value):
 
 
 def SQL_AddSensor(InstalledOn, Title, Apparature, Description, Unit):
-	command = "insert into Sensor(ID, Active, InstalledOn, Title, Apparature, Description, Unit) values (0, 1, "
-	command += InstalledOn + ", "
-	command += "'" + Title + "', "
-	command += "'" + Apparature + "', "
-	command += "'" + Description + "', "
-	command += "'" + Unit + "');"
 
+	command = ("""insert into Sensor(ID, Active, InstalledOn, Title, Apparature, Description, Unit) values (0, 1, %i, "%s", "%s", "%s", "%s");""" % (InstalledOn, Title, Apparature, Description, Unit))
 	return command
+
 
 
 def dictfetchall(cursor):
@@ -146,10 +142,10 @@ class SensorData:
 	def selectByHouseHoldID(self, householdid):
 		self.clean()
 		self.cursor.execute("select * from Sensor where InstalledOn = " + str(householdid) + " order by ID;")
-		rows = self.cursor.fetchall()
-		for i in rows:
-			self.results.append(Sensor(i))
-
+		# rows = self.cursor.fetchall()
+		# for i in rows:
+		# 	self.results.append(Sensor(i))
+		self.results = dictfetchall(self.cursor)
 		return self.getTuples()
 
 	def toJSON(self):

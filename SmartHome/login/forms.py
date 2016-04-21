@@ -7,4 +7,6 @@ class RegisterForm(forms.Form):
     Wachtwoord = forms.CharField()
     Emailadres = forms.EmailField()
 
-#class LoginForm(forms.Form):
+class LoginForm(forms.Form):
+	Usernaam = forms.CharField()
+	Wachtwoord = forms.CharField()

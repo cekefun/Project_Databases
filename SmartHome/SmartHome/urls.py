@@ -24,5 +24,5 @@ urlpatterns = [
     url(r'^index/', include('userpage.urls')),
     url(r'^login/', include('login.urls')),
     url(r'^upload/', include('SensorClient.urls')),
-    url(r'^$', RedirectView.as_view(url='index/', permanent=False)),
+    url(r'^$', RedirectView.as_view(url='login/', permanent=False)),
 ]  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
