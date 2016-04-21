@@ -3,6 +3,105 @@
 <head>
 {% load staticfiles %}
 <link rel="stylesheet" type="text/css" href="{% static "userpage/defaultstyle.css" %}">
+<style>
+
+.icon-trash {
+  width: 30px;
+  height: 30px;
+  position: relative;
+  overflow: hidden;
+  margin-left: 6px;
+  margin-bottom: 6px;
+}
+
+.icon-trash .trash-lid {
+  width: 62%;
+  height: 10%;
+  position: absolute;
+  left: 50%;
+  margin-left: -31%;
+  top: 10.5%;
+  background-color: #000;
+  border-top-left-radius: 80%;
+  border-top-right-radius: 80%;
+  -webkit-transform: rotate(-5deg);
+  -moz-transform: rotate(-5deg);
+  -ms-transform: rotate(-5deg);
+  transform: rotate(-5deg); 
+}
+
+.icon-trash .trash-lid:after {
+  content: "";
+  width: 26%;
+  height: 100%;
+  position: absolute;
+  left: 50%;
+  margin-left: -13%;
+  margin-top: -10%;
+  background-color: inherit;
+  border-top-left-radius: 30%;
+  border-top-right-radius: 30%;
+  -webkit-transform: rotate(-1deg);
+  -moz-transform: rotate(-1deg);
+  -ms-transform: rotate(-1deg);
+  transform: rotate(-1deg); 
+}
+
+.icon-trash .trash-container {
+  width: 56%;
+  height: 65%;
+  position: absolute;
+  left: 50%;
+  margin-left: -28%;
+  bottom: 10%;
+  background-color: #000;
+  border-bottom-left-radius: 15%;
+  border-bottom-right-radius: 15%;
+}
+
+.icon-trash .trash-container:after {
+  content: "";
+  width: 110%;
+  height: 12%;
+  position: absolute;
+  left: 50%;
+  margin-left: -55%;
+  top: 0;
+  background-color: inherit;
+  border-bottom-left-radius: 45%;
+  border-bottom-right-radius: 45%;
+}
+
+.icon-trash .trash-line-1 {
+  width: 4%;
+  height: 50%;
+  position: absolute;
+  left: 38%;
+  margin-left: -2%;
+  bottom: 17%;
+  background-color: #252527;
+}
+
+.icon-trash .trash-line-2 {
+  width: 4%;
+  height: 50%;
+  position: absolute;
+  left: 50%;
+  margin-left: -2%;
+  bottom: 17%;
+  background-color: #252527;
+}
+
+.icon-trash .trash-line-3 {
+  width: 4%;
+  height: 50%;
+  position: absolute;
+  left: 62%;
+  margin-left: -2%;
+  bottom: 17%;
+  background-color: #252527;
+}
+</style>
 </head>
 <body>
 <ul>
@@ -56,13 +155,7 @@ function updateData(element) {
 		return;
 	var sensorID = element.parentNode.getAttribute("sensorID");
 
-	// Shenanigans moving onward from here
-	// -----------------------------------
-
 	var url = "updateSensor/";
-
-	// console.log(element.getAttribute("id"));
-
 	var xhttp = new XMLHttpRequest();
 	xhttp.open("POST", url, true);
 	xhttp.setRequestHeader("X-CSRFToken", getCookie('csrftoken')); // undermines cross site forgery
@@ -70,8 +163,6 @@ function updateData(element) {
 	xhttp.send("id=" + sensorID + "&columnname=" + columnName + "&newvalue=" + newValue);
 
 	// console.log(xhttp.responseText);
-	
-
 	element.innerHTML = newValue;
 }
 
@@ -82,7 +173,6 @@ function updateActive(element) {
 	if (element.getAttribute("value") == "0")
 		newValue = "1";
 
-
 	//update the active value in the database
 	var url = "updateSensor/";
 	var xhttp = new XMLHttpRequest();
@@ -90,7 +180,6 @@ function updateActive(element) {
 	xhttp.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhttp.send("id=" + sensorID + "&columnname=" + columnName + "&newvalue=" + newValue);
-
 
 	//update the crossmark/checkmark
 	element.removeChild(element.firstChild);	
@@ -102,6 +191,25 @@ function updateActive(element) {
 		element.appendChild(Crossmark());
 		element.setAttribute("value", "0");
 	}
+}
+
+function deleteSensor(element) {
+
+	var result = window.confirm("Are you sure you want to delete the sensor?")
+	if (result == false) {
+		return;
+	}
+
+
+	$.ajax({
+		url: 'deleteSensor',
+		type: 'POST',
+		data: $.param({'sensorID': element.parentNode.parentNode.getAttribute("sensorID")}),
+		success: function() {
+			console.log("Sensor deleted from the database.");
+			LoadSensorData();
+		}
+	});
 }
 
 $.ajaxSetup({
@@ -246,6 +354,12 @@ function DisplaySensorDataTable(dataobject) {
 		tableelement_active.setAttribute("id", "Active");
 		tableelement_active.setAttribute("ondblclick", "updateActive(this)");
 
+		//DELETE
+		var tableelement_delete = document.createElement("td");
+		var delete_icon = TrashBin()
+		delete_icon.setAttribute("onclick", "deleteSensor(this)");
+		tableelement_delete.appendChild(delete_icon);
+
 
 		tableelement_apparature.appendChild(tableelement_apparature_text);
 		tableelement_title.appendChild(tableelement_title_text);
@@ -266,6 +380,7 @@ function DisplaySensorDataTable(dataobject) {
 		tablerow.appendChild(tableelement_description);
 		tablerow.appendChild(tableelement_unit);
 		tablerow.appendChild(tableelement_active);
+		tablerow.appendChild(tableelement_delete);
 
 		table.appendChild(tablerow);
 	}
@@ -313,6 +428,36 @@ function Crossmark() {
 	crossmark.appendChild(div2);
 	crossmark.appendChild(div3);
 	return crossmark;
+}
+
+function TrashBin() {
+	var trashbin = document.createElement("div");
+	trashbin.setAttribute("class", "icon-trash");
+	trashbin.setAttribute("style", "float: left");
+
+	var trashlid = document.createElement("div");
+	trashlid.setAttribute("class", "trash-lid");
+	trashlid.setAttribute("style", "background-color: #03A7D7");
+	trashbin.appendChild(trashlid);
+
+	var trashcontainer = document.createElement("div");
+	trashcontainer.setAttribute("class", "trash-container");
+	trashcontainer.setAttribute("style", "background-color: #02A7D7");
+	trashbin.appendChild(trashcontainer);
+
+	var trashline1 = document.createElement("div");
+	trashline1.setAttribute("class", "trash-line-1");
+	trashbin.appendChild(trashline1);
+
+	var trashline2 = document.createElement("div");
+	trashline2.setAttribute("class", "trash-line-2");
+	trashbin.appendChild(trashline2);
+
+	var trashline3 = document.createElement("div");
+	trashline3.setAttribute("class", "trash-line-3");
+	trashbin.appendChild(trashline3);
+
+	return trashbin;
 }
 
 window.onload = LoadSensorData;

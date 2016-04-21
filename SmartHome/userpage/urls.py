@@ -13,9 +13,14 @@ urlpatterns = [
 
     url(r'^sensors/updateSensor/$', views.Update_sensordata, name='updateSensordata'),
     url(r'^sensors/addSensor/$', views.Add_newSensor, name="addNewSensor"),
+    url(r'^sensors/deleteSensor$', views.Delete_sensor, name="deleteSenor"),
     
     url(r'^sensors/current/$', views.JSON_CurrentSensors, name="CurrentSensors"),
     url(r'^minute/current/$', views.JSON_CurrentMinuteData, name="CurrentMinuteData"),
+    url(r'^hour/current/$', views.JSON_CurrentHourData, name="CurrentHourData"),
+    url(r'^day/current/$', views.JSON_CurrentDayData, name="CurrentDayData"),
+    url(r'^month/current/$', views.JSON_CurrentMonthData, name="CurrentMonthData"),
+    url(r'^year/current/$', views.JSON_CurrentYearData, name="CurrentYearData"),
 
     url(r'^sensors/all$', views.JSON_allsensors, name="jsonsensordata"), #used for testing
     url(r'^minute/all$', views.JSON_allminutedata, name='jsonminutedata'), #used for testing

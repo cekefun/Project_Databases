@@ -29,6 +29,10 @@ def SQL_AddSensor(InstalledOn, Title, Apparature, Description, Unit):
 	command = ("""insert into Sensor(ID, Active, InstalledOn, Title, Apparature, Description, Unit) values (0, 1, %i, "%s", "%s", "%s", "%s");""" % (InstalledOn, Title, Apparature, Description, Unit))
 	return command
 
+def SQL_DeleteSensor(SensorID):
+	command = ("""delete from Sensor where Sensor.ID='%s' """ % (SensorID))
+	return command
+
 
 
 def dictfetchall(cursor):
@@ -47,6 +51,15 @@ def AddNewSensor(InstalledOn, Title, Apparature, Description, Unit):
 	dbCursor = connection.cursor()
 	dbCursor.execute(SQL_AddSensor(InstalledOn, Title, Apparature, Description, Unit))
 	return True
+
+
+def DeleteSensor(SensorID):
+	dbCursor = connection.cursor()
+	print SQL_DeleteSensor(SensorID)
+	dbCursor.execute(SQL_DeleteSensor(SensorID))
+	return True
+
+
 
 class Sensor:
 	def __init__(self):

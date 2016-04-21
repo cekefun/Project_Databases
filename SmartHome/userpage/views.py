@@ -166,6 +166,20 @@ def Add_newSensor(request):
 		result.status_code = 404
 		return result
 
+def Delete_sensor(request):
+	if (request.method == "POST"):
+
+		DeleteSensor(request.POST["sensorID"])
+
+		result = HttpResponse("Sensor deleted.")
+		result.status_code = 200
+		return result
+
+	else:
+		result = HttpResponse("<h1>Error 404: This page should be used with POST</h1>")
+		result.status_code = 404
+		return result
+
 
 def JSON_CurrentSensors(request):
 	if (request.session["HasHouse"] == False):
@@ -186,3 +200,37 @@ def JSON_CurrentMinuteData(request):
 		return result
 
 	return JSON_minuteusagehouse(request, request.session["HouseID"])
+
+def JSON_CurrentHourData(request):
+	if (request.session["HasHouse"] == False):
+		result = HttpResponse("You don't own a house.")
+		result.status_code = 404
+		return result
+
+	return JSON_hourusagehouse(request, request.session["HouseID"])
+
+def JSON_CurrentDayData(request):
+	if (request.session["HasHouse"] == False):
+		result = HttpResponse("You don't own a house.")
+		result.status_code = 404
+		return result
+
+	return JSON_dayusagehouse(request, request.session["HouseID"])
+
+
+def JSON_CurrentMonthData(request):
+	if (request.session["HasHouse"] == False):
+		result = HttpResponse("You don't own a house.")
+		result.status_code = 404
+		return result
+
+	return JSON_monthusagehouse(request, request.session["HouseID"])
+
+
+def JSON_CurrentYearData(request):
+	if (request.session["HasHouse"] == False):
+		result = HttpResponse("You don't own a house.")
+		result.status_code = 404
+		return result
+
+	return JSON_yearusagehouse(request, request.session["HouseID"])
