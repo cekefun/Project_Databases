@@ -7,6 +7,8 @@ from django.http import HttpResponse
 #
 
 def loginpage(request):
-    template = loader.get_template('login/Login.html')
+    template = loader.get_template('admin/AdminLogin.html')
     context = RequestContext(request)
     return HttpResponse(template.render(context,request))
+
+
