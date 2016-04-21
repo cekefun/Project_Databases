@@ -14,7 +14,7 @@
   <li><a href="../month/">MonthData</a></li>
   <li><a href="../year/">YearData</a></li>
 </ul>
-	{% if sensor_list %}
+	{% if hasHouse %}
 
 		<br>
 		<div style="overflow-x:auto;">
@@ -33,7 +33,7 @@
 		<button id="btnAddNewSensor" onclick="createSensorForm(this)">Add new sensor</button>
 
 	{% else %}
-		<p>There are no sensors in the database.</p>
+		<p>You currently don't have a house added to your account.</p>
 	{% endif %}
 </body>
 </html>
@@ -115,17 +115,16 @@ $('body').on("submit", "#formNewSensor", function(eventobj) {
 	$.ajax({
 		url: "addSensor/",
 		type: "post",
-		data: ($("#formNewSensor").serialize()+'&'+$.param({'InstalledOn': 1})),
-		succes: function() {
+		data: ($("#formNewSensor").serialize()),
+		// data: ($("#formNewSensor").serialize()+'&'+$.param({'InstalledOn': 1})),
+		success: function() {
 			//show the add button and remove the form
 			//CAN BE CHANGED LATER TO HIDE/SHOW THE FORM ASWELL
 			$("#btnAddNewSensor").show();
 			$("#formNewSensor").remove();
+			LoadSensorData();
 		}
 	});
-	$("#btnAddNewSensor").show();
-	$("#formNewSensor").remove();
-	LoadSensorData();
 });
 
 function createSensorForm(element) {
@@ -166,10 +165,6 @@ function createSensorForm(element) {
 	//JQUERY
 	$("#btnAddNewSensor").hide();
 	console.log(document.body);
-
-	//PLAIN JSC
-	// var btnAdd = document.getElementById("btnAddNewSensor");
-	// btnAdd.parentNode.removeChild(btnAdd);
 }
 
 function getCookie(name) {
@@ -192,13 +187,16 @@ function getCookie(name) {
 <script>
 function LoadSensorData() {
 	var jsonhttp = new XMLHttpRequest();
-	var url = "/index/sensors/all";
+	var url = "/index/sensors/current/";
 
 	jsonhttp.onreadystatechange = function() {
 		if (jsonhttp.readyState == 4 && jsonhttp.status == 200) {
 			// console.log(jsonhttp.responseText);
 			var sensordataobject = JSON.parse(jsonhttp.responseText);
 			DisplaySensorDataTable(sensordataobject);
+		}
+		else if (jsonhttp.readyState == 4 && jsonhttp.status == 404) {
+			console.log(jsonhttp.responseText);
 		}
 	}
 	jsonhttp.open("GET", url, true);
@@ -209,14 +207,8 @@ function LoadSensorData() {
 function DisplaySensorDataTable(dataobject) {
 
 	var table = document.getElementById("sensortableinfo");
-	// console.log(table);
-	// console.log(table.childNodes);
-
 	var count = table.childNodes.length;
-	// console.log(count);
-
 	for (var i = 2; i < count; i++) {
-		// console.log(table.childNodes[2]);
 		table.removeChild(table.childNodes[2]);
 	}
 	
@@ -225,7 +217,6 @@ function DisplaySensorDataTable(dataobject) {
 		var tablerow = document.createElement("tr");
 		tablerow.setAttribute("sensorID", dataobject.sensors[i].ID);
 		
-
 		//Apparature
 		var tableelement_apparature = document.createElement("td");
 		tableelement_apparature.setAttribute("ondblclick", "updateData(this)");
