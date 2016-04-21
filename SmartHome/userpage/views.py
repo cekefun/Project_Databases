@@ -113,12 +113,9 @@ def yearlyusage(request):
 
 def sensors(request):
 
-	sensordata = SensorData()
-	resultobjects = sensordata.selectAll()
-
 	template = loader.get_template('userpage/sensor.html')
 	context = {
-		'sensor_list' : resultobjects,
+		'hasHouse' : request.session["HasHouse"],
 	}
 	return HttpResponse(template.render(context, request))
 
@@ -153,9 +150,39 @@ def Update_sensordata(request):
 
 def Add_newSensor(request):
 	if (request.method == "POST"):
-		print request.POST.items()
+		# print request.POST.items()
 		# newSensor = Sensor()
-		AddNewSensor(request.POST["InstalledOn"], request.POST["Title"], request.POST["Apparature"], request.POST["Description"], request.POST["Unit"])
-		return HttpResponse("Sensor added.")
+		if (request.session["HasHouse"] == False):
+			response = HttpResponse("No house to add a sensor to")
+			response.status_code = 404
+			return response
+
+		AddNewSensor(request.session["HouseID"], request.POST["Title"], request.POST["Apparature"], request.POST["Description"], request.POST["Unit"])
+		result = HttpResponse("Sensor added.")
+		result.status_code = 200
+		return result
 	else:
-		return HttpResponse("<h1>Error 404: This page should be used with POST</h1>")
+		result = HttpResponse("<h1>Error 404: This page should be used with POST</h1>")
+		result.status_code = 404
+		return result
+
+
+def JSON_CurrentSensors(request):
+	if (request.session["HasHouse"] == False):
+		result = HttpResponse("You don't own a house.")
+		result.status_code = 404
+		return result
+
+	sensorData = SensorData()
+	sensorData.selectByHouseHoldID(request.session["HouseID"])
+
+
+	return HttpResponse(sensorData.toJSON())
+
+def JSON_CurrentMinuteData(request):
+	if (request.session["HasHouse"] == False):
+		result = HttpResponse("You don't own a house.")
+		result.status_code = 404
+		return result
+
+	return JSON_minuteusagehouse(request, request.session["HouseID"])
