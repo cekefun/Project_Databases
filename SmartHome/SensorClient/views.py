@@ -11,9 +11,9 @@ from django.http import HttpResponse
 # Create your views here.
 @csrf_exempt
 def uploadCSVPage(request):
-    #template = loader.get_template("SensorClient/uploadTemp.html")
-    
-    return render_to_response('SensorClient/uploadTemp.html', context_instance=RequestContext(request))
+    template = loader.get_template("SensorClient/uploadTemp.html")
+    context = RequestContext(request)
+    return HttpResponse(template.render(context,request))
 
     
 @csrf_exempt
@@ -30,9 +30,10 @@ def upload(request):
 
 @csrf_exempt
 def uploadPage(request):
-    #template = loader.get_template("SensorClient/uploadTemp.html")
-    
-    return render_to_response('SensorClient/uploadFam.html', context_instance=RequestContext(request))
+    template = loader.get_template("SensorClient/uploadTemp.html")
+    context = RequestContext(request)
+    return HttpResponse(template.render(context,request))
+
 
 @csrf_exempt
 def upload_json(request):
