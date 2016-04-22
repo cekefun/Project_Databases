@@ -134,3 +134,29 @@ class AdminAgg:
             result["datasamples"].append(dict(i))
         return json.dumps(result)
 
+class AdminSearch:
+    def __init__(self):
+        self.cursor = connection.cursor()
+        self.results = []
+    
+    def isAdmin(self,ID):
+        self.cursor.execute('''SELECT ID FROM Admin WHERE ID = %s''',[ID])
+        row = self.cursor.fetchone()
+        if row == None:
+            return False
+        return True
+
+    def users(self):
+        self.cursor.execute('''SELECT ID,FirstName,LastName,UserName,Email FROM User''')
+        rows = self.cursor.fetchall()
+        for i in rows:
+            _dict = {}
+            _dict['FirstName'] = i[1]
+            _dict['LastName'] = i[2]
+            _dict['UserName'] = i[3]
+            _dict['Email'] = i[4]
+            _dict['Admin'] = self.isAdmin(i[0])
+            self.results.append(_dict)
+
+    def getResults(self):
+        return self.results

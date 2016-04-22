@@ -52,3 +52,11 @@ def login(request):
     response = HttpResponse(template.render(context))
     response.status_code = 404
     return response
+
+def users(request):
+    template = loader.get_template("admin/UserPage.html")
+    searcher=AdminSearch()
+    searcher.users()
+    results = searcher.getResults()
+    context = {'user_list' : results}
+    return HttpResponse(template.render(context, request))

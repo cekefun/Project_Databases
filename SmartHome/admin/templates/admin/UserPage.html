@@ -15,19 +15,23 @@
   <li><a href="../year/">YearData</a></li>
 </ul>
 
-	{% if minutedata_list %}
+	{% if user_list %}
 		<div style="overflow-x:auto;">
 		<table>
 			<tr>
-				<th>Creation date</th>
-				<th>Sensor ID</th>
-				<th>Value</th>
+				<th>UserName</th>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Email</th>
+				<th>Admin</th>
 			</tr>
-		{% for minutedatasample in minutedata_list %}
+		{% for user in user_list %}
 			<tr>
-				<td>{{minutedatasample.CreationTimestamp}}</td>
-				<td>{{minutedatasample.SensorID}}</td>
-				<td>{{minutedatasample.Value}}</td>
+				<td>{{user.UserName}}</td>
+				<td>{{user.FirstName}}</td>
+				<td>{{user.LastName}}</td>
+				<td>{{user.Email}}</td>
+				<td>{% if user.Admin %} <span class="checkmark"><div class="checkmark_circle"></div><div class="checkmark_stem"></div><div class="checkmark_kick"></div></span> {% else %}<span class="crossmark"><div class="crossmark_circle"></div><div class="crossmark_slash"></div><div class="crossmark_backslash"></div></span>{% endif %}</td>
 			</tr>
 		{% endfor %}
 		</table>
