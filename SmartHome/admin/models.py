@@ -45,6 +45,7 @@ class ValidLogin:
         return int(result[0])
 
 
+
 class AdminAgg:
     def __init__(self):
         self.cursor = connection.cursor()

@@ -2,7 +2,7 @@
 FILE=MY_FILE.csv
 JSON=MY_CONFIGURE.json
 PROGRAM=main.py
-SITE=http://127.0.0.1:8000/upload/
+SITE=http://91.176.207.129:5901/upload/
 FAMILY=1
 NOW=$(date +"%Y-%m-%dT%H:%M")
 EARLIER=$(date --date="1 minutes ago" +"%Y-%m-%dT%H:%M")

@@ -30,7 +30,7 @@ def upload(request):
 
 @csrf_exempt
 def uploadPage(request):
-    template = loader.get_template("SensorClient/uploadTemp.html")
+    template = loader.get_template("SensorClient/uploadFam.html")
     context = RequestContext(request)
     return HttpResponse(template.render(context,request))
 
