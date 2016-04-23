@@ -267,6 +267,10 @@ def addHouse(request):
 		return result
 
 
+def aboutPage(request):
+	return HttpResponse("This page is not added yet, i'm sorry... :(")
+
+
 
 
 

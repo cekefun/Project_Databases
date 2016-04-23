@@ -33,4 +33,5 @@ urlpatterns = [
 
     url(r'^changeHouse/$', views.ChangeHouse, name="changehouse"),
     url(r'^addHouse/$', views.addHouse, name="addhouse"),
+    url(r'^about/$', views.aboutPage, name="about"),
 ]
