@@ -7,15 +7,31 @@
 div.sensorbutton {
 	width: 20%;
 	color: white;
-    	text-align: center;
+	text-align: center;
 	background-color: green;
 	padding: 14px 16px;
 	text-decoration: none;
-
-	
+	cursor: pointer;
 }
 div.sensorbutton:hover {
 	background-color:#4CAF50;
+}
+
+div.cancelbutton {
+	width: 20%;
+	background-color: green;
+	color: white;
+	padding: 14px 16px;
+	text-align: center;
+	text-decoration: none;
+	border-radius: 4px;
+	border: none;
+	cursor: pointer;
+	position: relative;
+}
+div.cancelbutton:hover {
+	background-color:#4CAF50;
+
 }
 
 input[type=text], select {
@@ -30,16 +46,16 @@ input[type=text], select {
 }
 
 input[type=submit] {
-
+	width: 20%;
     background-color: green;
     color: white;
-    padding: 14px 85px;
+    /*padding: 14px 16px;*/
     margin: 8px 0;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     position:relative;
-    left:175px;
+    /*left:175px;*/
     text-align:center;
 }
 
@@ -102,8 +118,10 @@ div.formstyle {
 
 			<label for="Unit">Unit</label><br>
 		    	<input type="text" id="Unit" name="Unit"><br><br>
-    		<input type="submit" value="Submit">
+    		<input type="submit" value="Submit"><br>
+    		<div class="cancelbutton" onclick="finishForm()" type="button">Cancel</div>
 		</div>
+
 		<br>
 		<div class="sensorbutton" onclick="showSensorForm()">Add new sensor</div>
 	{% else %}
@@ -190,15 +208,17 @@ $('body').on("submit", "#formNewSensor", function(eventobj) {
 		type: "post",
 		data: ($("#formNewSensor").serialize()),
 		success: function() {
-			$("#btnAddNewSensor").show();
-			cleanAddSensorForm();
-			$(".formstyle").hide();
-
-			// $("#formNewSensor").remove();
-			LoadSensorData();
+			finishForm();
 		}
 	});
 });
+
+function finishForm() {
+	$("#btnAddNewSensor").show();
+	cleanAddSensorForm();
+	$(".formstyle").hide();
+	LoadSensorData();
+}
 
 function cleanAddSensorForm() {
 	var element = $(".formstyle");
