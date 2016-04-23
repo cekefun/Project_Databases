@@ -19,10 +19,13 @@ from django.views.generic.base import RedirectView
 from django.conf.urls.static import static
 from django.conf import settings
 
+from . import views
+
 urlpatterns = [
     url(r'^admin/', include('admin.urls')),
     url(r'^index/', include('userpage.urls')),
     url(r'^login/', include('login.urls')),
     url(r'^upload/', include('SensorClient.urls')),
+    url(r'^logout/$', views.logoutuser, name="logoutuser"),
     url(r'^$', RedirectView.as_view(url='login/', permanent=False)),
 ]  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -64,7 +64,8 @@ function updateData(element) {
 			element.innerHTML = newValue;
 		},
 		error: function(context) {
-			alert(context.responseText);
+			alert("The value given is not valid.");
+			// alert(context.responseText);
 		}
 	});
 }
@@ -100,7 +101,7 @@ function updateActive(element) {
 }
 
 function deleteSensor(element) {
-	var result = window.confirm("Are you sure you want to delete the sensor?")
+	var result = window.confirm("Are you sure you want to delete the sensor? This will also include deleting all the data associated with it.");
 	if (result == false) {
 		return;
 	}
@@ -110,7 +111,6 @@ function deleteSensor(element) {
 		type: 'POST',
 		data: $.param({'sensorID': element.parentNode.parentNode.getAttribute("sensorID")}),
 		success: function() {
-			console.log("Sensor deleted from the database.");
 			LoadSensorData();
 		}
 	});

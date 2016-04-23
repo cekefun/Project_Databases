@@ -30,4 +30,6 @@ urlpatterns = [
     url(r'^day/(?P<householdid>[0-9]*)/$', views.JSON_dayusagehouse, name='dayusehouse'),
     url(r'^month/(?P<householdid>[0-9]*)/$', views.JSON_monthusagehouse, name='monthusehouse'),
     url(r'^year/(?P<householdid>[0-9]*)/$', views.JSON_yearusagehouse, name='yearusehouse'),
+
+    url(r'^changeHouse/$', views.ChangeHouse, name="changehouse"),
 ]

@@ -52,14 +52,15 @@ def login(request):
 
                 request.session['Username'] = Username
                 request.session['UserID'] = Validlogin.getUserID()
+                request.session['Language'] = "EN" #By default
                 if (Validlogin.hasHouse() == True):
-                    print "He has a house."
                     request.session["HasHouse"] = True
                     request.session['HouseID'] = Validlogin.getFirstHouseID()
                 else:
-                    print "He doesn't have a house."
                     request.session['HasHouse'] = False
                 request.session['IsAdmin'] = False
+
+                request.session.modified = True
 
                 context = {'message':'SUCCES'}
                 response = HttpResponse(template.render(context))

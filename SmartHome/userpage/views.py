@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.template import loader, RequestContext
 from django.http import Http404
@@ -232,3 +232,20 @@ def JSON_CurrentYearData(request):
 		return result
 
 	return JSON_yearusagehouse(request, request.session["HouseID"])
+
+
+def ChangeHouse(request):
+	if (request.method == 'POST'):
+		#Might need to be changed slightly later on
+
+		newHouseID = request.POST["HouseID"]
+		request.session["HouseID"] = newHouseID
+
+		response = HttpResponse("Successfully changed house.")
+		response.status_code = 200
+		return response
+
+	else:
+		response = HttpResponse("This page can only be used for POST requests.")
+		response.status_code = 404
+		return response
