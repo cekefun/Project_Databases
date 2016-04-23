@@ -2,7 +2,7 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponse
 from django.template import loader,RequestContext
 from .forms import *
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseNotFound
 from .models import *
 
 # Create your views here.
@@ -54,6 +54,8 @@ def login(request):
     return response
 
 def users(request):
+    if(not request.session['IsAdmin']):
+        return HttpResponseNotFound('<h1>Page not found</h1>')
     template = loader.get_template("admin/UserPage.html")
     searcher=AdminSearch()
     searcher.users()
