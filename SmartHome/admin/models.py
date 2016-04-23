@@ -160,3 +160,6 @@ class AdminSearch:
 
     def getResults(self):
         return self.results
+    
+    def makeAdmin(self,UserName):
+        self.cursor.execute('''INSERT INTO Admin SELECT ID FROM User WHERE UserName = %s''',[UserName])

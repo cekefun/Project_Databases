@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 from django.template import loader,RequestContext
-from .forms import LoginForm
+from .forms import *
 from django.http import HttpResponse
 from .models import *
 
@@ -60,3 +60,14 @@ def users(request):
     results = searcher.getResults()
     context = {'user_list' : results}
     return HttpResponse(template.render(context, request))
+
+def UpdateAdmin(request):
+    if(request.method == 'POST'):
+        form=UserForm(request.POST)
+        if(form.is_valid()):
+            updater = AdminSearch()
+            updater.makeAdmin(request.POST['UserName'])
+            return HttpResponse("everything okay.")
+        return HttpResponse("<h1>Error 404: Something went wrong in making the form</h1>")
+    return HttpResponse("<h1>Error 404: This page should be used with POST</h1>")
+    

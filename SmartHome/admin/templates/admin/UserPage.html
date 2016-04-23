@@ -6,13 +6,14 @@
 </head>
 <body>
 <ul>
-  <li><a href="../">Home</a></li>
-  <li><a href="../sensors/">Sensors</a></li>
-  <li><a class="active" href="">MinuteData</a></li>
-  <li><a href="../hour/">HourData</a></li>
-  <li><a href="../day/">DayData</a></li>
-  <li><a href="../month/">MonthData</a></li>
-  <li><a href="../year/">YearData</a></li>
+  <li><a href="../../index">Home</a></li>
+  <li><a href="../../index/sensors/">Sensors</a></li>
+  <li><a href="../../index/minute/">MinuteData</a></li>
+  <li><a href="../../index/hour/">HourData</a></li>
+  <li><a href="../../index/day/">DayData</a></li>
+  <li><a href="../../index/month/">MonthData</a></li>
+  <li><a href="../../index/year/">YearData</a></li>
+  <li><a class="active" href="">Users</a></li>
 </ul>
 
 	{% if user_list %}
@@ -26,12 +27,11 @@
 				<th>Admin</th>
 			</tr>
 		{% for user in user_list %}
-			<tr>
-				<td>{{user.UserName}}</td>
+			<tr><td>{{user.UserName}}</td>
 				<td>{{user.FirstName}}</td>
 				<td>{{user.LastName}}</td>
 				<td>{{user.Email}}</td>
-				<td>{% if user.Admin %} <span class="checkmark"><div class="checkmark_circle"></div><div class="checkmark_stem"></div><div class="checkmark_kick"></div></span> {% else %}<span class="crossmark"><div class="crossmark_circle"></div><div class="crossmark_slash"></div><div class="crossmark_backslash"></div></span>{% endif %}</td>
+				<td ondblclick="updateAdmin(this)">{% if user.Admin %} <span class="checkmark"><div class="checkmark_circle"></div><div class="checkmark_stem"></div><div class="checkmark_kick"></div></span> {% else %}<span class="crossmark"><div class="crossmark_circle"></div><div class="crossmark_slash"></div><div class="crossmark_backslash"></div></span>{% endif %}</td>
 			</tr>
 		{% endfor %}
 		</table>
@@ -46,23 +46,70 @@
 
 <script>
 
-
-function getdata() {
-	var jsonhttp = new XMLHttpRequest();
-	var url = "current/";
-
-	jsonhttp.onreadystatechange = function() {
-		if (jsonhttp.readyState == 4 && jsonhttp.status == 200) {
-			var minutedata = JSON.parse(jsonhttp.responseText);
-
-			// function here with minutedata
-		}
+function updateAdmin(element) {
+	var Right = confirm("Are you sure you want to make this user an admin?");
+	if (Right == false){
+		return;
 	}
-	jsonhttp.open("GET", url, true);
-	jsonhttp.send();
-	console.log(document);
+	var columnName = "Admin";
+	var UserName = element.parentNode.firstChild.innerHTML;
+	console.log(element.parentNode.firstChild.innerHTML);
+	console.log(UserName);
+	var newValue = "1";
+
+	//update the active value in the database
+
+	$.ajax({
+		url:'updateAdmin/',
+		method:'POST',
+		data: ($.param({"UserName":UserName})),
+		success: function() {
+			element.removeChild(element.firstChild);	
+			element.appendChild(Checkmark());
+			element.setAttribute("value", "1");
+		},
+		error: function() {
+			alert("Could not activate the Admin.");
+		}
+	});
 }
 
+$.ajaxSetup({
+	beforeSend: function(xhr, settings) {
+		xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+	}
+});
 
-window.onload = getdata;
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function Checkmark() {
+	var checkmark = document.createElement("span");
+	checkmark.setAttribute("class", "checkmark");
+
+	var div1 = document.createElement("div");
+	div1.setAttribute("class", "checkmark_circle");
+	var div2 = document.createElement("div");
+	div2.setAttribute("class", "checkmark_stem");
+	var div3 = document.createElement("div");
+	div3.setAttribute("class", "checkmark_kick");
+
+	checkmark.appendChild(div1);
+	checkmark.appendChild(div2);
+	checkmark.appendChild(div3);
+	return checkmark;
+}
 </script>
