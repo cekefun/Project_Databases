@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.template import loader, RequestContext
 from django.http import Http404
 from models import *
-
+from .forms import HouseForm
 
 
 def IsLoggedIn(request):
@@ -243,8 +243,17 @@ def addHouse(request):
 		return RedirectNotLoggedIn(request)
 
 	if (request.method == "POST"):
-		pass
+		form = HouseForm(request.POST)
+		if (form.is_valid()):
+			print "i'm not sure what's happening anymore...."
+			NewHouse(form, request.session["UserID"]).addToDatabase()
 
+			return HttpResponse("New house succesfully added.")
+
+		else:
+			response = HttpResponse("Not all fields are filled in.")
+			response.status_code = 400
+			return response
 
 	elif (request.method == "GET"):
 
@@ -262,7 +271,7 @@ def addHouse(request):
 
 
 	else:
-		result = HttpResponse("This page should be used with a post request.")
+		result = HttpResponse("This page should be used with a get/post request.")
 		result.status_code = 404
 		return result
 

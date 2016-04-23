@@ -45,6 +45,17 @@ div.AddHouseForm {
   margin-top: 20px;
 }
 
+.AddHouseForm .errorMessage {
+  margin: 15px 0 0;
+  color: #700000;
+  font-size: 16px;
+}
+.AddHouseForm .successMessage {
+  margin: 15px 0 0;
+  color: #41B317;
+  font-size: 20px;
+}
+
 </style>
 <body>
   <ul1>
@@ -64,20 +75,28 @@ div.AddHouseForm {
 <br><br><br><br>
 
 <div class="AddHouseForm"> <!-- form to input new house -->
-<form id="newHouse">
+<p class="successMessage" style="display: none;" id="SuccesAdd">Your house has been added!</p><br>
+
+<form id="newHouse" method="post" action="javascript: void(0);">
   <label for="Streetname">Street name:</label><br>
     <input type="text" name="Streetname"><br>
+
   <label for="Streetnumber">Street number:</label><br>
-    <input type="number" name="Streetnumber" step="any"><br>
+    <input type="number" name="Streetnumber" step="1"><br>
+
   <label for="City">City:</label><br>
     <input type="text" name="City"><br>
+  
   <label for="Postalcode">Postal code:</label><br>
-    <input type="text" name="Postalcode"><br>
+    <input type="number" name="Postalcode" step="1"><br>
+  
   <label for="Country">Country:</label><br>
     <input type="text" name="Country"><br>
+  
   <label for="Price">Price (kWatt/hour):</label><br>
-    <input type="number" name="Price" step="any"><br><br>
-    <input type="submit" value="Submit">
+    <input type="number" name="Price" step="any"><br>
+  <p class="errorMessage" style="display: none;" id="ErrorInput">Your input was not valid!</p><br>
+  <input type="submit" value="Submit">
 </form>
 
 </div>
@@ -85,3 +104,6 @@ div.AddHouseForm {
 
 </body>
 </html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="{% static 'js/addHouse.js' %}"></script>

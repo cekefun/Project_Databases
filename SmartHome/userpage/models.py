@@ -392,3 +392,35 @@ class YearData:
 			result["datasamples"].append(dict(i))
 
 		return json.dumps(result)
+
+
+
+
+class NewHouse:
+	def __init__(self, form, UserID):
+		self.Streetname = form.cleaned_data['Streetname']
+		self.Streetnumber = form.cleaned_data['Streetnumber']
+		self.City = form.cleaned_data['City']
+		self.Postalcode = form.cleaned_data['Postalcode']
+		self.Country = form.cleaned_data['Country']
+		self.Price = form.cleaned_data['Price']
+		self.cursor = connection.cursor()
+		self.UserID = UserID
+
+
+	def addToDatabase(self):
+		print "not even past this?"
+		newAddressID = self.addAddress()
+		self.addHouse(newAddressID)
+
+	def addAddress(self):
+		self.cursor.execute(("""insert into Address values (0, "%s", %i, "%s","%s",%i);""" % (self.Streetname, self.Streetnumber, self.City, self.Country, self.Postalcode)))
+		self.cursor.execute((""" select ID from Address where StreetName="%s" and StreetNumber=%i and City="%s" and Country="%s" and PostalCode=%i;""" % (self.Streetname, self.Streetnumber, self.City, self.Country, self.Postalcode)))
+		result = self.cursor.fetchone()
+		print "Got here...."
+		return int(result[0])
+
+	def addHouse(self,AddressID):
+		self.cursor.execute(("""insert into House values (0,%i, %f, %i); """ % (AddressID, self.Price, self.UserID)))
+
+
