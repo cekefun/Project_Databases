@@ -8,12 +8,14 @@ urlpatterns = [
 	url(r'^minute/$', views.minuteusage, name ='minuteuse'),
     url(r'^hour/$', views.hourlyusage, name='hourlyuse'),
     url(r'^day/$', views.dailyusage, name='dailyuse'),
+    url(r'^week/$', views.weeklyusage, name='weeklyusage'),
     url(r'^month/$', views.monthlyusage, name='monthlyuse'),
     url(r'^year/$', views.yearlyusage, name='yearlyuse'),
 
     url(r'^sensors/updateSensor/$', views.Update_sensordata, name='updateSensordata'),
     url(r'^sensors/addSensor/$', views.Add_newSensor, name="addNewSensor"),
-    url(r'^sensors/deleteSensor$', views.Delete_sensor, name="deleteSenor"),
+    url(r'^sensors/deleteSensor/$', views.Delete_sensor, name="deleteSenor"),
+    url(r'^sensors/currentTitles/$', views.CurrentTitleSensors, name="currentTitleSensors"),
     
     url(r'^sensors/current/$', views.JSON_CurrentSensors, name="CurrentSensors"),
     url(r'^minute/current/$', views.JSON_CurrentMinuteData, name="CurrentMinuteData"),

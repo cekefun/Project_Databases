@@ -195,6 +195,7 @@ li2 .active {
     position:fixed;
     top: 0;
     right: 0;
+    z-index:1;
     background-color: #000078;
     color: white;
     padding: 14px 31px;
@@ -207,11 +208,13 @@ li2 .active {
     position:fixed;
     top:0;
     right: 0;
+    z-index:1;
     padding: 46px 4px;
     display: inline-block;
 }
 
 .dropdown-content {
+    z-index:1;
     display: none;
     background-color: #f9f9f9;
     min-width: 0;
@@ -219,6 +222,7 @@ li2 .active {
 }
 
 .dropdown-content a {
+    z-index:1;
     text-align:right;
     color: black;
     padding: 12px 16px;
