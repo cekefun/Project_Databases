@@ -4,10 +4,26 @@ from django.template import loader, RequestContext
 from django.http import Http404
 from models import *
 
-# Create your views here.
+
+
+def IsLoggedIn(request):
+	""" Checks if the session is configured """
+
+	if ("UserID" not in request.session):
+		return False
+	return True
+
+def RedirectNotLoggedIn(request):
+	return redirect('/login/')
+
+
+
 
 
 def indexpage(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+
 	template = loader.get_template("userpage/index.html")
 	context = RequestContext(request)
 	return HttpResponse(template.render(context, request))
@@ -15,6 +31,9 @@ def indexpage(request):
 
 
 def minuteusage(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+
 	minutedata = MinuteData()
 	resultobjects = minutedata.selectAll()
 
@@ -25,37 +44,10 @@ def minuteusage(request):
 	return HttpResponse(template.render(context, request))
 
 
-def JSON_minuteusagehouse(request, householdid):
-	minutedata = MinuteData()
-	minutedata.selectByHouseholdID(householdid)
-	return HttpResponse(minutedata.toJSON())
-
-
-def JSON_hourusagehouse(request, householdid):
-	hourdata = HourData()
-	hourdata.selectByHouseholdID(householdid)
-	return HttpResponse(hourdata.toJSON())
-
-
-def JSON_dayusagehouse(request, householdid):
-	daydata = DayData()
-	daydata.selectByHouseholdID(householdid)
-	return HttpResponse(daydata.toJSON())
-
-
-def JSON_monthusagehouse(request, householdid):
-	monthdata = MonthData()
-	monthdata.selectByHouseholdID(householdid)
-	return HttpResponse(monthdata.toJSON())
-
-
-def JSON_yearusagehouse(request, householdid):
-	yeardata = YearData()
-	yeardata.selectByHouseholdID(householdid)
-	return HttpResponse(yeardata.toJSON())
-
-
 def hourlyusage(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+
 	hourdata = HourData()
 	resultobjects = hourdata.selectAll()
 
@@ -67,7 +59,9 @@ def hourlyusage(request):
 
 
 def dailyusage(request):
-
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+	
 	daydata = DayData()
 	resultobjects = daydata.selectAll()
 
@@ -80,6 +74,8 @@ def dailyusage(request):
 
 
 def monthlyusage(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
 
 	monthdata = MonthData()
 	resultobjects = monthdata.selectAll()
@@ -92,6 +88,8 @@ def monthlyusage(request):
 
 
 def yearlyusage(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
 
 	yeardata = YearData()
 	resultobjects = yeardata.selectAll()
@@ -104,6 +102,8 @@ def yearlyusage(request):
 
 
 def sensors(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
 
 	template = loader.get_template('userpage/sensor.html')
 	context = {
@@ -111,22 +111,25 @@ def sensors(request):
 	}
 	return HttpResponse(template.render(context, request))
 
-#experimental code
 
-def JSON_allsensors(request):
+def ChangeHouse(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+	
+	if (request.method == 'POST'):
+		#Might need to be changed slightly later on
 
-	resultobject = SensorData()
-	resultobject.selectAll()
+		newHouseID = request.POST["HouseID"]
+		request.session["HouseID"] = newHouseID
 
-	return HttpResponse(resultobject.toJSON())
+		response = HttpResponse("Successfully changed house.")
+		response.status_code = 200
+		return response
 
-
-def JSON_allminutedata(request):
-
-	resultobject = MinuteData()
-	resultobject.selectAll()
-
-	return HttpResponse(resultobject.toJSON())
+	else:
+		response = HttpResponse("This page can only be used for POST requests.")
+		response.status_code = 404
+		return response
 
 
 
@@ -177,6 +180,64 @@ def Delete_sensor(request):
 		result = HttpResponse("<h1>Error 404: This page should be used with POST</h1>")
 		result.status_code = 404
 		return result
+
+
+
+
+
+
+
+
+
+
+
+
+def JSON_minuteusagehouse(request, householdid):
+	minutedata = MinuteData()
+	minutedata.selectByHouseholdID(householdid)
+	return HttpResponse(minutedata.toJSON())
+
+
+def JSON_hourusagehouse(request, householdid):
+	hourdata = HourData()
+	hourdata.selectByHouseholdID(householdid)
+	return HttpResponse(hourdata.toJSON())
+
+
+def JSON_dayusagehouse(request, householdid):
+	daydata = DayData()
+	daydata.selectByHouseholdID(householdid)
+	return HttpResponse(daydata.toJSON())
+
+
+def JSON_monthusagehouse(request, householdid):
+	monthdata = MonthData()
+	monthdata.selectByHouseholdID(householdid)
+	return HttpResponse(monthdata.toJSON())
+
+
+def JSON_yearusagehouse(request, householdid):
+	yeardata = YearData()
+	yeardata.selectByHouseholdID(householdid)
+	return HttpResponse(yeardata.toJSON())
+
+
+def JSON_allsensors(request):
+
+	resultobject = SensorData()
+	resultobject.selectAll()
+
+	return HttpResponse(resultobject.toJSON())
+
+
+def JSON_allminutedata(request):
+
+	resultobject = MinuteData()
+	resultobject.selectAll()
+
+	return HttpResponse(resultobject.toJSON())
+
+
 
 
 def JSON_CurrentSensors(request):
@@ -234,18 +295,3 @@ def JSON_CurrentYearData(request):
 	return JSON_yearusagehouse(request, request.session["HouseID"])
 
 
-def ChangeHouse(request):
-	if (request.method == 'POST'):
-		#Might need to be changed slightly later on
-
-		newHouseID = request.POST["HouseID"]
-		request.session["HouseID"] = newHouseID
-
-		response = HttpResponse("Successfully changed house.")
-		response.status_code = 200
-		return response
-
-	else:
-		response = HttpResponse("This page can only be used for POST requests.")
-		response.status_code = 404
-		return response
