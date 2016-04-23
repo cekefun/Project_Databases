@@ -394,6 +394,30 @@ class YearData:
 		return json.dumps(result)
 
 
+class SensorTitle:
+	def __init__(self, houseID):
+		self.houseID = int(houseID)
+		self.cursor = connection.cursor()
+		self.results = []
+
+	def getTuples(self):
+		return self.results
+
+	def toJSON(self):
+		result = {}
+		result["sensors"] = []
+		for i in self.results:
+			result["sensors"].append(dict(i))
+		return json.dumps(result)
+
+	def selectByHousehold(self):
+		self.cursor.execute("""select Sensor.ID as SensorID, Sensor.Title as Title from Sensor where InstalledOn=%i""" % (self.houseID))
+		self.results = dictfetchall(self.cursor)
+
+
+	def getCurrentSensorTitlesJSON(self):
+		self.selectByHousehold()
+		return self.toJSON()
 
 
 class NewHouse:

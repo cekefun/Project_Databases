@@ -104,6 +104,21 @@ def dailyusage(request):
 	}
 	return HttpResponse(template.render(context, request))
 
+def weeklyusage(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+
+	htmlpage = "userpage/weekusage.html"
+	language = request.session["Language"]
+
+	if (language =="en"):
+		htmlpage = "userpage/weekusage.html"
+	elif (language == "nl"):
+		htmlpage = "userpage/weekusage_nl.html"
+
+	template = loader.get_template(htmlpage)
+	context = {	}
+	return HttpResponse(template.render(context, request))
 
 
 def monthlyusage(request):
@@ -236,6 +251,12 @@ def Delete_sensor(request):
 		result = HttpResponse("<h1>Error 404: This page should be used with POST</h1>")
 		result.status_code = 404
 		return result
+
+def CurrentTitleSensors(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+
+	return HttpResponse(SensorTitle(request.session["HouseID"]).getCurrentSensorTitlesJSON())
 
 
 def addHouse(request):

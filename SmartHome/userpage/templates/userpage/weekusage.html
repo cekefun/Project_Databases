@@ -14,8 +14,8 @@
 <ul2>
   <li2 style=float:left;><a href="../minute/">Minute Data</a></li2>
   <li2><a href="../hour/">Hourly Data</a></li2>
-  <li2><a class="active" href="">Daily Data</a></li2>
-  <li2><a href="../week/">Weekly Data</a></li2>
+  <li2><a href="../day/">Daily Data</a></li2>
+  <li2><a class='active' href="">Weekly Data</a></li2>
   <li2><a href="../month/">Monthly Data</a></li2>
   <li2><a href="../year/">Yearly Data</a></li2>
 </ul2>
@@ -27,27 +27,27 @@
     <a href="../addHouse/">Add a House</a>
 	</div>
 </div>
-<br><br><br><br><br><br>
+<br><br><br><br><br>
 
-	{% if daydata_list %}
-		<div style="overflow-x:auto;">
-		<table>
-			<tr>
-				<th>Creation date</th>
-				<th>Sensor ID</th>
-				<th>Value</th>
-			</tr>
-		{% for daydatasample in daydata_list %}
-			<tr>
-				<td>{{daydatasample.CreationTimestamp}}</td>
-				<td>{{daydatasample.SensorID}}</td>
-				<td>{{daydatasample.Value}}</td>
-			</tr>
-		{% endfor %}
-		</table>
-		</div>
-	{% else %}
-		<p>There are no data samples in the database.</p>
-	{% endif %}
 </body>
 </html>
+
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script>
+
+function getdata() {
+  // var jsonhttp = new XMLHttpRequest();
+  // var url = "current/";
+
+  // jsonhttp.onreadystatechange = function() {
+  //   if (jsonhttp.readyState == 4 && jsonhttp.status == 200) {
+  //     var minutedata = JSON.parse(jsonhttp.responseText);
+
+  //     // function here with data
+  //   }
+  // }
+  // jsonhttp.open("GET", url, true);
+  // jsonhttp.send();
+}
+window.onload = getdata;
+</script>
