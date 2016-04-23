@@ -5,6 +5,20 @@ from django.db import models, connection
 import json
 
 # Create your models here.
+
+class DataSample:
+	def __init__(self):
+		self.CreationTimestamp = ""
+		self.Value = 0
+
+	def __init__(self, databasetuple):
+		self.CreationTimestamp = str(databasetuple[0])
+		self.Value = str(databasetuple[1])
+
+	def __iter__(self):
+		yield('CreationTimestamp', self.CreationTimestamp)
+		yield('Value', self.Value)
+
 class ValidLogin:
     def __init__(self):
         self.cursor = connection.cursor()
@@ -51,49 +65,21 @@ class AdminAgg:
         self.cursor = connection.cursor()
         self.results = []
 
-    def search(self,Table,Startmoment,EndMoment,Adress,Adrname):
-        self.cursor.execute('''SELECT CreationTimestamp, SUM(Value)
-                               FROM %s
-                               WHERE CreationTimeStamp > %s AND CreationTimeStamp < %s AND SensorID IN (
-	                               SELECT ID
-	                               FROM Sensor
-	                               WHERE InstalledOn IN (
-			                           SELECT ID
-			                           FROM House
-			                           WHERE AddressID IN (
-				                           SELECT ID
-				                           FROM Address
-				                           WHERE %s = %s
-				                       )
-		                           )
-	                           )
-                               GROUP BY CreationTimestamp''',[Table,StartMoment,EndMoment,Adress,Adrname])
+    def search(self,Table,StartMoment,EndMoment,Adress,Adrname):
+	Query = '''SELECT CreationTimestamp, SUM(Value) FROM %s WHERE CreationTimestamp >= %%s AND CreationTimestamp <= %%s AND SensorID IN (SELECT ID FROM Sensor WHERE InstalledOn IN (SELECT ID FROM House WHERE AddressID IN (SELECT ID FROM Address WHERE %s = %%s))) GROUP BY CreationTimestamp''' % (Table,Adress)
+        self.cursor.execute(Query,[StartMoment,EndMoment,Adrname])
         rows = self.cursor.fetchall()
         for i in rows:
-			self.results.append(MinuteDataSample(i))
+			self.results.append(DataSample(i))
         
 
 
-    def searchStreet(self,Table,Startmoment,EndMoment,strName,Town):
-        self.cursor.execute('''SELECT CreationTimestamp, SUM(Value)
-                               FROM %s
-                               WHERE SensorID IN (
-	                               SELECT ID
-	                               FROM Sensor
-	                               WHERE CreationTimeStamp > %s AND CreationTimeStamp < %s AND InstalledOn IN (
-			                           SELECT ID
-			                           FROM House
-			                           WHERE AddressID IN (
-				                           SELECT ID
-				                           FROM Address
-				                           WHERE StreetName = %s AND City = %s
-				                       )
-		                           )
-	                           )
-                               GROUP BY CreationTimestamp;''',[Table,StartMoment,EndMoment,strNname,Town])
+    def searchStreet(self,Table,StartMoment,EndMoment,strName,Town):
+        Query = '''SELECT CreationTimestamp, SUM(Value) FROM %s WHERE CreationTimestamp >= %%s AND CreationTimestamp <= %%s AND SensorID IN (SELECT ID FROM Sensor WHERE InstalledOn IN (SELECT ID FROM House WHERE AddressID IN ( SELECT ID FROM Address WHERE StreetName = %%s AND City = %%s) )) GROUP BY CreationTimestamp;''' % (Table)
+        self.cursor.execute(Query,[StartMoment,EndMoment,strName,Town])
         rows = self.cursor.fetchall()
         for i in rows:
-			self.results.append(MinuteDataSample(i))
+			self.results.append(DataSample(i))
 
 
 #    def searchMoment(self,Table,Moment):

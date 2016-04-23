@@ -5,17 +5,25 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/defaultstyle.css' %}">
 </head>
 <body>
-<ul>
-  <li><a href="../../index">Home</a></li>
-  <li><a href="../../index/sensors/">Sensors</a></li>
-  <li><a href="../../index/minute/">MinuteData</a></li>
-  <li><a href="../../index/hour/">HourData</a></li>
-  <li><a href="../../index/day/">DayData</a></li>
-  <li><a href="../../index/month/">MonthData</a></li>
-  <li><a href="../../index/year/">YearData</a></li>
-  <li><a class="active" href="">Users</a></li>
-</ul>
-
+<ul1>
+  <li1><a href="../../index">Home</a></li1>
+  <li1><a href="../../index/sensors">Sensors</a></li1>
+  <li1><a href="../../index/minute/">Power Usage</a></li1>
+  <li1><a href="../../index/about/">About</a></li1>
+  <li1><a class="active" href="">Users</a></li1>
+  <li1><a href="../report/">Report</a></li1>
+</ul1>
+  <div class="dropdown" >
+	<button class="dropbtn" style="float:right">Account</button>
+        <div class="dropdown-content a">
+             <a href="/logout/">Log Out</a>
+	     <a href="../settings/">Settings</a>
+	     <a href="../addHouse/">Add a House</a>
+  	</div>
+  </div>
+  <br>
+  <br>
+  <br>
 	{% if user_list %}
 		<div style="overflow-x:auto;">
 		<table>
