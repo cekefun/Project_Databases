@@ -245,9 +245,7 @@ def addHouse(request):
 	if (request.method == "POST"):
 		form = HouseForm(request.POST)
 		if (form.is_valid()):
-			print "i'm not sure what's happening anymore...."
 			NewHouse(form, request.session["UserID"]).addToDatabase()
-
 			return HttpResponse("New house succesfully added.")
 
 		else:

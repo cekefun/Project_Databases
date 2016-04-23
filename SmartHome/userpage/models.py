@@ -409,7 +409,6 @@ class NewHouse:
 
 
 	def addToDatabase(self):
-		print "not even past this?"
 		newAddressID = self.addAddress()
 		self.addHouse(newAddressID)
 
@@ -417,7 +416,6 @@ class NewHouse:
 		self.cursor.execute(("""insert into Address values (0, "%s", %i, "%s","%s",%i);""" % (self.Streetname, self.Streetnumber, self.City, self.Country, self.Postalcode)))
 		self.cursor.execute((""" select ID from Address where StreetName="%s" and StreetNumber=%i and City="%s" and Country="%s" and PostalCode=%i;""" % (self.Streetname, self.Streetnumber, self.City, self.Country, self.Postalcode)))
 		result = self.cursor.fetchone()
-		print "Got here...."
 		return int(result[0])
 
 	def addHouse(self,AddressID):
