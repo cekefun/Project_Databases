@@ -32,4 +32,5 @@ urlpatterns = [
     url(r'^year/(?P<householdid>[0-9]*)/$', views.JSON_yearusagehouse, name='yearusehouse'),
 
     url(r'^changeHouse/$', views.ChangeHouse, name="changehouse"),
+    url(r'^addHouse/$', views.addHouse, name="addhouse"),
 ]

@@ -3,20 +3,80 @@
 <head>
 {% load staticfiles %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/defaultstyle.css' %}">
+<style>
+div.sensorbutton {
+	width: 20%;
+	color: white;
+    	text-align: center;
+	background-color: green;
+	padding: 14px 16px;
+	text-decoration: none;
+
+	
+}
+div.sensorbutton:hover {
+	background-color:#4CAF50;
+}
+
+input[type=text], select {
+ 
+    padding: 12px 20px;
+    margin: 8px 0;
+    width:100%;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=submit] {
+
+    background-color: green;
+    color: white;
+    padding: 14px 85px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    position:relative;
+    left:175px;
+    text-align:center;
+}
+
+input[type=submit]:hover {
+    background-color: #4CAF50;
+}
+
+div.formstyle {
+    position: fixed;
+    width:30%;
+    top: 250px;
+    left:750px;
+    z-index:+1;
+    border-radius: 5px;
+    background-color: #dBdBdB;
+    padding: 40px;
+}
+</style>
 </head>
 <body>
-<ul>
-  <li><a href="../">Home</a></li>
-  <li><a class="active" href="">Sensors</a></li>
-  <li><a href="../minute/">MinuteData</a></li>
-  <li><a href="../hour/">HourData</a></li>
-  <li><a href="../day/">DayData</a></li>
-  <li><a href="../month/">MonthData</a></li>
-  <li><a href="../year/">YearData</a></li>
-</ul>
+<ul1>
+  <li1><a href="../">Home</a></li1>
+  <li1><a class="active" href="">Sensors</a></li1>
+  <li1><a href="../minute/">Power Usage</a></li1>
+  <li1><a href="../about/">About</a></li1>
+</ul1>
+  <div class="dropdown" >
+	<button class="dropbtn" style="float:right">Account</button>
+        <div class="dropdown-content a">
+             <a href="/logout/">Log Out</a>
+	     <a href="../settings/">Settings</a>
+	     <a href="../addHouse/">Add a House</a>
+  	</div>
+  </div>
 	{% if hasHouse %}
 
-		<br>
+		<br><br><br>
 		<div style="overflow-x:auto;">
 		<table id="sensortableinfo">
 			<tr id="sensortableheader">
@@ -29,9 +89,23 @@
 		</table>
 		</div>
 
-		<br><br>
-		<button id="btnAddNewSensor" onclick="createSensorForm(this)">Add new sensor</button>
+		<div class="formstyle" style="display:none;">
+			<form action="javascript:void(0);" id="formNewSensor">
+			<label for="Title">Title</label><br>
+ 				<input type="text" id="Title" name="Title"><br>
 
+			<label for="Apparature">Apparature</label><br>
+		    	<input type="text" id="Apparature" name="Apparature"><br>
+	
+    		<label for="Description">Description</label><br>
+		    	<input type="text" id="Description" name="Description"><br>
+
+			<label for="Unit">Unit</label><br>
+		    	<input type="text" id="Unit" name="Unit"><br><br>
+    		<input type="submit" value="Submit">
+		</div>
+		<br>
+		<div class="sensorbutton" onclick="showSensorForm()">Add new sensor</div>
 	{% else %}
 		<p>You currently don't have a house added to your account.</p>
 	{% endif %}
@@ -41,21 +115,16 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script>
 // testscripts in this part
-
-
 function updateData(element) {
-
 	// columnName = typeof columnName !== 'undefined' ? columnName : "Title";
 	var columnName = element.getAttribute("id");
 	if (columnName == "Active") {
 		updateActive(element);
 	}
-
-	var newValue = prompt("Enter new value.", "");
+	var newValue = prompt("Enter new value.", ""); //TRANSLATE
 	if (newValue == undefined)
 		return;
 	var sensorID = element.parentNode.getAttribute("sensorID");
-
 	$.ajax({
 		url:"updateSensor/",
 		type:'POST',
@@ -64,21 +133,17 @@ function updateData(element) {
 			element.innerHTML = newValue;
 		},
 		error: function(context) {
-			alert("The value given is not valid.");
-			// alert(context.responseText);
+			alert(context.responseText);
 		}
 	});
 }
-
 function updateActive(element) {
 	var columnName = "Active";
 	var sensorID = element.parentNode.getAttribute("sensorID");
 	var newValue = "0";
 	if (element.getAttribute("value") == "0")
 		newValue = "1";
-
 	//update the active value in the database
-
 	$.ajax({
 		url:'updateSensor/',
 		method:'POST',
@@ -95,17 +160,15 @@ function updateActive(element) {
 			}
 		},
 		error: function() {
-			alert("Could not change the active attribute of the sensor.")
+			alert("Could not change the active attribute of the sensor.") //TRANSLATE
 		}
 	});
 }
-
 function deleteSensor(element) {
-	var result = window.confirm("Are you sure you want to delete the sensor? This will also include deleting all the data associated with it.");
+	var result = window.confirm("Are you sure you want to delete the sensor?") //TRANSLATE
 	if (result == false) {
 		return;
 	}
-
 	$.ajax({
 		url: 'deleteSensor',
 		type: 'POST',
@@ -115,13 +178,11 @@ function deleteSensor(element) {
 		}
 	});
 }
-
 $.ajaxSetup({
 	beforeSend: function(xhr, settings) {
 		xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
 	}
 });
-
 $('body').on("submit", "#formNewSensor", function(eventobj) {
 	eventobj.preventDefault();
 	$.ajax({
@@ -130,45 +191,26 @@ $('body').on("submit", "#formNewSensor", function(eventobj) {
 		data: ($("#formNewSensor").serialize()),
 		success: function() {
 			$("#btnAddNewSensor").show();
-			$("#formNewSensor").remove();
+			cleanAddSensorForm();
+			$(".formstyle").hide();
+
+			// $("#formNewSensor").remove();
 			LoadSensorData();
 		}
 	});
 });
 
-function createSensorForm(element) {
-	var formNode = document.createElement("form");
-	formNode.setAttribute("id", "formNewSensor");
-	formNode.setAttribute("action", "javascript:void(0);");
+function cleanAddSensorForm() {
+	var element = $(".formstyle");
+	$("input[name='Title']").val("");
+	$("input[name='Apparature']").val("");
+	$("input[name='Description']").val("");
+	$("input[name='Unit']").val("");
+}
 
-	var addFormInputElement = function lambda_addFormInputElement(name, elementToAppend) {
-		var formInput = document.createElement("input");
-		formInput.setAttribute("type", "text");
-		formInput.setAttribute("name", name);
-		var formInputText = document.createTextNode("" + name + ": ");
-		var formInputNewLine = document.createElement("br");
-
-		elementToAppend.appendChild(formInputText);
-		elementToAppend.appendChild(formInput);
-		elementToAppend.appendChild(formInputNewLine);
-	}
-
-	formNode.appendChild(document.createElement("br"));
-	addFormInputElement("Title", formNode);
-	addFormInputElement("Apparature", formNode);
-	addFormInputElement("Description", formNode);
-	addFormInputElement("Unit", formNode);
-
-
-	var formButton = document.createElement("input");
-	formButton.setAttribute("type", "submit");
-	formButton.setAttribute("value", "Submit");
-	formNode.appendChild(formButton);
-
-	document.body.appendChild(formNode);
-
-	$("#btnAddNewSensor").hide();
-	// console.log(document.body);
+function showSensorForm() {
+	$(".formstyle").show();
+	return;
 }
 
 function getCookie(name) {
@@ -186,11 +228,9 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
 function LoadSensorData() {
 	var jsonhttp = new XMLHttpRequest();
 	var url = "/index/sensors/current/";
-
 	jsonhttp.onreadystatechange = function() {
 		if (jsonhttp.readyState == 4 && jsonhttp.status == 200) {
 			// console.log(jsonhttp.responseText);
@@ -204,10 +244,7 @@ function LoadSensorData() {
 	jsonhttp.open("GET", url, true);
 	jsonhttp.send();
 }
-
-
 function DisplaySensorDataTable(dataobject) {
-
 	var table = document.getElementById("sensortableinfo");
 	var count = table.childNodes.length;
 	for (var i = 2; i < count; i++) {
@@ -222,39 +259,32 @@ function DisplaySensorDataTable(dataobject) {
 		//Apparature
 		var tableelement_apparature = document.createElement("td");
 		tableelement_apparature.setAttribute("ondblclick", "updateData(this)");
-		tableelement_apparature.setAttribute("id","Apparature");
+		tableelement_apparature.setAttribute("id","Apparature"); //TRANSLATE
 		var tableelement_apparature_text = document.createTextNode(dataobject.sensors[i].Apparature);
-
 		//Title
 		var tableelement_title = document.createElement("td");
 		tableelement_title.setAttribute("ondblclick", "updateData(this)");
-		tableelement_title.setAttribute("id", "Title");
+		tableelement_title.setAttribute("id", "Title"); //TRANSLATE
 		var tableelement_title_text = document.createTextNode(dataobject.sensors[i].Title);
-
 		//Description
 		var tableelement_description = document.createElement("td");
 		tableelement_description.setAttribute("ondblclick", "updateData(this)");
-		tableelement_description.setAttribute("id", "Description");
+		tableelement_description.setAttribute("id", "Description"); //TRANSLATE
 		var tableelement_description_text = document.createTextNode(dataobject.sensors[i].Description);
-
 		//Unit
 		var tableelement_unit = document.createElement("td");
 		tableelement_unit.setAttribute("ondblclick", "updateData(this)");
-		tableelement_unit.setAttribute("id", "Unit");
+		tableelement_unit.setAttribute("id", "Unit"); //TRANSLATE
 		var tableelement_unit_text = document.createTextNode(dataobject.sensors[i].Unit);
-
 		//Active
 		var tableelement_active = document.createElement("td");
-		tableelement_active.setAttribute("id", "Active");
+		tableelement_active.setAttribute("id", "Active"); //TRANSLATE
 		tableelement_active.setAttribute("ondblclick", "updateActive(this)");
-
 		//DELETE
 		var tableelement_delete = document.createElement("td");
 		var delete_icon = TrashBin()
 		delete_icon.setAttribute("onclick", "deleteSensor(this)");
 		tableelement_delete.appendChild(delete_icon);
-
-
 		tableelement_apparature.appendChild(tableelement_apparature_text);
 		tableelement_title.appendChild(tableelement_title_text);
 		tableelement_description.appendChild(tableelement_description_text);
@@ -267,7 +297,6 @@ function DisplaySensorDataTable(dataobject) {
 			tableelement_active.appendChild(Crossmark());
 			tableelement_active.setAttribute("value", "0");
 		}
-
 		// tablerow.appendChild(tableelement_id);
 		tablerow.appendChild(tableelement_title);
 		tablerow.appendChild(tableelement_apparature);
@@ -275,74 +304,59 @@ function DisplaySensorDataTable(dataobject) {
 		tablerow.appendChild(tableelement_unit);
 		tablerow.appendChild(tableelement_active);
 		tablerow.appendChild(tableelement_delete);
-
 		table.appendChild(tablerow);
 	}
 }
-
 function Checkmark() {
 	var checkmark = document.createElement("span");
 	checkmark.setAttribute("class", "checkmark");
-
 	var div1 = document.createElement("div");
 	div1.setAttribute("class", "checkmark_circle");
 	var div2 = document.createElement("div");
 	div2.setAttribute("class", "checkmark_stem");
 	var div3 = document.createElement("div");
 	div3.setAttribute("class", "checkmark_kick");
-
 	checkmark.appendChild(div1);
 	checkmark.appendChild(div2);
 	checkmark.appendChild(div3);
 	return checkmark;
 }
-
 function Crossmark() {
 	var crossmark = document.createElement("span");
 	crossmark.setAttribute("class", "crossmark");
-
 	var div1 = document.createElement("div");
 	div1.setAttribute("class", "crossmark_circle");
 	var div2 = document.createElement("div");
 	div2.setAttribute("class", "crossmark_slash");
 	var div3 = document.createElement("div");
 	div3.setAttribute("class", "crossmark_backslash");
-
 	crossmark.appendChild(div1);
 	crossmark.appendChild(div2);
 	crossmark.appendChild(div3);
 	return crossmark;
 }
-
 function TrashBin() {
 	var trashbin = document.createElement("div");
 	trashbin.setAttribute("class", "icon-trash");
 	trashbin.setAttribute("style", "float: left");
-
 	var trashlid = document.createElement("div");
 	trashlid.setAttribute("class", "trash-lid");
 	trashlid.setAttribute("style", "background-color: #03A7D7");
 	trashbin.appendChild(trashlid);
-
 	var trashcontainer = document.createElement("div");
 	trashcontainer.setAttribute("class", "trash-container");
 	trashcontainer.setAttribute("style", "background-color: #02A7D7");
 	trashbin.appendChild(trashcontainer);
-
 	var trashline1 = document.createElement("div");
 	trashline1.setAttribute("class", "trash-line-1");
 	trashbin.appendChild(trashline1);
-
 	var trashline2 = document.createElement("div");
 	trashline2.setAttribute("class", "trash-line-2");
 	trashbin.appendChild(trashline2);
-
 	var trashline3 = document.createElement("div");
 	trashline3.setAttribute("class", "trash-line-3");
 	trashbin.appendChild(trashline3);
-
 	return trashbin;
 }
-
 window.onload = LoadSensorData;
 </script>

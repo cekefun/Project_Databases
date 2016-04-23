@@ -52,7 +52,7 @@ def login(request):
 
                 request.session['Username'] = Username
                 request.session['UserID'] = Validlogin.getUserID()
-                request.session['Language'] = "EN" #By default
+                request.session['Language'] = "en" #By default
                 if (Validlogin.hasHouse() == True):
                     request.session["HasHouse"] = True
                     request.session['HouseID'] = Validlogin.getFirstHouseID()

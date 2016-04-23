@@ -1,0 +1,38 @@
+
+<html>
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/defaultstyle.css' %}">
+
+<body>
+  <ul1>
+    <li1><a href="../">Home</a></li1>
+    <li1><a href="../sensors/">Sensors</a></li1>
+    <li1><a href="../minute/">Power Usage</a></li1>
+    <li1><a href="../about/">About</a></li1>
+  </ul1>
+  <div class="dropdown" >
+    <button class="dropbtn" style="float:right">Account</button>
+    <div class="dropdown-content a">
+      <a href="/logout/">Log Out</a>
+      <a href="../settings/">Settings</a>
+      <a href="">Add a House</a>
+    </div>
+</div>
+<br><br><br><br>
+<div> <!-- form to input new house -->
+
+<form id="newHouse">
+  <input type="text" name="streetname">
+  <input type="text" name="streetnumber">
+  <input type="text" name="city">
+  <input type="text" name="country">
+  <input type="text" name="postalcode">
+  <input type="number" name="price" step="any">
+  <input type="submit">
+</form>
+
+</div>
+
+
+</body>
+</html>

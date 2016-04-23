@@ -24,7 +24,15 @@ def indexpage(request):
 	if (IsLoggedIn(request) == False):
 		return RedirectNotLoggedIn(request)
 
-	template = loader.get_template("userpage/index.html")
+	htmlpage = "userpage/Home.html"
+	language = request.session["Language"]
+
+	if (language == "en"):
+		htmlpage = "userpage/Home.html"
+	elif (language == "nl"):
+		htmlpage = "userpage/Home_nl.html" #MIGHT STILL NEED TO CHANGE
+
+	template = loader.get_template(htmlpage)
 	context = RequestContext(request)
 	return HttpResponse(template.render(context, request))
 
@@ -34,10 +42,18 @@ def minuteusage(request):
 	if (IsLoggedIn(request) == False):
 		return RedirectNotLoggedIn(request)
 
+	htmlpage = "userpage/minuteusage.html"
+	language = request.session["Language"]
+
+	if (language == "en"):
+		htmlpage = "userpage/minuteusage.html"
+	elif (language == "nl"):
+		htmlpage = "userpage/minuteusage_nl.html" #MIGHT STILL NEED TO CHANGE
+
 	minutedata = MinuteData()
 	resultobjects = minutedata.selectAll()
 
-	template = loader.get_template("userpage/minuteusage.html")
+	template = loader.get_template(htmlpage)
 	context = {
 		'minutedata_list' : resultobjects,
 	}
@@ -48,10 +64,19 @@ def hourlyusage(request):
 	if (IsLoggedIn(request) == False):
 		return RedirectNotLoggedIn(request)
 
+	htmlpage = "userpage/hourusage.html"
+	language = request.session["Language"]
+
+	if (language == "en"):
+		htmlpage = "userpage/hourusage.html"
+	elif (language == "nl"):
+		htmlpage = "userpage/hourusage_nl.html" #MIGHT STILL NEED TO CHANGE
+
+
 	hourdata = HourData()
 	resultobjects = hourdata.selectAll()
 
-	template = loader.get_template("userpage/hourusage.html")
+	template = loader.get_template(htmlpage)
 	context = {
 		'hourdata_list' : resultobjects,
 	}
@@ -61,11 +86,19 @@ def hourlyusage(request):
 def dailyusage(request):
 	if (IsLoggedIn(request) == False):
 		return RedirectNotLoggedIn(request)
-	
+
+	htmlpage = "userpage/dayusage.html"
+	language = request.session["Language"]
+
+	if (language == "en"):
+		htmlpage = "userpage/dayusage.html"
+	elif (language == "nl"):
+		htmlpage = "userpage/dayusage_nl.html" #MIGHT STILL NEED TO CHANGE
+
 	daydata = DayData()
 	resultobjects = daydata.selectAll()
 
-	template = loader.get_template("userpage/dayusage.html")
+	template = loader.get_template(htmlpage)
 	context = {
 		'daydata_list' : resultobjects,
 	}
@@ -77,10 +110,18 @@ def monthlyusage(request):
 	if (IsLoggedIn(request) == False):
 		return RedirectNotLoggedIn(request)
 
+	htmlpage = "userpage/monthusage.html"
+	language = request.session["Language"]
+
+	if (language == "en"):
+		htmlpage = "userpage/monthusage.html"
+	elif (language == "nl"):
+		htmlpage = "userpage/monthusage_nl.html" #MIGHT STILL NEED TO CHANGE
+
 	monthdata = MonthData()
 	resultobjects = monthdata.selectAll()
 
-	template = loader.get_template("userpage/monthusage.html")
+	template = loader.get_template(htmlpage)
 	context = {
 		'monthdata_list' : resultobjects,
 	}
@@ -91,10 +132,18 @@ def yearlyusage(request):
 	if (IsLoggedIn(request) == False):
 		return RedirectNotLoggedIn(request)
 
+	htmlpage = "userpage/yearusage.html"
+	language = request.session["Language"]
+
+	if (language == "en"):
+		htmlpage = "userpage/yearusage.html"
+	elif (language == "nl"):
+		htmlpage = "userpage/yearusage_nl.html" #MIGHT STILL NEED TO CHANGE
+
 	yeardata = YearData()
 	resultobjects = yeardata.selectAll()
 
-	template = loader.get_template("userpage/yearusage.html")
+	template = loader.get_template(htmlpage)
 	context = {
 		'yeardata_list' : resultobjects,
 	}
@@ -105,7 +154,15 @@ def sensors(request):
 	if (IsLoggedIn(request) == False):
 		return RedirectNotLoggedIn(request)
 
-	template = loader.get_template('userpage/sensor.html')
+	htmlpage = "userpage/sensor.html"
+	language = request.session["Language"]
+
+	if (language == "en"):
+		htmlpage = "userpage/sensor.html"
+	elif (language == "nl"):
+		htmlpage = "userpage/sensor_nl.html" #MIGHT STILL NEED TO CHANGE
+
+	template = loader.get_template(htmlpage)
 	context = {
 		'hasHouse' : request.session["HasHouse"],
 	}
@@ -130,7 +187,6 @@ def ChangeHouse(request):
 		response = HttpResponse("This page can only be used for POST requests.")
 		response.status_code = 404
 		return response
-
 
 
 def Update_sensordata(request):
@@ -182,6 +238,33 @@ def Delete_sensor(request):
 		return result
 
 
+def addHouse(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+
+	if (request.method == "POST"):
+		pass
+
+
+	elif (request.method == "GET"):
+
+		htmlpage = "userpage/addHouse.html"
+		language = request.session["Language"]
+
+		if (language == "en"):
+			htmlpage = "userpage/addHouse.html"
+		elif (language == "nl"):
+			htmlpage = "userpage/addHouse_nl.html"
+
+		template = loader.get_template(htmlpage)
+		context = {}
+		return HttpResponse(template.render(context, request))
+
+
+	else:
+		result = HttpResponse("This page should be used with a post request.")
+		result.status_code = 404
+		return result
 
 
 

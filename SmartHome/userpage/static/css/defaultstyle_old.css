@@ -1,39 +1,36 @@
 table {
-   	position:relative;
-	border-collapse: collapse;
-	width: 60%;
+  border-collapse: collapse;
+  width: 60%;
 }
 
-tr:nth-child(even){background-color: #f2f2f2}
-
 th, td {
-	text-align: left;
-	padding: 8px;
+  text-align: left;
+  padding: 8px;
 }
 
 input[type=text], select {
-	width: 30%;
-	padding: 12px 20px;
-	margin: 8px 0;
-	display: inline-block;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	box-sizing: border-box;
+  width: 30%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 
 input[type=submit] {
-	width: 30%;
-	background-color: #4CAF50;
-	color: white;
-	padding: 14px 20px;
-	margin: 8px 0;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
+  width: 30%;
+  background-color: #4CAF50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 input[type=submit]:hover {
-	background-color: #45a049;
+  background-color: #45a049;
 }
 
 .checkmark {
@@ -115,10 +112,7 @@ input[type=submit]:hover {
     top:9px;
 }
 
-ul1 {
-    position:fixed;
-    top: 0;
-    width: 100%;
+ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -126,11 +120,11 @@ ul1 {
     background-color: #000078;
 }
 
-li1 {
+li {
     float: left;
 }
 
-li1 a {
+li a {
     display: block;
     color: white;
     text-align: center;
@@ -138,11 +132,11 @@ li1 a {
     text-decoration: none;
 }
 
-li1 a:hover:not(.active) {
+li a:hover:not(.active) {
     background-color: #0000C0;
 }
 
-li1 .active:hover {
+li .active:hover {
     background-color: #4CAF50;
 }
 
@@ -150,42 +144,7 @@ li1 .active:hover {
     background-color: green;
 }
 
-ul2 {
-    position:fixed;
-    top: 46px;
-    width: 100%;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #f9f9f9;
-}
-
-li2 {
-    float: left;
-}
-
-li2 a {
-    display: block;
-    color: black;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-li2 a:hover:not(.active) {
-    background-color: #f1f1f1;
-}
-
-li2 .active:hover {
-    background-color: #e9e9e9;
-}
-
-li2 .active {
-    background-color: #f1f1f1;
-}
-
-
+tr:nth-child(even){background-color: #f2f2f2}
 
 .dropbtn {
     position:fixed;
@@ -193,7 +152,7 @@ li2 .active {
     right: 0;
     background-color: #000078;
     color: white;
-    padding: 14px 31px;
+    padding: 14px 16px;
     font-size: 16px;
     border: none;
     cursor: pointer;
@@ -203,7 +162,7 @@ li2 .active {
     position:fixed;
     top:0;
     right: 0;
-    padding: 46px 4px;
+    padding: 43px 4px;
     display: inline-block;
 }
 
