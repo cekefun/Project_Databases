@@ -7,21 +7,21 @@
 
 <body>
 <ul1>
-  <li1><a href="../../">Home</a></li1>
-  <li1><a href="../">Sensors</a></li1>
-  <li1><a href="../../minute/">Power Usage</a></li1>
+  <li1><a href="../../">Start</a></li1>
+  <li1><a href="../">Sensoren</a></li1>
+  <li1><a href="../../minute/">Energieverbruik</a></li1>
   {% if request.session.IsAdmin %}
-  <li1><a href="../../../admin/users">Users</a></li1>
-  <li1><a href="../../../admin/report">Report</a></li1>
+  <li1><a href="../../../admin/users">Gebruikers</a></li1>
+  <li1><a href="../../../admin/report">Verslag</a></li1>
   {% endif %}
-  <li1><a href="../about/">About</a></li1>
+  <li1><a href="../about/">Over</a></li1>
 </ul1>
 <div class="dropdown" >
 <button class="dropbtn" style="float:right">Account</button>
     <div class="dropdown-content a">
-     <a href="../../settings/">Settings</a>
-     <a href="../../addHouse/">Add a House</a>
-        <a href="/logout/">Log out</a>
+     <a href="../../settings/">Instellingen</a>
+     <a href="../../addHouse/">Voeg huis toe</a>
+        <a href="/logout/">Log uit</a>
 	</div>
 </div>
 <br><br><br>
@@ -35,7 +35,7 @@
 </div>
 <br><br><br><br>
 <div class="NewComment">
-	<p class="TextAddComment">Add a comment:</p>
+	<p class="TextAddComment">Voeg comment toe:</p>
 	<form id="FormNewComment" action="javascript: void(0);">
 		<input type="text" id="NewMessage" name="Message"><br>
 		<input type="submit" value="Add comment"><br>
