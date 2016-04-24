@@ -30,6 +30,7 @@ def login(request):
 
                 request.session['Username'] = Username
                 request.session['UserID'] = Validlogin.getUserID()
+                request.session['Language'] = "en" #By default
                 if (Validlogin.hasHouse() == True):
                     print "He has a house."
                     request.session["HasHouse"] = True

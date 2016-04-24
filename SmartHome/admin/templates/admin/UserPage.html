@@ -9,16 +9,18 @@
   <li1><a href="../../index">Home</a></li1>
   <li1><a href="../../index/sensors">Sensors</a></li1>
   <li1><a href="../../index/minute/">Power Usage</a></li1>
-  <li1><a href="../../index/about/">About</a></li1>
+  {% if request.session.IsAdmin %}
   <li1><a class="active" href="">Users</a></li1>
-  <li1><a href="../report/">Report</a></li1>
+  <li1><a href="../report">Report</a></li1>
+  {% endif %}
+  <li1><a href="../../index/about/">About</a></li1>
 </ul1>
   <div class="dropdown" >
 	<button class="dropbtn" style="float:right">Account</button>
         <div class="dropdown-content a">
-             <a href="/logout/">Log Out</a>
-	     <a href="../settings/">Settings</a>
-	     <a href="../addHouse/">Add a House</a>
+             <a href="../../logout/">Log Out</a>
+	     <a href="../../index/settings/">Settings</a>
+	     <a href="../../index/addHouse/">Add a House</a>
   	</div>
   </div>
   <br>

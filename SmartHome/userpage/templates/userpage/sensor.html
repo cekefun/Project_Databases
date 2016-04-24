@@ -79,7 +79,11 @@ div.formstyle {
 <ul1>
   <li1><a href="../">Home</a></li1>
   <li1><a class="active" href="">Sensors</a></li1>
-  <li1><a href="../minute/">Power usage</a></li1>
+  <li1><a href="../minute/">Power Usage</a></li1>
+  {% if request.session.IsAdmin %}
+  <li1><a href="../../admin/users">Users</a></li1>
+  <li1><a href="../../admin/report">Report</a></li1>
+  {% endif %}
   <li1><a href="../about/">About</a></li1>
 </ul1>
 <div class="dropdown" >
