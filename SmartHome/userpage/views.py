@@ -13,25 +13,28 @@ def IsLoggedIn(request):
 		return False
 	return True
 
-def RedirectNotLoggedIn(request):
-	return redirect('/login/')
+#def RedirectNotLoggedIn(request):
+#	return redirect('/login/')
 
 
 
 
 
 def indexpage(request):
-	if (IsLoggedIn(request) == False):
-		return RedirectNotLoggedIn(request)
+#	if (IsLoggedIn(request) == False):
+#		return RedirectNotLoggedIn(request)
 
 	htmlpage = "userpage/Home.html"
-	language = request.session["Language"]
+	language = "en"
+	if(IsLoggedIn(request) == True):
+		language = request.session["Language"]
 
 	if (language == "en"):
 		htmlpage = "userpage/Home.html"
 	elif (language == "nl"):
 		htmlpage = "userpage/Home_nl.html" #MIGHT STILL NEED TO CHANGE
-
+	else:
+		htmlpage = "userpage/Home.html"
 	template = loader.get_template(htmlpage)
 	context = RequestContext(request)
 	return HttpResponse(template.render(context, request))

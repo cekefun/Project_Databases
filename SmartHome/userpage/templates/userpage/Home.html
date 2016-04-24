@@ -110,8 +110,10 @@ div.desc {
 <body>
 <ul1>
   <li1><a class="active" href="">Home</a></li1>
+  {% if request.session.Username|length > 0 %}
   <li1><a href="sensors/">Sensors</a></li1>
   <li1><a href="minute/">Power Usage</a></li1>
+  {% endif %}
   {% if request.session.IsAdmin %}
   <li1><a href="../admin/users">Users</a></li1>
   <li1><a href="../admin/report">Report</a></li1>
