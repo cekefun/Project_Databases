@@ -510,6 +510,9 @@ def JSON_householdsprice(request):
 	if (IsLoggedIn(request) == False):
 		return RedirectNotLoggedIn(request)
 
+	if (request.session["HasHouse"] == False):
+		return HttpResponse('{"houses":[]}')
+
 	return HttpResponse(HouseHoldsPrice(request.session["UserID"], request.session["HouseID"]).getHousesJSON())
 
 def JSON_commentssensor(request, sensorID):

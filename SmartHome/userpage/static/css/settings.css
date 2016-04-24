@@ -23,6 +23,8 @@ div.changehousehold {
 	border: 2px solid #73AD21;
 	padding: 2%;
 	width: 50%;
+    position: relative;
+    margin-left: 25%;
 }
 
 div.languageSetting {
