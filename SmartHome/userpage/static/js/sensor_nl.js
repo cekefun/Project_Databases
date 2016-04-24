@@ -5,6 +5,7 @@ function updateData(element) {
 		updateActive(element);
 	}
 	var newValue = prompt("Geef een nieuwe waarde in.", "");
+	if (newValue == undefined)
 		return;
 	var sensorID = element.parentNode.getAttribute("sensorID");
 	$.ajax({
