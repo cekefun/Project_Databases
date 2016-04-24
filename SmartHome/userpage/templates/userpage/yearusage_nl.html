@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/defaultstyle.css' %}">
+</head>
+<body>
+<ul1>
+  <li1 style=float:left;><a href="../">Start</a></li1>
+  <li1><a href="../sensors/">Sensoren</a></li1>
+  <li1><a class="active" href="">Energieverbruik</a></li1>
+  {% if request.session.IsAdmin %}
+  <li1><a href="../../admin/users">Gebruikers</a></li1>
+  <li1><a href="../../admin/report">Verslag</a></li1>
+  {% endif %}
+  <li1><a href="../about/">Over</a></li1>
+</ul1>
+<ul2>
+  <li2 style=float:left;><a href="../minute/">Minuutverbruik</a></li2>
+  <li2><a href="../hour/">Uurverbruik</a></li2>
+  <li2><a href="../day/">Dagverbruik</a></li2>
+  <li2><a href="../week/">Weekverbruik</a></li2>
+  <li2><a href="../month/">Maandverbruik</a></li2>
+  <li2><a class='active' href="">Jaarverbruik</a></li2>
+</ul2>
+<div class="dropdown" >
+<button class="dropbtn" style="float:right">Account</button>
+  <div class="dropdown-content a">
+    <a href="/logout/">Log uit</a>
+    <a href="../settings/">Instellingen</a>
+    <a href="../addHouse/">Voeg huis toe</a>
+	</div>
+</div>
+<br><br><br><br><br><br>
+
+	{% if yeardata_list %}
+		<div style="overflow-x:auto;">
+		<table>
+			<tr>
+				<th>Datum</th>
+				<th>Sensor ID</th>
+				<th>Waarde</th>
+			</tr>
+		{% for yeardatasample in yeardata_list %}
+			<tr>
+				<td>{{yeardatasample.CreationTimestamp}}</td>
+				<td>{{yeardatasample.SensorID}}</td>
+				<td>{{yeardatasample.Value}}</td>
+			</tr>
+		{% endfor %}
+		</table>
+		</div>
+	{% else %}
+		<p>Er is geen data in de database.</p>
+	{% endif %}
+</body>
+</html>

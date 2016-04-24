@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/defaultstyle.css' %}">
+</head>
+<body>
+<ul1>
+  <li1><a href="../../index">Start</a></li1>
+  <li1><a href="../../index/sensors">Sensoren</a></li1>
+  <li1><a href="../../index/minute/">Energieverbruik</a></li1>
+  {% if request.session.IsAdmin %}
+  <li1><a class="active" href="">Gebruikers</a></li1>
+  <li1><a href="../report">Verslag</a></li1>
+  {% endif %}
+  <li1><a href="../../index/about/">Over</a></li1>
+</ul1>
+  <div class="dropdown" >
+	<button class="dropbtn" style="float:right">Account</button>
+        <div class="dropdown-content a">
+             <a href="../../logout/">Log uit</a>
+	     <a href="../../index/settings/">Instellingen</a>
+	     <a href="../../index/addHouse/">Voeg huis toe</a>
+  	</div>
+  </div>
+  <br>
+  <br>
+  <br>
+	{% if user_list %}
+		<div style="overflow-x:auto;">
+		<table>
+			<tr>
+				<th>Gebruikersnaam</th>
+				<th>Voornaam</th>
+				<th>Achternaam</th>
+				<th>Email</th>
+				<th>Admin</th>
+			</tr>
+		{% for user in user_list %}
+			<tr><td>{{user.UserName}}</td>
+				<td>{{user.FirstName}}</td>
+				<td>{{user.LastName}}</td>
+				<td>{{user.Email}}</td>
+				<td ondblclick="updateAdmin(this)">{% if user.Admin %} <span class="checkmark"><div class="checkmark_circle"></div><div class="checkmark_stem"></div><div class="checkmark_kick"></div></span> {% else %}<span class="crossmark"><div class="crossmark_circle"></div><div class="crossmark_slash"></div><div class="crossmark_backslash"></div></span>{% endif %}</td>
+			</tr>
+		{% endfor %}
+		</table>
+		</div>
+	{% else %}
+		<p>Er is geen data in de database.</p>
+	{% endif %}
+</body>
+</html>
+
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+
+<script>
+
+function updateAdmin(element) {
+	var Right = confirm("Bent U zeker dat U deze gebruiken adminrechten wilt geven?");
+	if (Right == false){
+		return;
+	}
+	var columnName = "Admin";
+	var UserName = element.parentNode.firstChild.innerHTML;
+	console.log(element.parentNode.firstChild.innerHTML);
+	console.log(UserName);
+	var newValue = "1";
+
+	//update the active value in the database
+
+	$.ajax({
+		url:'updateAdmin/',
+		method:'POST',
+		data: ($.param({"UserName":UserName})),
+		success: function() {
+			element.removeChild(element.firstChild);	
+			element.appendChild(Checkmark());
+			element.setAttribute("value", "1");
+		},
+		error: function() {
+			alert("Could not activate the Admin.");
+		}
+	});
+}
+
+$.ajaxSetup({
+	beforeSend: function(xhr, settings) {
+		xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+	}
+});
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function Checkmark() {
+	var checkmark = document.createElement("span");
+	checkmark.setAttribute("class", "checkmark");
+
+	var div1 = document.createElement("div");
+	div1.setAttribute("class", "checkmark_circle");
+	var div2 = document.createElement("div");
+	div2.setAttribute("class", "checkmark_stem");
+	var div3 = document.createElement("div");
+	div3.setAttribute("class", "checkmark_kick");
+
+	checkmark.appendChild(div1);
+	checkmark.appendChild(div2);
+	checkmark.appendChild(div3);
+	return checkmark;
+}
+</script>

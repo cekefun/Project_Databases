@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/defaultstyle.css' %}">
+<style>
+div.img1 {
+position : absolute;
+    top:200px;
+    left:300px;
+    z-index: -1;
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 500px;
+    transition: all 1s;
+}
+
+div.img1:hover {
+    width: 1100px;
+    top:200px;
+    left:300px;
+    z-index: +1;
+}
+
+div.img1 img {
+    width: 100%;
+    height: auto;
+}
+
+div.img2 {
+position : absolute;
+    top:200px;
+    left:850px;
+    z-index: -1;
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 500px;
+    transition: all 1s;
+}
+
+div.img2:hover {
+    width: 1100px;
+    top:200px;
+    left:300px;
+    z-index: +1;
+}
+
+div.img2 img {
+    width: 100%;
+    height: auto;
+}
+div.img3 {
+position : absolute;
+    top:467px;
+    left:300px;
+    z-index: -1;
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 500px;
+    transition: all 1s;
+}
+
+div.img3:hover {
+    width: 1100px;
+    top:200px;
+    left:300px;
+    z-index: +1;
+}
+
+div.img3 img {
+    width: 100%;
+    height: auto;
+}
+div.img4 {
+position : absolute;
+    top:467px;
+    left:850px;
+    z-index: -1;
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 500px;
+    transition: all 1s;
+}
+
+div.img4:hover {
+    width: 1100px;
+    top:200px;
+    left:300px;
+    z-index: +1;
+}
+
+div.img4 img {
+    width: 100%;
+    height: auto;
+}
+
+div.desc {
+    padding: 10px;
+    text-align: center;
+    z-index: +1;
+    background-color: #000078;
+    color: white;
+}
+</style>
+</head>
+<body>
+<ul1>
+  <li1><a class="active" href="">Start</a></li1>
+  <li1><a href="sensors/">Sensoren</a></li1>
+  <li1><a href="minute/">Energieverbruik</a></li1>
+  {% if request.session.IsAdmin %}
+  <li1><a href="../admin/users">Gebruikers</a></li1>
+  <li1><a href="../admin/report">Verslag</a></li1>
+  {% endif %}
+  <li1><a href="about/">Over</a></li1>
+</ul1>
+<div class="dropdown" >
+  <button class="dropbtn" style="float:right">Account</button>
+  <div class="dropdown-content a">
+    <a href="/logout/">Log uit</a>
+    <a href="settings/">Instellingen</a>
+    <a href="addHouse/">Voeg huis toe</a>
+  </div>
+</div>
+<div class="img1">
+  <a target = "_blank" href="{% static 'img/graph.png' %}">
+    <img src="{% static 'img/graph.png' %}" alt="graph" width="600" height="400">
+  </a>
+  <div class ="desc">Easily readable interactive graphs</div>
+</div>
+<div class="img2">
+  <a target = "_blank" href="{% static 'img/graph.png' %}">
+    <img src="{% static 'img/graph.png' %}" alt="graph" width="600" height="400">
+  </a>
+  <div class ="desc">Easily readable interactive graphs</div>
+</div>
+<div class="img3">
+  <a target = "_blank" href="{% static 'img/graph.png' %}">
+    <img src="{% static 'img/graph.png' %}" alt="graph" width="600" height="400">
+  </a>
+  <div class ="desc">Easily readable interactive graphs</div>
+</div>
+<div class="img4">
+  <a target = "_blank" href="{% static 'img/graph.png' %}">
+    <img src="{% static 'img/graph.png' %}" alt="graph" width="600" height="400">
+  </a>
+  <div class ="desc">Easily readable interactive graphs</div>
+</div>
+</body>
+</html>
+
