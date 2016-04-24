@@ -112,36 +112,36 @@ div.formstyle {
 		<div style="overflow-x:auto;">
 		<table id="sensortableinfo">
 			<tr id="sensortableheader">
-				<th>Title</th>
-				<th>Apparature</th>
-				<th>Description</th>
-				<th>Unit</th>
-				<th>Active</th>
+				<th>Titel</th>
+				<th>Apparatuur</th>
+				<th>Beschrijving</th>
+				<th>Eenheid</th>
+				<th>Actief</th>
 			</tr>
 		</table>
 		</div>
 
 		<div class="formstyle" style="display:none;">
 			<form action="javascript:void(0);" id="formNewSensor">
-			<label for="Title">Title</label><br>
+			<label for="Title">Titel</label><br>
  				<input type="text" id="Title" name="Title"><br>
 
-			<label for="Apparature">Apparature</label><br>
+			<label for="Apparature">Apparatuur</label><br>
 		    	<input type="text" id="Apparature" name="Apparature"><br>
 	
-    		<label for="Description">Description</label><br>
+    		<label for="Description">Beschrijving</label><br>
 		    	<input type="text" id="Description" name="Description"><br>
 
-			<label for="Unit">Unit</label><br>
+			<label for="Unit">Eenheid</label><br>
 		    	<input type="text" id="Unit" name="Unit"><br><br>
-    		<input type="submit" value="Submit"><br>
-    		<div class="cancelbutton" onclick="finishForm()" type="button">Cancel</div>
+    		<input type="submit" value="Voeg toe"><br>
+    		<div class="cancelbutton" onclick="finishForm()" type="button">Annuleren</div>
 		</div>
 
 		<br>
-		<div class="sensorbutton" onclick="showSensorForm()">Add new sensor</div>
+		<div class="sensorbutton" onclick="showSensorForm()">Voeg nieuwe sensor toe</div>
 	{% else %}
-		<p>You currently don't have a house added to your account.</p>
+		<p>U heeft momenteel geen huis gelinked met uw account.</p>
 	{% endif %}
 </body>
 </html>
