@@ -76,14 +76,10 @@ def UpdateAdmin(request):
         return HttpResponse("<h1>Error 404: Something went wrong in making the form</h1>")
     return HttpResponse("<h1>Error 404: This page should be used with POST</h1>")
 
-def reportpage(request):
+def getreport(request):
     if(not request.session['IsAdmin']):
         return HttpResponseNotFound('<h1>Page not found</h1>')
     template = loader.get_template("admin/reportForm.html")
-    context = {}
-    return HttpResponse(template.render(context, request))
-
-def getreport(request):
     if(request.method == 'POST'):
         form = RequestForm(request.POST)
         if(form.is_valid()):
@@ -91,7 +87,8 @@ def getreport(request):
             startDate=form.cleaned_data['start']
             endDate = form.cleaned_data['to']
             if(endDate < startDate):
-                return HttpResponseNotFound('<h1>Page not found</h1>')
+                context = {'message':'Startdate falls after the enddate'}
+                return HttpResponse(template.render(context, request))
 
             startDate = datetime.datetime.combine(startDate, datetime.time.min)
             endDate = datetime.datetime.combine(endDate, datetime.time.min)
@@ -114,7 +111,8 @@ def getreport(request):
             elif (kind == 'year'):
                 table = 'YearData'
             else:
-                return HttpResponseNotFound('<h1>Page not found</h1>')
+                context = {'message': 'Please choose a sampletype'}
+                return HttpResponse(template.render(context, request))
             
             kind = form.cleaned_data['selectregion']
             region = ""
@@ -122,21 +120,28 @@ def getreport(request):
             if (kind == 'streetnamecity'):
                 regionKind = "City"
                 if(form.cleaned_data['city'] == ""):
-                    return HttpResponseNotFound('<h1>Page not found</h1>')
+                    context = {'message': 'Please write down a city'}
+                    return HttpResponse(template.render(context, request))
                 if(form.cleaned_data['streetname'] != ""):
                     aggr.searchStreet(table,startDate,endDate,form.cleaned_data['streetname'],form.cleaned_data['city'])
                 else:
                     aggr.search(table,startDate,endDate,'City',form.cleaned_data['city'])
             elif (kind == 'postalcode'):
                 if(form.cleaned_data['postalcode'] == ""):
-                    return HttpResponseNotFound('<h1>Page not found</h1>')
+                    context = {'message': 'Please write down a postalcode'}
+                    return HttpResponse(template.render(context, request))
                 aggr.search(table,startDate,endDate,'PostalCode',form.cleaned_data['postalcode'])
             elif (kind == 'country'):
                 if(form.cleaned_data['country'] == ""):
-                    return HttpResponseNotFound('<h1>Page not found</h1>')
+                    context = {'message': 'Please write down a country'}
+                    return HttpResponse(template.render(context, request))
                 aggr.search(table,startDate,endDate,'Country',form.cleaned_data['country'])
             else:
-                return HttpResponseNotFound('<h1>Page not found</h1>')
+                context = {'message': 'Please select a region'}
+                return HttpResponse(template.render(context, request))
             return HttpResponse(aggr.toJson())
-        return HttpResponse('FORM IS NOT VALID')
-    return HttpResponse('Thats not a post')
+        context = {'message': 'Please fill in all fields'}
+        return HttpResponse(template.render(context, request))
+    context = {'message': ''}
+    return HttpResponse(template.render(context, request))
+

@@ -4,6 +4,20 @@
 {% load staticfiles %}
 <style>
 /* #### bootstrap Form #### */
+@import url('//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css');
+.isa_error {
+margin: 10px 0px;
+padding:12px;
+}
+.isa_error {
+    color: #D8000C;
+    background-color: #FFBABA;
+}
+.isa_error i {
+    margin:10px 22px;
+    font-size:2em;
+    vertical-align:middle;
+}
 .bootstrap-frm {
     margin-left:auto;
     margin-right:auto;
@@ -119,9 +133,14 @@
   <br>
   <br>
   <br>
-
+	{% if message|length > 0 %}
+	<div class="isa_error">
+   	<i class="fa fa-times-circle"></i>
+   	{{message}}
+	</div>
+	{% endif %}
 	<div>
-		<form id="generatereport" action="Reported/" method="POST" class=bootstrap-frm>{% csrf_token %}
+		<form id="generatereport" action="" method="POST" class=bootstrap-frm>{% csrf_token %}
 		<p><label>from: </label> 
 		<input type="date" name="start"></p>
 		<p><label>to: </label>
