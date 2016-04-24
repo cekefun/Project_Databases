@@ -266,7 +266,12 @@ def addHouse(request):
 	if (request.method == "POST"):
 		form = HouseForm(request.POST)
 		if (form.is_valid()):
-			NewHouse(form, request.session["UserID"]).addToDatabase()
+			newhouse = NewHouse(form, request.session["UserID"])
+			isFirst = newhouse.isFirst()
+			newhouse.addToDatabase()
+			if (isFirst == True):
+				request.session["HasHouse"] = True
+				request.session["HouseID"] = getFirstHouseID(request.session["UserID"])
 			return HttpResponse("New house succesfully added.")
 
 		else:

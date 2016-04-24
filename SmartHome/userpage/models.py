@@ -67,6 +67,13 @@ def updatePriceByHouseholdID(HouseID, Price):
 	dbCursor.execute(("""update House set PricePerUnit=%f where ID=%i """ % (Price, HouseID)))
 
 
+def getFirstHouseID(UserID):
+	dbCursor = connection.cursor()
+	dbCursor.execute("select House.ID from House where OwnedBy=%i" % (int(UserID)))
+	result = dbCursor.fetchone()
+
+	return int(result[0])
+
 
 class Sensor:
 	def __init__(self):
@@ -437,6 +444,13 @@ class NewHouse:
 		self.Price = form.cleaned_data['Price']
 		self.cursor = connection.cursor()
 		self.UserID = UserID
+
+	def isFirst(self):
+		self.cursor.execute("select * from House where OwnedBy=%i" % (self.UserID))
+		results = self.cursor.fetchone()
+		if (results == None):
+			return True
+		return False
 
 
 	def addToDatabase(self):
