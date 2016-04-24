@@ -110,8 +110,10 @@ div.desc {
 <body>
 <ul1>
   <li1><a class="active" href="">Start</a></li1>
+  {% if request.session.Username|length > 0 %}
   <li1><a href="sensors/">Sensoren</a></li1>
   <li1><a href="minute/">Energieverbruik</a></li1>
+  {% endif %}
   {% if request.session.IsAdmin %}
   <li1><a href="../admin/users">Gebruikers</a></li1>
   <li1><a href="../admin/report">Verslag</a></li1>
@@ -121,9 +123,13 @@ div.desc {
 <div class="dropdown" >
   <button class="dropbtn" style="float:right">Account</button>
   <div class="dropdown-content a">
+      {% if request.session.Username|length > 0 %}
       <a href="settings/">Instellingen</a>
       <a href="addHouse/">Voeg huis toe</a>
       <a href="/logout/">Log uit</a>
+      {% else %}
+      <a href='../login'>Inloggen</a>
+      {% endif %}
   </div>
 </div>
 <div class="img1">
