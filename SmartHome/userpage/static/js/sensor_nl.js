@@ -4,8 +4,7 @@ function updateData(element) {
 	if (columnName == "Active") {
 		updateActive(element);
 	}
-	var newValue = prompt("Enter new value.", ""); //TRANSLATE
-	if (newValue == undefined)
+	var newValue = prompt("Geef een nieuwe waarde in.", "");
 		return;
 	var sensorID = element.parentNode.getAttribute("sensorID");
 	$.ajax({
@@ -16,8 +15,7 @@ function updateData(element) {
 			element.innerHTML = newValue;
 		},
 		error: function(context) {
-			alert("The given value is not valid."); //TRANSLATE
-			// alert(context.responseText);
+			alert("De ingevoerde waarde is niet geldig.");
 		}
 	});
 }
@@ -45,12 +43,12 @@ function updateActive(element) {
 			}
 		},
 		error: function() {
-			alert("Could not change the active attribute of the sensor."); //TRANSLATE
+			alert("Het actieve attribuut van de sensor kon niet veranderd worden.");
 		}
 	});
 }
 function deleteSensor(element) {
-	var result = window.confirm("Are you sure you want to delete the sensor? This will also delete all the data associated with it."); //TRANSLATE
+	var result = window.confirm("Bent u zeker dat u de sensor wilt verwijderen? Alle data geassocieerd met de sensor zal ook verwijderd worden.");
 	if (result == false) {
 		return;
 	}
@@ -63,13 +61,6 @@ function deleteSensor(element) {
 		}
 	});
 }
-
-function showComments(element) {
-	var SensorID = element.parentNode.parentNode.getAttribute("sensorID");
-	document.cookie = "SensorID=" + SensorID + "; path=comments/";
-	window.location = "comments/";
-}
-
 $.ajaxSetup({
 	beforeSend: function(xhr, settings) {
 		xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
@@ -177,14 +168,6 @@ function DisplaySensorDataTable(dataobject) {
 		var tableelement_delete = document.createElement("td");
 		var delete_icon = TrashBin()
 		delete_icon.setAttribute("onclick", "deleteSensor(this)");
-		//SHOWCOMMENTS
-		var tableelement_comments = document.createElement("td");
-		var tableelement_commentsbutton = document.createElement("button");
-		tableelement_commentsbutton.setAttribute("class", "commentButton");
-		tableelement_commentsbutton.setAttribute("onclick", "showComments(this)");
-		tableelement_commentsbutton.appendChild(document.createTextNode("Show comments"));
-
-		tableelement_comments.appendChild(tableelement_commentsbutton);
 		tableelement_delete.appendChild(delete_icon);
 		tableelement_apparature.appendChild(tableelement_apparature_text);
 		tableelement_title.appendChild(tableelement_title_text);
@@ -205,7 +188,6 @@ function DisplaySensorDataTable(dataobject) {
 		tablerow.appendChild(tableelement_unit);
 		tablerow.appendChild(tableelement_active);
 		tablerow.appendChild(tableelement_delete);
-		tablerow.appendChild(tableelement_comments);
 		table.appendChild(tablerow);
 	}
 }
