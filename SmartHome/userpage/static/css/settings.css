@@ -25,6 +25,10 @@ div.changehousehold {
 	width: 50%;
 }
 
+div.languageSetting {
+    width: 50%;
+}
+
 p.PriceInfo {
 	padding: 2%;
 	font-style: italic;

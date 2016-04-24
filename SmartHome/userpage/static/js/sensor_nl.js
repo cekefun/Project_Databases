@@ -47,6 +47,7 @@ function updateActive(element) {
 		}
 	});
 }
+
 function deleteSensor(element) {
 	var result = window.confirm("Bent u zeker dat u de sensor wilt verwijderen? Alle data geassocieerd met de sensor zal ook verwijderd worden.");
 	if (result == false) {
@@ -61,6 +62,14 @@ function deleteSensor(element) {
 		}
 	});
 }
+
+
+function showComments(element) {
+	var SensorID = element.parentNode.parentNode.getAttribute("sensorID");
+	document.cookie = "SensorID=" + SensorID + "; path=comments/";
+	window.location = "comments/";
+}
+
 $.ajaxSetup({
 	beforeSend: function(xhr, settings) {
 		xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
@@ -112,6 +121,7 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
 function LoadSensorData() {
 	var jsonhttp = new XMLHttpRequest();
 	var url = "/index/sensors/current/";
@@ -128,6 +138,7 @@ function LoadSensorData() {
 	jsonhttp.open("GET", url, true);
 	jsonhttp.send();
 }
+
 function DisplaySensorDataTable(dataobject) {
 	var table = document.getElementById("sensortableinfo");
 	var count = table.childNodes.length;
@@ -168,6 +179,15 @@ function DisplaySensorDataTable(dataobject) {
 		var tableelement_delete = document.createElement("td");
 		var delete_icon = TrashBin()
 		delete_icon.setAttribute("onclick", "deleteSensor(this)");
+		
+		//SHOWCOMMENTS
+		var tableelement_comments = document.createElement("td");
+		var tableelement_commentsbutton = document.createElement("button");
+		tableelement_commentsbutton.setAttribute("class", "commentButton");
+		tableelement_commentsbutton.setAttribute("onclick", "showComments(this)");
+		tableelement_commentsbutton.appendChild(document.createTextNode("Comments bekijken"));
+
+		tableelement_comments.appendChild(tableelement_commentsbutton);
 		tableelement_delete.appendChild(delete_icon);
 		tableelement_apparature.appendChild(tableelement_apparature_text);
 		tableelement_title.appendChild(tableelement_title_text);
@@ -181,16 +201,17 @@ function DisplaySensorDataTable(dataobject) {
 			tableelement_active.appendChild(Crossmark());
 			tableelement_active.setAttribute("value", "0");
 		}
-		// tablerow.appendChild(tableelement_id);
 		tablerow.appendChild(tableelement_title);
 		tablerow.appendChild(tableelement_apparature);
 		tablerow.appendChild(tableelement_description);
 		tablerow.appendChild(tableelement_unit);
 		tablerow.appendChild(tableelement_active);
 		tablerow.appendChild(tableelement_delete);
+		tablerow.appendChild(tableelement_comments);
 		table.appendChild(tablerow);
 	}
 }
+
 function Checkmark() {
 	var checkmark = document.createElement("span");
 	checkmark.setAttribute("class", "checkmark");
@@ -205,6 +226,7 @@ function Checkmark() {
 	checkmark.appendChild(div3);
 	return checkmark;
 }
+
 function Crossmark() {
 	var crossmark = document.createElement("span");
 	crossmark.setAttribute("class", "crossmark");
@@ -219,6 +241,7 @@ function Crossmark() {
 	crossmark.appendChild(div3);
 	return crossmark;
 }
+
 function TrashBin() {
 	var trashbin = document.createElement("div");
 	trashbin.setAttribute("class", "icon-trash");
@@ -242,4 +265,5 @@ function TrashBin() {
 	trashbin.appendChild(trashline3);
 	return trashbin;
 }
+
 window.onload = LoadSensorData;
