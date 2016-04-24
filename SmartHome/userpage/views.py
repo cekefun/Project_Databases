@@ -299,7 +299,53 @@ def aboutPage(request):
 	return HttpResponse("This page is not added yet, i'm sorry... :(")
 
 
+def settingsPage(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
 
+	htmlpage = "userpage/settings.html"
+	language = request.session["Language"]
+
+	if (language == "en"):
+		htmlpage = "userpage/settings.html"
+	elif (language == "nl"):
+		htmlpage = "userpage/settings_nl.html"
+
+	template = loader.get_template(htmlpage)
+	context = {}
+	return HttpResponse(template.render(context, request))
+
+
+def updatePrice(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+
+	if (request.method == 'POST'):
+		HouseID = int(request.POST["HouseID"])
+		Price = float(request.POST["Price"])
+
+		updatePriceByHouseholdID(HouseID, Price)
+		return HttpResponse("Price changed.")
+
+
+
+	response = HttpResponse("This page should be used with a post request.")
+	response.status_code = 400
+	return response
+
+
+def changeCurrentHouse(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+
+	if (request.method == "POST"):
+		NewHouseID = int(request.POST["NewHouse"])
+		request.session["HouseID"] = NewHouseID
+		return HttpResponse("Succesfully changed household.")
+
+	response = HttpResponse("This page should be used with a post request.")
+	response.status_code = 400
+	return response
 
 
 
@@ -410,3 +456,8 @@ def JSON_CurrentYearData(request):
 	return JSON_yearusagehouse(request, request.session["HouseID"])
 
 
+def JSON_householdsprice(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+
+	return HttpResponse(HouseHoldsPrice(request.session["UserID"], request.session["HouseID"]).getHousesJSON())

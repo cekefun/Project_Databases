@@ -79,17 +79,17 @@ div.formstyle {
 <ul1>
   <li1><a href="../">Home</a></li1>
   <li1><a class="active" href="">Sensors</a></li1>
-  <li1><a href="../minute/">Power Usage</a></li1>
+  <li1><a href="../minute/">Power usage</a></li1>
   <li1><a href="../about/">About</a></li1>
 </ul1>
-  <div class="dropdown" >
-	<button class="dropbtn" style="float:right">Account</button>
-        <div class="dropdown-content a">
-             <a href="/logout/">Log Out</a>
-	     <a href="../settings/">Settings</a>
-	     <a href="../addHouse/">Add a House</a>
-  	</div>
-  </div>
+<div class="dropdown" >
+<button class="dropbtn" style="float:right">Account</button>
+    <div class="dropdown-content a">
+     <a href="/logout/">Log Out</a>
+     <a href="../settings/">Settings</a>
+     <a href="../addHouse/">Add a House</a>
+	</div>
+</div>
 	{% if hasHouse %}
 
 		<br><br><br>
@@ -132,9 +132,8 @@ div.formstyle {
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script>
-// testscripts in this part
+
 function updateData(element) {
-	// columnName = typeof columnName !== 'undefined' ? columnName : "Title";
 	var columnName = element.getAttribute("id");
 	if (columnName == "Active") {
 		updateActive(element);
@@ -151,10 +150,12 @@ function updateData(element) {
 			element.innerHTML = newValue;
 		},
 		error: function(context) {
-			alert(context.responseText);
+			alert("The given value is not valid."); //TRANSLATE
+			// alert(context.responseText);
 		}
 	});
 }
+
 function updateActive(element) {
 	var columnName = "Active";
 	var sensorID = element.parentNode.getAttribute("sensorID");
@@ -188,7 +189,7 @@ function deleteSensor(element) {
 		return;
 	}
 	$.ajax({
-		url: 'deleteSensor',
+		url: 'deleteSensor/',
 		type: 'POST',
 		data: $.param({'sensorID': element.parentNode.parentNode.getAttribute("sensorID")}),
 		success: function() {

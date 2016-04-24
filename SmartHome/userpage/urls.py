@@ -14,7 +14,7 @@ urlpatterns = [
 
     url(r'^sensors/updateSensor/$', views.Update_sensordata, name='updateSensordata'),
     url(r'^sensors/addSensor/$', views.Add_newSensor, name="addNewSensor"),
-    url(r'^sensors/deleteSensor/$', views.Delete_sensor, name="deleteSenor"),
+    url(r'^sensors/deleteSensor/$', views.Delete_sensor, name="deleteSensor"),
     url(r'^sensors/currentTitles/$', views.CurrentTitleSensors, name="currentTitleSensors"),
     
     url(r'^sensors/current/$', views.JSON_CurrentSensors, name="CurrentSensors"),
@@ -32,6 +32,11 @@ urlpatterns = [
     url(r'^day/(?P<householdid>[0-9]*)/$', views.JSON_dayusagehouse, name='dayusehouse'),
     url(r'^month/(?P<householdid>[0-9]*)/$', views.JSON_monthusagehouse, name='monthusehouse'),
     url(r'^year/(?P<householdid>[0-9]*)/$', views.JSON_yearusagehouse, name='yearusehouse'),
+
+    url(r'^settings/$', views.settingsPage, name="settings"),
+    url(r'^settings/currentHouseholds/$', views.JSON_householdsprice, name="householdsprice"),
+    url(r'^settings/updatePrice/$', views.updatePrice, name="updateprice"),
+    url(r'^settings/changeHouse/$', views.changeCurrentHouse, name="changecurrenthouse"),
 
     url(r'^changeHouse/$', views.ChangeHouse, name="changehouse"),
     url(r'^addHouse/$', views.addHouse, name="addhouse"),

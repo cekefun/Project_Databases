@@ -34,6 +34,10 @@ def SQL_DeleteSensor(SensorID):
 	return command
 
 
+def SQL_SelectHouseHoldPrice(UserID):
+	command = ("""select Address.StreetName as Streetname, Address.StreetNumber as Streetnumber, Address.City as City, Address.PostalCode as Postalcode, Address.Country as Country, House.PricePerUnit as Price, House.ID as ID from Address, House where House.AddressID = Address.ID and House.OwnedBy=%i; """ % (UserID))
+	return command
+
 
 def dictfetchall(cursor):
 	"function that returns the results from an SQL query in dictionary format"
@@ -55,9 +59,12 @@ def AddNewSensor(InstalledOn, Title, Apparature, Description, Unit):
 
 def DeleteSensor(SensorID):
 	dbCursor = connection.cursor()
-	print SQL_DeleteSensor(SensorID)
 	dbCursor.execute(SQL_DeleteSensor(SensorID))
 	return True
+
+def updatePriceByHouseholdID(HouseID, Price):
+	dbCursor = connection.cursor()
+	dbCursor.execute(("""update House set PricePerUnit=%f where ID=%i """ % (Price, HouseID)))
 
 
 
@@ -446,3 +453,31 @@ class NewHouse:
 		self.cursor.execute(("""insert into House values (0,%i, %f, %i); """ % (AddressID, self.Price, self.UserID)))
 
 
+
+class HouseHoldsPrice:
+	def __init__(self, UserID, currentHouseID):
+		self.UserID = UserID
+		self.cursor = connection.cursor()
+		self.results = []
+		self.currentHouseID = int(currentHouseID)
+
+	def selectUserHouses(self):
+		# print self.UserID
+		self.cursor.execute(SQL_SelectHouseHoldPrice(self.UserID))
+		self.results = dictfetchall(self.cursor)
+
+	def toJSON(self):
+		result = {}
+		result["houses"] = []
+		for i in self.results:
+			dataToAdd = dict(i)
+			if (dataToAdd["ID"] == self.currentHouseID):
+				dataToAdd["CurrentlyActive"] = 1
+			else:
+				dataToAdd["CurrentlyActive"] = 0
+			result["houses"].append(dataToAdd)
+		return json.dumps(result)
+
+	def getHousesJSON(self):
+		self.selectUserHouses()
+		return self.toJSON()

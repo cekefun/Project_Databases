@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+{% load staticfiles %}
+<!-- <link rel="stylesheet" type="text/css" href="{% static 'css/defaultstyle.css'%}"> -->
+<link rel="stylesheet" type="text/css" href="{% static 'css/settings.css'%}">
+
+</head>
+
+<body>
+
+<ul1>
+  <li1><a href="../">Home</a></li1>
+  <li1><a href="../sensors/">Sensors</a></li1>
+  <li1><a href="../minute/">Power Usage</a></li1>
+  <li1><a href="../about/">About</a></li1>
+</ul1>
+<div class="dropdown" >
+<button class="dropbtn" style="float:right">Account</button>
+    <div class="dropdown-content a">
+     <a href="/logout/">Log Out</a>
+     <a href="">Settings</a>
+     <a href="../addHouse/">Add a House</a>
+	</div>
+</div>
+<br><br><br><br><br>
+
+<title>Settings</title>
+
+<div class="changehousehold">
+	<p>Current household: </p>
+	<table id="currenthousehold">
+	</table>
+	<br>
+	<form id="changehouseholdform" action="javascript: void(0);">
+	</form>
+</div>
+<br><br><br><br>
+
+<div class="householdtable" style="overflow-x:auto;">
+<table id="householdtable">
+	<tr id="householdtableheader">
+		<th>Streetname</th>
+		<th>Streetnumber</th>
+		<th>City</th>
+		<th>Postal code</th>
+		<th>Country</th>
+		<th>Price per unit<sup>1</sup></th>
+	</tr>
+</table>
+</div>
+
+<p class="PriceInfo"><sup>1</sup>Doubleclick on the price of a certain house to change it.</p>
+
+
+
+
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="{% static 'js/settings.js' %}"></script>
