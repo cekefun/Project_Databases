@@ -354,6 +354,40 @@ def changeCurrentHouse(request):
 
 
 
+def commentsPage(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+
+	htmlfile = "userpage/comments.html"
+	language = request.session["Language"]
+
+	if (language == "en"):
+		htmlfile = "userpage/comments.html"
+	elif (language == "nl"):
+		htmlfile = "userpage/comments_nl.html"
+
+	template = loader.get_template(htmlfile)
+	context = {}
+	return HttpResponse(template.render(context, request))
+
+
+def addCommentSensor(request):
+	if (request.method == 'POST'):
+		SensorID = request.POST["SensorID"]
+		CommentText = request.POST["Message"]
+		addComment(SensorID, CommentText)
+		return HttpResponse("Added comment to your sensor.")
+
+
+
+	response = HttpResponse("This page should be used with a post request.")
+	response.status_code = 400
+	return response
+
+
+
+
+
 
 
 
@@ -466,3 +500,6 @@ def JSON_householdsprice(request):
 		return RedirectNotLoggedIn(request)
 
 	return HttpResponse(HouseHoldsPrice(request.session["UserID"], request.session["HouseID"]).getHousesJSON())
+
+def JSON_commentssensor(request, sensorID):
+	return HttpResponse(CommentsFromSensor(sensorID).getCommentsJSON())

@@ -75,6 +75,12 @@ def getFirstHouseID(UserID):
 	return int(result[0])
 
 
+def addComment(SensorID, Message):
+	dbCursor = connection.cursor()
+	dbCursor.execute("""insert into Comment values (0,"%s",%i);""" % (str(Message), int(SensorID)))
+
+
+
 class Sensor:
 	def __init__(self):
 		self.ID = 0
@@ -425,7 +431,7 @@ class SensorTitle:
 		return json.dumps(result)
 
 	def selectByHousehold(self):
-		self.cursor.execute("""select Sensor.ID as SensorID, Sensor.Title as Title from Sensor where InstalledOn=%i""" % (self.houseID))
+		self.cursor.execute("""select Sensor.ID as SensorID, Sensor.Title as Title from Sensor where InstalledOn=%i order by Sensor.ID""" % (self.houseID))
 		self.results = dictfetchall(self.cursor)
 
 
@@ -494,4 +500,26 @@ class HouseHoldsPrice:
 
 	def getHousesJSON(self):
 		self.selectUserHouses()
+		return self.toJSON()
+
+
+class CommentsFromSensor:
+	def __init__(self, sensorID):
+		self.SensorID = int(sensorID)
+		self.cursor = connection.cursor()
+		self.results = []
+
+	def selectComments(self):
+		self.cursor.execute("select Comment.Message from Comment where SensorID=%i" % (self.SensorID))
+		self.results = dictfetchall(self.cursor)
+
+	def toJSON(self):
+		result = {}
+		result["comments"] = []
+		for i in self.results:
+			result["comments"].append(dict(i))
+		return json.dumps(result)
+
+	def getCommentsJSON(self):
+		self.selectComments()
 		return self.toJSON()

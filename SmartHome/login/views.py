@@ -72,6 +72,10 @@ def login(request):
                 response.status_code = 401
                 return response
 
+    elif (request.method == 'GET'):
+        template = loader.get_template('login/Login.html')
+        context = RequestContext(request)
+        return HttpResponse(template.render(context))
 
     context = RequestContext(request)
     response = HttpResponse(template.render(context))

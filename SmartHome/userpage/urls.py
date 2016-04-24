@@ -16,6 +16,8 @@ urlpatterns = [
     url(r'^sensors/addSensor/$', views.Add_newSensor, name="addNewSensor"),
     url(r'^sensors/deleteSensor/$', views.Delete_sensor, name="deleteSensor"),
     url(r'^sensors/currentTitles/$', views.CurrentTitleSensors, name="currentTitleSensors"),
+    url(r'^sensors/comments/$', views.commentsPage, name="commentspage"),
+    url(r'^sensors/comments/addComment/$', views.addCommentSensor, name="addCommentSensor"),
     
     url(r'^sensors/current/$', views.JSON_CurrentSensors, name="CurrentSensors"),
     url(r'^minute/current/$', views.JSON_CurrentMinuteData, name="CurrentMinuteData"),
@@ -26,12 +28,13 @@ urlpatterns = [
 
     url(r'^sensors/all$', views.JSON_allsensors, name="jsonsensordata"), #used for testing
     url(r'^minute/all$', views.JSON_allminutedata, name='jsonminutedata'), #used for testing
-	
+    
     url(r'^minute/(?P<householdid>[0-9]*)/$', views.JSON_minuteusagehouse, name='minuteusehousehold'),
     url(r'^hour/(?P<householdid>[0-9]*)/$', views.JSON_hourusagehouse, name='hourusehouse'),
     url(r'^day/(?P<householdid>[0-9]*)/$', views.JSON_dayusagehouse, name='dayusehouse'),
     url(r'^month/(?P<householdid>[0-9]*)/$', views.JSON_monthusagehouse, name='monthusehouse'),
     url(r'^year/(?P<householdid>[0-9]*)/$', views.JSON_yearusagehouse, name='yearusehouse'),
+    url(r'^sensors/comments/(?P<sensorID>[0-9]*)/$', views.JSON_commentssensor, name="commentssensor"),
 
     url(r'^settings/$', views.settingsPage, name="settings"),
     url(r'^settings/currentHouseholds/$', views.JSON_householdsprice, name="householdsprice"),

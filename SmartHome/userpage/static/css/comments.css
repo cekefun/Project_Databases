@@ -1,0 +1,201 @@
+p.AllComment {
+  font-weight: bold;
+  font-size:18px;
+}
+
+p.TextAddComment {
+  font-weight: bold;
+  font-size:18px;
+}
+
+div.NewComment {
+  /*border-radius: 5px;*/
+  margin-left: 25px;
+  border: 2px solid #73AD21;
+  padding: 2%;
+  width: 40%;
+}
+
+div.Comments {
+  padding: 2%;
+  width: 40%;
+}
+
+ul {
+  list-style-type: none;
+  border: 2px solid #73AD21;
+  padding: 0;
+}
+
+ul li {
+  padding: 16px 16px;
+  border-bottom: 1px solid #73AD21;
+}
+
+ul li:last-child {
+  border-bottom: none;
+}
+
+table {
+   	position:relative;
+	border-collapse: collapse;
+	width: 60%;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+th, td {
+	text-align: left;
+	padding: 8px;
+}
+
+input[type=text], select {
+	width: 100%;
+	padding: 12px 20px;
+	margin: 8px 0;
+	display: inline-block;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box;
+}
+
+input[type=submit] {
+	width: 100%;
+	background-color: #4CAF50;
+	color: white;
+	padding: 14px 20px;
+	margin: 8px 0;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+input[type=submit]:hover {
+	background-color: #45a049;
+}
+
+ul1 {
+    position:fixed;
+    top: 0;
+    z-index: 1;
+    width: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #000078;
+}
+
+li1 {
+    float: left;
+}
+
+li1 a {
+    z-index:1;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li1 a:hover:not(.active) {
+    background-color: #0000C0;
+}
+
+li1 .active:hover {
+    background-color: #4CAF50;
+}
+
+.active {
+    background-color: green;
+}
+
+ul2 {
+    position:fixed;
+    top: 46px;
+    z-index:1;
+    width: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #f9f9f9;
+}
+
+li2 {
+    float: left;
+}
+
+li2 a {
+    display: block;
+    z-index:1;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li2 a:hover:not(.active) {
+    background-color: #f1f1f1;
+}
+
+li2 .active:hover {
+    background-color: #e9e9e9;
+}
+
+li2 .active {
+    background-color: #f1f1f1;
+}
+
+
+
+.dropbtn {
+    position:fixed;
+    top: 0;
+    right: 0;
+    z-index:1;
+    background-color: #000078;
+    color: white;
+    padding: 14px 31px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown {
+    position:fixed;
+    top:0;
+    right: 0;
+    z-index:1;
+    padding: 46px 4px;
+    display: inline-block;
+}
+
+.dropdown-content {
+    z-index:1;
+    display: none;
+    background-color: #f9f9f9;
+    min-width: 0;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a {
+    z-index:1;
+    text-align:right;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #0000C0;
+}
+
