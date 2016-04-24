@@ -11,7 +11,7 @@ function setupChangeHouseholds(dataobject) {
 
 	//if the user has more than 1 house --> add entries to the form
 	if (shouldAddForm == true) {
-		$("<p id='otherHouseHoldsText'>Other households:</p>").insertBefore("#changehouseholdform");
+		$("<p id='otherHouseHoldsText'>Andere huishoudens:</p>").insertBefore("#changehouseholdform");
 		$("#changehouseholdform").append("<select name='NewHouse' id='selecthouseholds'></select>");
 	}
 
@@ -30,7 +30,7 @@ function setupChangeHouseholds(dataobject) {
 
 	//if the user has more than one house, add a submit button to the form
 	if (shouldAddForm == true) {
-		$("#changehouseholdform").append("&nbsp;&nbsp;&nbsp;<input type='submit' value='Change household'>");
+		$("#changehouseholdform").append("&nbsp;&nbsp;&nbsp;<input type='submit' value='Verander van huishouden'>");
 	}
 }
 
@@ -58,14 +58,14 @@ function loadHouseholds() {
 }
 
 function updatePrice(element) {
-	var newPrice = prompt("Enter a new price"); //TRANSLATE
+	var newPrice = prompt("Geef een nieuwe prijs in."); //TRANSLATE
 	if (newPrice == "" || newPrice == null)
 		return;
 
 	newPrice = parseFloat(newPrice);
 
 	if (newPrice === NaN) {
-		alert("The value you have entered is not a valid number.");
+		alert("De waarde die u ingegeven heeft is niet geldig.");
 		return;
 	}
 
@@ -79,7 +79,7 @@ function updatePrice(element) {
 			element.innerHTML = String(newPrice);
 		},
 		error: function() {
-			alert("Could not change the price/unit of your house."); //TRANSLATE
+			alert("Het lukte niet om de prijs/eenheid van uw huis aan te passen."); //TRANSLATE
 		}
 	});
 }
