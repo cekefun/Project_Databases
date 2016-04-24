@@ -175,7 +175,7 @@ def sensors(request):
 	if (language == "en"):
 		htmlpage = "userpage/sensor.html"
 	elif (language == "nl"):
-		htmlpage = "userpage/sensor_nl.html" #MIGHT STILL NEED TO CHANGE
+		htmlpage = "userpage/sensor_nl.html"
 
 	template = loader.get_template(htmlpage)
 	context = {
@@ -206,7 +206,6 @@ def ChangeHouse(request):
 
 def Update_sensordata(request):
 	if (request.method == "POST"):
-		# print request.POST.items()
 		updateObj = SensorData()
 		HasUpdated = updateObj.updateAttribute(request.POST['id'], request.POST['columnname'], request.POST['newvalue'])
 		
@@ -217,13 +216,10 @@ def Update_sensordata(request):
 			response.status_code = 400
 			return response
 	else:
-		# print "Not accessing this view with POST request.... shit"
 		return HttpResponse("<h1>Error 404: This page should be used with POST</h1>")
 
 def Add_newSensor(request):
 	if (request.method == "POST"):
-		# print request.POST.items()
-		# newSensor = Sensor()
 		if (request.session["HasHouse"] == False):
 			response = HttpResponse("No house to add a sensor to")
 			response.status_code = 404
@@ -333,6 +329,18 @@ def updatePrice(request):
 		return HttpResponse("Price changed.")
 
 
+
+	response = HttpResponse("This page should be used with a post request.")
+	response.status_code = 400
+	return response
+
+
+def changeLanguage(request):
+	if (request.method == "POST"):
+		newLang = request.POST["language"]
+
+		request.session["Language"] = newLang
+		return HttpResponse("Language changed.")
 
 	response = HttpResponse("This page should be used with a post request.")
 	response.status_code = 400

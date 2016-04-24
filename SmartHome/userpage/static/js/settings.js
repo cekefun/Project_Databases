@@ -115,6 +115,17 @@ $("body").on("submit", "#changehouseholdform", function(eventobject) {
 	});
 });
 
+$("body").on("submit", "#changeLanguage", function(eventobject) {
+	eventobject.preventDefault();
+	$.ajax({
+		url:"changeLanguage/",
+		type:"POST",
+		data:($("#changeLanguage").serialize()),
+		success: function() {
+			location.reload(true);
+		}
+	});
+});
 
 $.ajaxSetup({
 	beforeSend: function(xhr, settings) {

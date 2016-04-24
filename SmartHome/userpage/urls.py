@@ -40,6 +40,7 @@ urlpatterns = [
     url(r'^settings/currentHouseholds/$', views.JSON_householdsprice, name="householdsprice"),
     url(r'^settings/updatePrice/$', views.updatePrice, name="updateprice"),
     url(r'^settings/changeHouse/$', views.changeCurrentHouse, name="changecurrenthouse"),
+    url(r'^settings/changeLanguage/$', views.changeLanguage, name="changeLanguage"),
 
     url(r'^changeHouse/$', views.ChangeHouse, name="changehouse"),
     url(r'^addHouse/$', views.addHouse, name="addhouse"),

@@ -168,7 +168,6 @@ class SensorData:
 				return False
 
 
-		# print SQL_SensorChangeAttribute(sensorID, Attribute, newValue)
 		self.cursor.execute(SQL_SensorChangeAttribute(sensorID, Attribute, newValue))
 		return True
 
@@ -482,7 +481,6 @@ class HouseHoldsPrice:
 		self.currentHouseID = int(currentHouseID)
 
 	def selectUserHouses(self):
-		# print self.UserID
 		self.cursor.execute(SQL_SelectHouseHoldPrice(self.UserID))
 		self.results = dictfetchall(self.cursor)
 

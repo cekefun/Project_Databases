@@ -198,7 +198,6 @@ function DisplaySensorDataTable(dataobject) {
 			tableelement_active.appendChild(Crossmark());
 			tableelement_active.setAttribute("value", "0");
 		}
-		// tablerow.appendChild(tableelement_id);
 		tablerow.appendChild(tableelement_title);
 		tablerow.appendChild(tableelement_apparature);
 		tablerow.appendChild(tableelement_description);
