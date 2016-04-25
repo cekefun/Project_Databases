@@ -26,7 +26,7 @@ def indexpage(request):
 
 	htmlpage = "userpage/Home.html"
 	language = "en"
-	if(IsLoggedIn(request) == True):
+	if("Language" in request.session):
 		language = request.session["Language"]
 
 	if (language == "nl"):
