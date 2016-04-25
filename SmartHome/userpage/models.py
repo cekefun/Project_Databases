@@ -248,6 +248,8 @@ class MinuteData:
 		for i in self.results:
 			result["datasamples"].append(dict(i))
 
+		result["firstTimestamp"] = str(currentTimeStamp().timestampFirstMinute()["firstTimestamp"])
+
 		return json.dumps(result)
 
 
@@ -270,7 +272,6 @@ class HourData:
 		rows = self.cursor.fetchall()
 		for i in rows:
 			self.results.append(HourDataSample(i))
-
 		return self.getTuples()
 
 
@@ -289,7 +290,7 @@ class HourData:
 
 		for i in self.results:
 			result["datasamples"].append(dict(i))
-
+		result["firstTimestamp"] = str(currentTimeStamp().timestampFirstHour()["firstTimestamp"])
 		return json.dumps(result)
 
 
@@ -320,7 +321,6 @@ class DayData:
 		rows = self.cursor.fetchall()
 		for i in rows:
 			self.results.append(DayDataSample(i))
-
 		return self.getTuples()
 
 	def toJSON(self):
@@ -329,7 +329,7 @@ class DayData:
 
 		for i in self.results:
 			result["datasamples"].append(dict(i))
-
+		result["firstTimestamp"] = str(currentTimeStamp().timestampFirstDay()["firstTimestamp"])
 		return json.dumps(result)
 
 
@@ -369,7 +369,7 @@ class MonthData:
 
 		for i in self.results:
 			result["datasamples"].append(dict(i))
-
+		result["firstTimestamp"] = str(currentTimeStamp().timestampFirstMonth()["firstTimestamp"])
 		return json.dumps(result)
 
 
@@ -409,7 +409,7 @@ class YearData:
 
 		for i in self.results:
 			result["datasamples"].append(dict(i))
-
+		result["firstTimestamp"] = str(currentTimeStamp().timestampFirstYear()["firstTimestamp"])
 		return json.dumps(result)
 
 
@@ -521,3 +521,34 @@ class CommentsFromSensor:
 	def getCommentsJSON(self):
 		self.selectComments()
 		return self.toJSON()
+
+
+
+class currentTimeStamp:
+	def __init__(self):
+		self.cursor = connection.cursor()
+
+	def timestampFirstMinute(self):
+		self.cursor.execute("select timestamp(date_sub(makedate(year(now()), dayofyear(now())), interval 2 day), maketime(hour(now()), 0, 0)) as firstTimestamp;")
+		resultTime = dictfetchall(self.cursor)
+		return resultTime[0]
+
+	def timestampFirstHour(self):
+		self.cursor.execute("select timestamp(date_sub(makedate(year(now()), dayofyear(now())), interval 2 month), maketime(0, 0, 0)) as firstTimestamp;")
+		resultTime = dictfetchall(self.cursor)
+		return resultTime[0]
+
+	def timestampFirstDay(self):
+		self.cursor.execute("select timestamp(date_sub(date_sub(makedate(year(now()), dayofyear(now())), interval dayofmonth(now())-1 day), interval 1 year), maketime(0, 0, 0)) as firstTimestamp;")
+		resultTime = dictfetchall(self.cursor)
+		return resultTime[0]
+
+	def timestampFirstMonth(self):
+		self.cursor.execute("select timestamp(date_sub(makedate(year(now()), 1), interval 10 year), maketime(0, 0, 0)) as firstTimestamp;")
+		resultTime = dictfetchall(self.cursor)
+		return resultTime[0]
+
+	def timestampFirstYear(self):
+		self.cursor.execute("select timestamp(date_sub(makedate(year(now()), 1), interval 100 year), maketime(0, 0, 0)) as firstTimestamp;")
+		resultTime = dictfetchall(self.cursor)
+		return resultTime[0]

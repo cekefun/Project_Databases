@@ -27,5 +27,6 @@ urlpatterns = [
     url(r'^login/', include('login.urls')),
     url(r'^upload/', include('SensorClient.urls')),
     url(r'^logout/$', views.logoutuser, name="logoutuser"),
+    url(r'^forum/', include('forum.urls')),
     url(r'^$', RedirectView.as_view(url='login/', permanent=False)),
 ]  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
