@@ -39,7 +39,8 @@ def register(request):
 
 def login(request):
     template = loader.get_template("login/Login.html")
-
+    if('Language' not in request.session):
+        request.session['Language'] = "en" #By default
     if (request.method == 'POST'):
         form=LoginForm(request.POST)
         if (form.is_valid()):
@@ -52,7 +53,7 @@ def login(request):
 
                 request.session['Username'] = Username
                 request.session['UserID'] = Validlogin.getUserID()
-                request.session['Language'] = "en" #By default
+
                 if (Validlogin.hasHouse() == True):
                     request.session["HasHouse"] = True
                     request.session['HouseID'] = Validlogin.getFirstHouseID()
