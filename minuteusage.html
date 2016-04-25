@@ -127,6 +127,7 @@ function getdata() {
 				data.addColumn("number", sensordata.sensors[i].Title);
 				sensorids.push(sensordata.sensors[i].SensorID);
 			}
+            data.addColumn("number", "Total");
 		}
 	});
 
@@ -278,10 +279,15 @@ function getdata() {
 			var total = [];
 			for(i = 0; i < datapoints[0].length; i++) {
 				var row = [];
+                var totalsum = 0;
 				// console.log(datapoints.length);
 				for(j = 0; j < datapoints.length; j++) {
 					row.push(datapoints[j][i]);
+                    if(j > 0){
+                        totalsum = totalsum + datapoints[j][i];
+                    }
 				}
+                row.push(parseFloat(totalsum));
 				total.push(row);
 			}
 			data.addRows(total);
