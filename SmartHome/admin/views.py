@@ -12,11 +12,17 @@ import datetime
 
 def loginpage(request):
     template = loader.get_template('admin/AdminLogin.html')
+    if('Language' not in request.session):
+        request.session['Language'] = "en" #By default
+    if(request.session['Language'] == "nl"):
+        template = loader.get_template('admin/AdminLogin_nl.html')
     context = RequestContext(request)
     return HttpResponse(template.render(context,request))
 
 def login(request):
     template = loader.get_template("admin/AdminLogin.html")
+    if(request.session['Language'] == "nl"):
+        template = loader.get_template("admin/AdminLogin_nl.html")
 
     if (request.method == 'POST'):
         form=LoginForm(request.POST)
@@ -30,7 +36,6 @@ def login(request):
 
                 request.session['Username'] = Username
                 request.session['UserID'] = Validlogin.getUserID()
-                request.session['Language'] = "en" #By default
                 if (Validlogin.hasHouse() == True):
                     request.session["HasHouse"] = True
                     request.session['HouseID'] = Validlogin.getFirstHouseID()
@@ -44,6 +49,8 @@ def login(request):
                 return response
             else:
                 context = {'message':'Invalid password'}
+                if(request.session['Language'] == "nl"):
+                    context = {'message':'Ongeldig wachtwoord'}
                 response = HttpResponse(template.render(context))
                 response.status_code = 401
                 return response
