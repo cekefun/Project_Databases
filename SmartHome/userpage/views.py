@@ -24,7 +24,10 @@ def indexpage(request):
 #	if (IsLoggedIn(request) == False):
 #		return RedirectNotLoggedIn(request)
 
-	language = language = request.session["Language"]
+	htmlpage = "userpage/Home.html"
+	language = "en"
+	if(IsLoggedIn(request) == True):
+		language = request.session["Language"]
 
 	if (language == "nl"):
 		htmlpage = "userpage/Home_nl.html" #MIGHT STILL NEED TO CHANGE
