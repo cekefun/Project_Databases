@@ -408,31 +408,31 @@ def addCommentSensor(request):
 def JSON_minuteusagehouse(request, householdid):
 	minutedata = MinuteData()
 	minutedata.selectByHouseholdID(householdid)
-	return HttpResponse(minutedata.toJSON())
+	return HttpResponse(minutedata.toJSON(householdid))
 
 
 def JSON_hourusagehouse(request, householdid):
 	hourdata = HourData()
 	hourdata.selectByHouseholdID(householdid)
-	return HttpResponse(hourdata.toJSON())
+	return HttpResponse(hourdata.toJSON(householdid))
 
 
 def JSON_dayusagehouse(request, householdid):
 	daydata = DayData()
 	daydata.selectByHouseholdID(householdid)
-	return HttpResponse(daydata.toJSON())
+	return HttpResponse(daydata.toJSON(householdid))
 
 
 def JSON_monthusagehouse(request, householdid):
 	monthdata = MonthData()
 	monthdata.selectByHouseholdID(householdid)
-	return HttpResponse(monthdata.toJSON())
+	return HttpResponse(monthdata.toJSON(householdid))
 
 
 def JSON_yearusagehouse(request, householdid):
 	yeardata = YearData()
 	yeardata.selectByHouseholdID(householdid)
-	return HttpResponse(yeardata.toJSON())
+	return HttpResponse(yeardata.toJSON(householdid))
 
 
 def JSON_allsensors(request):

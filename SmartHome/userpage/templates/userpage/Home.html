@@ -60,11 +60,13 @@ position : absolute;
     border: 1px solid #ccc;
     float: left;
     width: 500px;
+    height: 230px;
     transition: all 1s;
 }
 
 div.img3:hover {
     width: 1100px;
+    height:501px;
     top:200px;
     left:300px;
     z-index: +1;
@@ -72,7 +74,8 @@ div.img3:hover {
 
 div.img3 img {
     width: 100%;
-    height: auto;
+    height: 230px;
+    height:100%
 }
 div.img4 {
 position : absolute;
@@ -110,26 +113,16 @@ div.desc {
 <body>
 <ul1>
   <li1><a class="active" href="">Home</a></li1>
-  {% if request.session.Username|length > 0 %}
   <li1><a href="sensors/">Sensors</a></li1>
   <li1><a href="minute/">Power Usage</a></li1>
-  {% endif %}
-  {% if request.session.IsAdmin %}
-  <li1><a href="../admin/users">Users</a></li1>
-  <li1><a href="../admin/report">Report</a></li1>
-  {% endif %}
   <li1><a href="about/">About</a></li1>
 </ul1>
-<div class="dropdown" >
+<div class="dropdown">
   <button class="dropbtn" style="float:right">Account</button>
   <div class="dropdown-content a">
-{% if request.session.Username|length > 0 %}
-      <a href="settings/">Settings</a>
-      <a href="addHouse/">Add a House</a>
-      <a href="/logout/">Log out</a>
-      {% else %}
-      <a href='../login'>Log in</a>
-      {% endif %}
+			<a href="settings/">Settings</a>
+			<a href="addHouse/">Add a House</a>
+			<a href="/logout/">Log out</a>
   </div>
 </div>
 <div class="img1">
@@ -139,16 +132,16 @@ div.desc {
   <div class ="desc">Easily readable interactive graphs</div>
 </div>
 <div class="img2">
-  <a target = "_blank" href="{% static 'img/graph.png' %}">
-    <img src="{% static 'img/graph.png' %}" alt="graph" width="600" height="400">
+  <a target = "_blank" href="{% static 'img/sensortable.png' %}">
+    <img src="{% static 'img/sensortable.png' %}" alt="graph" width="600" height="400">
   </a>
-  <div class ="desc">Easily readable interactive graphs</div>
+  <div class ="desc">Select and manage your sensors</div>
 </div>
 <div class="img3">
-  <a target = "_blank" href="{% static 'img/graph.png' %}">
-    <img src="{% static 'img/graph.png' %}" alt="graph" width="600" height="400">
+  <a target = "_blank" href="{% static 'img/forum.png' %}">
+    <img src="{% static 'img/forum.png' %}" alt="graph" width="600" height="400">
   </a>
-  <div class ="desc">Easily readable interactive graphs</div>
+  <div class ="desc">Share energy tips and tricks with others</div>
 </div>
 <div class="img4">
   <a target = "_blank" href="{% static 'img/graph.png' %}">

@@ -241,7 +241,7 @@ class MinuteData:
 
 		return self.getTuples()
 
-	def toJSON(self):
+	def toJSON(self, householdID):
 		result = {}
 		result["datasamples"] = []
 
@@ -249,6 +249,7 @@ class MinuteData:
 			result["datasamples"].append(dict(i))
 
 		result["firstTimestamp"] = str(currentTimeStamp().timestampFirstMinute()["firstTimestamp"])
+		result["pricePerUnit"] = str(houseHold(householdID).getPrice())
 
 		return json.dumps(result)
 
@@ -284,13 +285,15 @@ class HourData:
 			self.results.append(HourDataSample(i))
 		return self.getTuples()	
 
-	def toJSON(self):
+	def toJSON(self, householdID):
 		result = {}
 		result['datasamples'] = []
 
 		for i in self.results:
 			result["datasamples"].append(dict(i))
 		result["firstTimestamp"] = str(currentTimeStamp().timestampFirstHour()["firstTimestamp"])
+		result["pricePerUnit"] = str(houseHold(householdID).getPrice())
+		
 		return json.dumps(result)
 
 
@@ -323,13 +326,14 @@ class DayData:
 			self.results.append(DayDataSample(i))
 		return self.getTuples()
 
-	def toJSON(self):
+	def toJSON(self, householdID):
 		result = {}
 		result['datasamples'] = []
 
 		for i in self.results:
 			result["datasamples"].append(dict(i))
 		result["firstTimestamp"] = str(currentTimeStamp().timestampFirstDay()["firstTimestamp"])
+		result["pricePerUnit"] = str(houseHold(householdID).getPrice())
 		return json.dumps(result)
 
 
@@ -363,13 +367,14 @@ class MonthData:
 
 		return self.getTuples()
 
-	def toJSON(self):
+	def toJSON(self, householdID):
 		result = {}
 		result['datasamples'] = []
 
 		for i in self.results:
 			result["datasamples"].append(dict(i))
 		result["firstTimestamp"] = str(currentTimeStamp().timestampFirstMonth()["firstTimestamp"])
+		result["pricePerUnit"] = str(houseHold(householdID).getPrice())
 		return json.dumps(result)
 
 
@@ -403,13 +408,14 @@ class YearData:
 
 		return self.getTuples()
 
-	def toJSON(self):
+	def toJSON(self, householdID):
 		result = {}
 		result['datasamples'] = []
 
 		for i in self.results:
 			result["datasamples"].append(dict(i))
 		result["firstTimestamp"] = str(currentTimeStamp().timestampFirstYear()["firstTimestamp"])
+		result["pricePerUnit"] = str(houseHold(householdID).getPrice())
 		return json.dumps(result)
 
 
@@ -552,3 +558,15 @@ class currentTimeStamp:
 		self.cursor.execute("select timestamp(date_sub(makedate(year(now()), 1), interval 100 year), maketime(0, 0, 0)) as firstTimestamp;")
 		resultTime = dictfetchall(self.cursor)
 		return resultTime[0]
+
+
+
+class houseHold:
+	def __init__(self, householdID):
+		self.ID = householdID
+		self.cursor = connection.cursor()
+
+	def getPrice(self):
+		self.cursor.execute("select PricePerUnit from House where ID=%i" % (self.ID))
+		resultPrice = dictfetchall(self.cursor)
+		return resultPrice[0]["PricePerUnit"]
