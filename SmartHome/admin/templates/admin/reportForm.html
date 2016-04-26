@@ -295,7 +295,7 @@ function drawGraph(datajson) {
 		var timeminute = datajson.datasamples[i].CreationTimestamp.slice(14,16);
 		row.push(new Date(timeyear, timemonth, timeday, timehour, timeminute));
         row.push(parseFloat(datajson.datasamples[i].Value));
-        totaldata.push();
+        totaldata.push(row);
       }
       data.addRows(totaldata);
 
