@@ -201,11 +201,13 @@ function getdata() {
 				    }
 			    }
             }
-		    for(i = 0; i < sensorids.length; i++){
-			    datapoints.push([]);
-	            for(j=0; j < datapoints[0].length; j++){
-		            datapoints[i+1].push(0);
-	            }
+            else{
+		        for(i = 0; i < sensorids.length; i++){
+			        datapoints.push([]);
+	                for(j=0; j < datapoints[0].length; j++){
+		                datapoints[i+1].push(0);
+	                }
+                }
             }
            // var testDate1 = datapoints[0][500];
             //var testDate2 = new Date(2016,4,24,5,12);
