@@ -113,16 +113,26 @@ div.desc {
 <body>
 <ul1>
   <li1><a class="active" href="">Home</a></li1>
+  {% if request.session.Username|length > 0 %}
   <li1><a href="sensors/">Sensors</a></li1>
   <li1><a href="minute/">Power Usage</a></li1>
+  {% endif %}
+  {% if request.session.IsAdmin %}
+  <li1><a href="../admin/users">Users</a></li1>
+  <li1><a href="../admin/report">Report</a></li1>
+  {% endif %}
   <li1><a href="about/">About</a></li1>
 </ul1>
 <div class="dropdown">
   <button class="dropbtn" style="float:right">Account</button>
   <div class="dropdown-content a">
-			<a href="settings/">Settings</a>
-			<a href="addHouse/">Add a House</a>
-			<a href="/logout/">Log out</a>
+{% if request.session.Username|length > 0 %}
+      <a href="settings/">Settings</a>
+      <a href="addHouse/">Add a House</a>
+      <a href="/logout/">Log out</a>
+{% else %}
+      <a href='../login'>Log in</a>
+{% endif %}
   </div>
 </div>
 <div class="img1">
