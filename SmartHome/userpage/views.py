@@ -13,8 +13,8 @@ def IsLoggedIn(request):
 		return False
 	return True
 
-#def RedirectNotLoggedIn(request):
-#	return redirect('/login/')
+def RedirectNotLoggedIn(request):
+	return redirect('/login/')
 
 
 
@@ -302,7 +302,18 @@ def addHouse(request):
 
 
 def aboutPage(request):
-	return HttpResponse("This page is not added yet, i'm sorry... :(")
+	# if (IsLoggedIn(request) == False):
+	# 	return RedirectNotLoggedIn(request)
+
+	htmlpage = "userpage/About.html"
+	language = request.session["Language"]
+
+	if (language == "nl"):
+		htmlpage = "userpage/About_nl.html"
+
+	template = loader.get_template(htmlpage)
+	context = {}
+	return HttpResponse(template.render(context, request))
 
 
 def settingsPage(request):
