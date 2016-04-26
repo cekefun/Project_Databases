@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/defaultstyle.css' %}">
+<style>
+
+div.img1 {
+    position: absolute;
+    bottom:150px;
+    right:0;
+     z-index: -1;
+    margin: 5px;
+    border: 1px solid #ccc;
+    width: 100px;
+}
+
+div.img1 img {
+    width: 100%;
+    height: auto;
+}
+
+div.desc {
+    padding: 10px;
+    text-align: center;
+    z-index: +1;
+    background-color: #000078;
+    color: white;
+}
+
+div.textbox{
+    width:60%;
+    padding: 10px;
+    margin-left:5%;
+    text-align: center;
+    z-index: +1;
+    background-color: #f1f1f1;
+    border-color: green;
+    border:5px solid green;
+    color: black;
+}
+
+</style>
+</head>
+<body>
+<ul1>
+  <li1><a href="../">Start</a></li1>
+  {% if request.session.Username|length > 0 %}
+  <li1><a href="../sensors/">Sensoren</a></li1>
+  <li1><a href="../minute/">Energieverbruik</a></li1>
+  {% endif %}
+  {% if request.session.IsAdmin %}
+  <li1><a href="../../admin/users">Gebruikers</a></li1>
+  <li1><a href="../../admin/report">Verslag</a></li1>
+  {% endif %}
+  <li1><a class="active" href="">Over</a></li1>
+</ul1>
+<div class="dropdown" >
+  <button class="dropbtn" style="float:right">Account</button>
+  <div class="dropdown-content a">
+      {% if request.session.Username|length > 0 %}
+      <a href="../settings/">Instellingen</a>
+      <a href="../addHouse/">Voeg huis toe</a>
+      <a href="/logout/">Log uit</a>
+      {% else %}
+      <a href='/login/'>Inloggen</a>
+      {% endif %}
+  </div>
+</div>
+<br><br><br><br><br><br>
+<div class="img1">
+  <a style="float:right" target = "_blank" href= "{% static 'img/group2.png' %}">
+    <img src="{% static 'img/group2.png' %}" alt="group2" width="600" height="400">
+  </a>
+  <div class ="desc">Group2 was opgericht in Februari 2016, door Federico Quin, Luna Dierckx, Cedric De Haes en Lorin Teugels.</div>
+
+</div><br><br><br><br>
+<div class="textbox">Federico Quin, Data verwerking.<br>
+contact: federico.Quin@student.uantwerpen.be
+</div><br><br>
+<div class="textbox">Cedric De Haes, Data opslag en management.<br>
+contact: Cedric.DeHaes@student.uantwerpen.be
+</div><br><br>
+<div class="textbox">Luna Dierckx, Design en taal specialist.<br>
+contact: luna.dierckx@student.ua.ac.be
+</div><br><br>
+<div class="textbox">Lorin Teugels, Gebruiker interface ontwikkelaar.<br>
+contact: Lorin.Teugels@student.uantwerpen.be
+</div><br><br>
+<!--<div class="textbox">Jan Van Den Heuvel, complaints helpdesk.<br>
+contact: Jan.vandenHeuvel@student.uantwerpen.be
+</div>-->
+<p><br><br><br><br>
+Group2 all rights not reserved.
+
+</p>
+</body>
+</html>
+

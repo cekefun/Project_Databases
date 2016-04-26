@@ -2,11 +2,12 @@
 <html>
 <head>
 {% load staticfiles %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/defaultstyle.css' %}">
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart', 'controls','timeline']});
-      google.charts.setOnLoadCallback(drawStuff);
+<link rel="stylesheet" type="text/css" href="{% static "css/defaultstyle.css" %}">
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script type="text/javascript">
+google.charts.load('current', {'packages':['corechart', 'controls','timeline']});
+google.charts.setOnLoadCallback(drawStuff);
 
       function drawStuff() {
 
@@ -23,21 +24,192 @@
         });
 
 
+var data = new google.visualization.DataTable();
+window.onload = getdata();
 
-      function getdata() {
-	var jsonhttp = new XMLHttpRequest();
-	var url = "current/";
-	jsonhttp.onreadystatechange = function() {
-		if (jsonhttp.readyState == 4 && jsonhttp.status == 200) {
-			var minutedata = JSON.parse(jsonhttp.responseText);
-			// function here with minutedata
+
+function getdata() {
+	data.addColumn('datetime', 'Time');
+	var sensorids = [];
+
+	$.ajax({
+		url:"/index/sensors/currentTitles/",
+		method:"GET",
+		async: false,
+		success: function(text) {
+			var sensordata = JSON.parse(text);
+			for (i = 0; i < sensordata.sensors.length; i++) {
+				data.addColumn("number", sensordata.sensors[i].Title);
+				sensorids.push(sensordata.sensors[i].SensorID);
+			}
+            data.addColumn("number", "Total");
+
 		}
-	}
-	jsonhttp.open("GET", url, true);
-	jsonhttp.send();
-	console.log(document);
-      }
-      window.onload = getdata;
+	});
+
+	$.ajax({
+		url:"current/",
+		method:"GET",
+		async: false,
+		success: function(text) {
+			var minutedata = JSON.parse(text);
+			// function here with minutedata
+			var datapoints = [];
+
+			//var whilestop = false;
+			//var firstID = minutedata.datasamples[0].SensorID;
+			
+			// var temptimearray = [minutedata.datasamples[counter].CreationTimestamp];
+			// datapoints.push(temptimearray)
+
+//alle times aanmaken en in de table steken, mss nog inefficienter als ik eerst al vreesde :/
+
+			datapoints.push([]);	
+			var timeyear = minutedata.firstTimestamp.slice(0,4);
+			var timemonth = minutedata.firstTimestamp.slice(5,7)-1;
+			var timeday = minutedata.firstTimestamp.slice(8,10);
+			var timehour = minutedata.firstTimestamp.slice(11,13);
+			datapoints[0].push(new Date(timeyear, timemonth, timeday, timehour));
+
+			for(j = 0; j <62;j++){
+				for(k=0;k < 24; k++){
+						if(timehour >= 24){
+							timehour = 1;
+							if(timeday >= 31){
+								timeday = 1;
+								if(timemonth>=11){
+									timemonth = 0;
+									timeyear++;
+								}
+								else{
+									timemonth++;
+								}
+							}
+							else if(timeday>=30 && (timemonth == 3 || timemonth == 5 || timemonth == 8 || timemonth == 10) ){
+								timeday = 1;
+								if(timemonth>=11){
+									timemonth = 0;
+									timeyear++;
+								}
+								else{
+									timemonth++;
+								}
+							}
+							else if(timeday >=28 && timemonth == 1 ){
+								timeday = 1; //does not give a single f*ck about leap years... my bad :p
+								if(timemonth>=11){
+									timemonth = 0;
+									timeyear++;
+								}
+								else{
+									timemonth++;
+								}
+							}
+							else {
+								timeday++;
+							}
+						}
+						else {
+							timehour++;
+						}
+					
+					datapoints[0].push(new Date(timeyear, timemonth, timeday, timehour));
+				}						
+			}
+			var counter = 0;
+            var testcount = 0;
+            if(minutedata.datasamples.length>0){
+			    for(i = 0; i < sensorids.length; i++){
+				    datapoints.push([]);
+				    for(j = 0; j < datapoints[0].length; j++){
+
+					    var yearcompare = minutedata.datasamples[counter].CreationTimestamp.slice(0,4);
+					    var monthcompare = minutedata.datasamples[counter].CreationTimestamp.slice(5,7);
+					    var daycompare = minutedata.datasamples[counter].CreationTimestamp.slice(8,10);
+					    var hourcompare = minutedata.datasamples[counter].CreationTimestamp.slice(11,13);
+					    var datecompare = new Date(yearcompare, monthcompare, daycompare, hourcompare);
+                        
+					    if(minutedata.datasamples[counter].SensorID != sensorids[i]){
+                           // console.log(minutedata.datasamples[counter].SensorID);
+                           // console.log(sensorids[i]);
+						    for(j; j < datapoints[0].length; j++){
+							    datapoints[i+1].push(0);
+						    }
+						
+					    }
+
+
+					    else if(datapoints[0][j].getTime() != datecompare.getTime()){
+						    datapoints[i+1].push(0);
+					    }
+					    else{
+                            testcount++;
+						    datapoints[i+1].push(parseFloat(minutedata.datasamples[counter].Value));
+						    counter++;
+						    if(counter>=minutedata.datasamples.length){
+							    sensorids[i]=sensorids[i]+2;
+                                counter--;
+						    }
+					    }
+
+				    }
+			    }
+            }
+		    for(i = 0; i < sensorids.length; i++){
+			    datapoints.push([]);
+	            for(j=0; j < datapoints[0].length; j++){
+		            datapoints[i+1].push(0);
+	            }
+            }
+           // var testDate1 = datapoints[0][500];
+            //var testDate2 = new Date(2016,4,24,5,12);
+ //           console.log(testDate1);
+   //         console.log(testDate2);
+     //       console.log(testDate1.getTime() == testDate2.getTime());
+       //     console.log(counter);
+			//while(whilestop == false){
+			//	if(counter >= minutedata.datasamples.length){
+			//		whilestop = true;
+			//	}
+			//	if(minutedata.datasamples[counter+1].SensorID != firstID){
+			//		whilestop = true;
+			//	}
+			//	var timemonth = minutedata.datasamples[counter].CreationTimestamp.slice(5,7);
+			//	var timeday = minutedata.datasamples[counter].CreationTimestamp.slice(8,10);
+			//	var timehour = minutedata.datasamples[counter].CreationTimestamp.slice(11,13);
+			//	var timeminute = minutedata.datasamples[counter].CreationTimestamp.slice(14,16);
+			//	datapoints[0].push(new Date(timeyear, timemonth, timeday, timehour, timeminute));
+			//	counter++;
+			//}
+			// counter--;
+			//var columncounter =0;
+			//for (i = 0; i < minutedata.datasamples.length; i += counter) {
+			//	datapoints.push([]);
+			//	columncounter++;
+			//	for(j = 0; j < counter;j++){
+			//		datapoints[columncounter].push(parseFloat(minutedata.datasamples[i+j].Value));
+			//	}
+			//}
+			// console.log(counter);
+			// console.log(columncounter);
+			var total = [];
+			for(i = 0; i < datapoints[0].length; i++) {
+				var row = [];
+                var totalsum = 0;
+				// console.log(datapoints.length);
+                row.push(datapoints[0][i]);
+				for(j = 1; j < datapoints.length; j++) {
+					row.push(datapoints[j][i]);
+                    totalsum = totalsum + datapoints[j][i];
+				}
+                row.push(parseFloat(totalsum));
+				total.push(row);
+			}
+			data.addRows(total);
+		}
+	});
+}
+
 
 
 
