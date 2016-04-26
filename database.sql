@@ -1,4 +1,3 @@
-
 create table User(
 	ID int auto_increment primary key,
 	FirstName varchar(30),
@@ -42,13 +41,15 @@ create table Message(
 	Content varchar(255),
 	CreationTimestamp datetime not null,
 	PostedBy int references User(ID),
-	PostedOn varchar(50) references Wall(Name)
+	PostedOn varchar(50) references Wall(Name),
+	Graph MEDIUMBLOB
 );
 
 create table Comment(
 	ID int auto_increment primary key,
 	Message varchar(255),
-	SensorID int not null references Sensor(ID)
+	SensorID int not null references Sensor(ID),
+	foreign key (SensorID) references Sensor(ID) ON DELETE CASCADE,
 );
 
 create table Address(
@@ -74,44 +75,47 @@ create table Sensor(
 	Active bool not null DEFAULT TRUE,
 	Title varchar(50) not null,
 	Description varchar(255) DEFAULT '',
-	Unit varchar(10) DEFAULT 'kWh',
+	Unit varchar(10) DEFAULT 'Wh',
 	CONSTRAINT UniqueName UNIQUE(Title,InstalledOn)
 );
 
 create table MinuteData(
 	CreationTimestamp datetime not null,
-	SensorID int references Sensor(ID),
+	SensorID int,
+	foreign key (SensorID) references Sensor(ID) ON DELETE CASCADE,
 	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
 
 create table HourData(
 	CreationTimestamp datetime not null,
-	SensorID int references Sensor(ID),
+	SensorID int,
+	foreign key (SensorID) references Sensor(ID) ON DELETE CASCADE,
 	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
 
 create table DayData(
 	CreationTimestamp datetime not null,
-	SensorID int references Sensor(ID),
+	SensorID int,
+	foreign key (SensorID) references Sensor(ID) ON DELETE CASCADE,
 	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
 
 create table MonthData(
 	CreationTimestamp datetime not null,
-	SensorID int references Sensor(ID),
+	SensorID int,
+	foreign key (SensorID) references Sensor(ID) ON DELETE CASCADE,
 	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
 
 create table YearData(
 	CreationTimestamp datetime not null,
-	SensorID int references Sensor(ID),
+	SensorID int,
+	foreign key (SensorID) references Sensor(ID) ON DELETE CASCADE,
 	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
 
-INSERT INTO User(FirstName,LastName,Email,UserName,Password) VALUES ('FOO','BAR','foo@bar.com','xxXFooBarXxx','password');
-INSERT INTO Address(Streetname,Streetnumber,City,Country,PostalCode) VALUES ('FooLane',1,'Bartown','Antarctica','000000000')
