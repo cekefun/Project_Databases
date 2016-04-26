@@ -21,7 +21,6 @@ padding:12px;
 .bootstrap-frm {
     margin-left:auto;
     margin-right:auto;
-
     max-width: 500px;
     background: #FFF;
     padding: 20px 30px 20px 30px;
@@ -106,9 +105,8 @@ padding:12px;
     background-color: #EBEBEB;
     border-color: #ADADAD;
 }
-
 </style>
-
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'css/defaultstyle.css' %}">
 </head>
 <body>
@@ -162,7 +160,19 @@ padding:12px;
 	</div>
     <div id="resultGraph" style="display: none;">
     <!-- Graph dinges hier -->
-        
+        <div id="programmatic_dashboard_div" style="border: 1px solid #ccc">
+      <table class="columns">
+        <tr>
+          <td>
+                <div id="programmatic_chart_div"></div>
+          </td>
+ 
+        </tr>
+         <td>
+                <div id="programmatic_control_div" style="padding-left: 12em; min-width: 1100px; min-height: 80px;"></div>
+          </td>
+      </table>
+    </div>
     </div>
 
 </body>
@@ -170,10 +180,10 @@ padding:12px;
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script type="text/javascript">google.charts.load('current', {'packages':['corechart', 'controls']});</script>
+      
 <script>
-
 var defaultForm = undefined;
-
 function showStreetnameCityInput() {
     var timeFrom = $('[name=start]').val();
     var timeTo = $('[name=to]').val();
@@ -184,9 +194,7 @@ function showStreetnameCityInput() {
     $("[name='selecttime']").val(selectedTime);
     $('[name=start]').val(timeFrom);
     $('[name=to]').val(timeTo);
-
 }
-
 function showPostalcodeInput() {
     var timeFrom = $('[name=start]').val();
     var timeTo = $('[name=to]').val();
@@ -198,7 +206,6 @@ function showPostalcodeInput() {
     $('[name=start]').val(timeFrom);
     $('[name=to]').val(timeTo);
 }
-
 function showCountryInput() {
     var timeFrom = $('[name=start]').val();
     var timeTo = $('[name=to]').val();
@@ -210,13 +217,10 @@ function showCountryInput() {
     $('[name=start]').val(timeFrom);
     $('[name=to]').val(timeTo);
 }
-
 function StoreDefault() {
 	defaultForm = $("#generatereport").html();
 }
-
 window.onload = StoreDefault()
-
 $("body").on("submit", $("#generatereport"), function(eventobject) {
     eventobject.preventDefault();
     $.ajax({
@@ -224,20 +228,17 @@ $("body").on("submit", $("#generatereport"), function(eventobject) {
         method:"POST",
         data:($("#generatereport").serialize()),
         success: function(response) {
-            var data = JSON.parse(response);
+            var datajson = JSON.parse(response);
             $("#generatereport").remove();
-            drawGraph(data);
+            drawGraph(datajson);
         }
     });
 });
-
-
 $.ajaxSetup({
     beforeSend: function(xhr, settings) {
         xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
     }
 });
-
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
@@ -253,13 +254,52 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+function drawGraph(datajson) {
 
-function drawGraph(data) {
     $("#resultGraph").show();
-
     //alles voor die grafiek zever
 
-    
-}
+            var dashboard = new google.visualization.Dashboard(
+          document.getElementById('programmatic_dashboard_div'));
 
+        programmaticSlider = new google.visualization.ControlWrapper({
+          'controlType': 'ChartRangeFilter',
+          'containerId': 'programmatic_control_div',
+          'options': {
+            'filterColumnLabel': 'time',
+            'width':1300,
+          }
+        });
+
+       programmaticChart  = new google.visualization.ChartWrapper({
+        'chartType': 'LineChart',
+        'containerId': 'programmatic_chart_div',
+        'options': {
+          'width': 1500,
+          'height': 700,
+          'legend': 'right',
+        }
+      });
+  
+      var data = new google.visualization.DataTable();
+      data.addColumn("datetime","time");
+      data.addColumn("number", "Total");
+//data inputing here
+      totaldata = [];
+      for(i=0;i<datajson.datasamples;i++){
+        row = [];
+		var timeyear = datajson.datasamples[i].CreationTimestamp.slice(0,4);
+		var timemonth = mdatajson.datasamples[i].CreationTimestamp.slice(5,7)-1;
+		var timeday = datajson.datasamples[i].CreationTimestamp.slice(8,10);
+		var timehour = datajson.datasamples[i].CreationTimestamp.slice(11,13);
+		var timeminute = datajson.datasamples[i].CreationTimestamp.slice(14,16);
+		row.push(new Date(timeyear, timemonth, timeday, timehour, timeminute));
+        row.push(parseFloat(datajson.datasamples[i].Value));
+        totaldata.push();
+      }
+      data.addRows(totaldata);
+
+      dashboard.bind(programmaticSlider, programmaticChart);
+      dashboard.draw(data);
+}
 </script>
