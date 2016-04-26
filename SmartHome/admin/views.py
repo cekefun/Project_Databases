@@ -20,6 +20,8 @@ def loginpage(request):
     return HttpResponse(template.render(context,request))
 
 def login(request):
+    if('Language' not in request.session):
+        request.session['Language'] = "en" #By default
     template = loader.get_template("admin/AdminLogin.html")
     if(request.session['Language'] == "nl"):
         template = loader.get_template("admin/AdminLogin_nl.html")
