@@ -21,7 +21,6 @@ padding:12px;
 .bootstrap-frm {
     margin-left:auto;
     margin-right:auto;
-
     max-width: 500px;
     background: #FFF;
     padding: 20px 30px 20px 30px;
@@ -106,9 +105,8 @@ padding:12px;
     background-color: #EBEBEB;
     border-color: #ADADAD;
 }
-
 </style>
-
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'css/defaultstyle.css' %}">
 </head>
 <body>
@@ -117,7 +115,7 @@ padding:12px;
   <li1><a href="../../index/sensors">Sensoren</a></li1>
   <li1><a href="../../index/minute/">Energieverbruik</a></li1>
   {% if request.session.IsAdmin %}
-  <li1><a href="../users">Gebruikers</a></li1>
+  <li1><a  href="../users">Gebruikers</a></li1>
   <li1><a class="active" href="">Verslag</a></li1>
   {% endif %}
   <li1><a href="../../index/about/">Over</a></li1>
@@ -126,7 +124,7 @@ padding:12px;
 	<button class="dropbtn" style="float:right">Account</button>
         <div class="dropdown-content a">
 	     <a href="../../index/settings/">Instellingen</a>
-	     <a href="../../addHouse/">Voeg huis toe</a>
+	     <a href="../../index/addHouse/">Voeg huis toe</a>
             <a href="../../logout/">Log uit</a>
   	</div>
   </div>
@@ -141,74 +139,167 @@ padding:12px;
 	{% endif %}
 	<div>
 		<form id="generatereport" action="" method="POST" class=bootstrap-frm>{% csrf_token %}
-		<p><label>van: </label> 
+		<p><label>from: </label> 
 		<input type="date" name="start"></p>
-		<p><label>tot: </label>
+		<p><label>to: </label>
 		<input type="date" name="to"></p><br>
 
         <select name="selecttime">
-			<option value="minute">Minuut</option>
-			<option value="hour">Uur</option>
-            <option value="day">Dag</option>
-            <option value="month">Maand</option>
-            <option value="year">Jaar</option>
+			<option value="minute">Minute</option>
+			<option value="hour">Hour</option>
+            <option value="day">Day</option>
+            <option value="month">Month</option>
+            <option value="year">Year</option>
         </select>
 
-		<p><input type="radio" name="selectregion" value="streetnamecity" Onchange="showStreetnameCityInput()">Straatnaam/Stad</p>
-		<p><input type="radio" name="selectregion" value="postalcode" Onchange="showPostalcodeInput()">Postcode</p>
-		<p><input type="radio" name="selectregion" value="country" Onchange="showCountryInput()">Land</p><br>
+		<p><input type="radio" name="selectregion" value="streetnamecity" Onchange="showStreetnameCityInput()">Streetname/City</p>
+		<p><input type="radio" name="selectregion" value="postalcode" Onchange="showPostalcodeInput()">Postal Code</p>
+		<p><input type="radio" name="selectregion" value="country" Onchange="showCountryInput()">Country</p><br>
 
 		</form>
 	</div>
+    <div id="resultGraph" style="display: none;">
+    <!-- Graph dinges hier -->
+        <div id="programmatic_dashboard_div" style="border: 1px solid #ccc">
+      <table class="columns">
+        <tr>
+          <td>
+                <div id="programmatic_chart_div"></div>
+          </td>
+ 
+        </tr>
+         <td>
+                <div id="programmatic_control_div" style="padding-left: 12em; min-width: 1100px; min-height: 80px;"></div>
+          </td>
+      </table>
+    </div>
+    </div>
 
 </body>
 </html>
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script type="text/javascript">google.charts.load('current', {'packages':['corechart', 'controls']});</script>
+      
 <script>
-
 var defaultForm = undefined;
-
 function showStreetnameCityInput() {
     var timeFrom = $('[name=start]').val();
     var timeTo = $('[name=to]').val();
     var selectedTime = $('[name="selecttime"]').val();
 	$("#generatereport").html(defaultForm);
 	$("[value='streetnamecity']").prop("checked", true);
-	$("#generatereport").append("<p><label> Stad: </label><input type='text' name='city'></p> <p><label>Straatnaam (optioneel): </label><input type='text' name='streetname'></p>  <br><input type='submit'>");
+	$("#generatereport").append("<p><label> City: </label><input type='text' name='city'></p> <p><label>Streetname (optional): </label><input type='text' name='streetname'></p>  <br><input type='submit'>");
     $("[name='selecttime']").val(selectedTime);
     $('[name=start]').val(timeFrom);
     $('[name=to]').val(timeTo);
 }
-
 function showPostalcodeInput() {
     var timeFrom = $('[name=start]').val();
     var timeTo = $('[name=to]').val();
     var selectedTime = $('[name="selecttime"]').val();
 	$("#generatereport").html(defaultForm);
 	$("[value='postalcode']").prop("checked", true);
-	$("#generatereport").append("<p><label>Postcode: </label><input type='text' name='postalcode'> </p><br><input type='submit'>");
+	$("#generatereport").append("<p><label>Postal code: </label><input type='text' name='postalcode'> </p><br><input type='submit'>");
     $("[name='selecttime']").val(selectedTime);
     $('[name=start]').val(timeFrom);
     $('[name=to]').val(timeTo);
 }
-
 function showCountryInput() {
     var timeFrom = $('[name=start]').val();
     var timeTo = $('[name=to]').val();
     var selectedTime = $('[name="selecttime"]').val();
 	$("#generatereport").html(defaultForm);
 	$("[value='country']").prop("checked", true);
-	$("#generatereport").append("<p><label>Land:</label> <input type='text' name='country'> </p><br><input type='submit'>");
+	$("#generatereport").append("<p><label>Country:</label> <input type='text' name='country'> </p><br><input type='submit'>");
     $("[name='selecttime']").val(selectedTime);
     $('[name=start]').val(timeFrom);
     $('[name=to]').val(timeTo);
 }
-
 function StoreDefault() {
 	defaultForm = $("#generatereport").html();
 }
-
 window.onload = StoreDefault()
+$("body").on("submit", $("#generatereport"), function(eventobject) {
+    eventobject.preventDefault();
+    $.ajax({
+        url:"",
+        method:"POST",
+        data:($("#generatereport").serialize()),
+        success: function(response) {
+            var datajson = JSON.parse(response);
+            $("#generatereport").remove();
+            drawGraph(datajson);
+        }
+    });
+});
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+    }
+});
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+function drawGraph(datajson) {
+
+    $("#resultGraph").show();
+    //alles voor die grafiek zever
+
+            var dashboard = new google.visualization.Dashboard(
+          document.getElementById('programmatic_dashboard_div'));
+
+        programmaticSlider = new google.visualization.ControlWrapper({
+          'controlType': 'ChartRangeFilter',
+          'containerId': 'programmatic_control_div',
+          'options': {
+            'filterColumnLabel': 'time',
+            'width':1300,
+          }
+        });
+
+       programmaticChart  = new google.visualization.ChartWrapper({
+        'chartType': 'LineChart',
+        'containerId': 'programmatic_chart_div',
+        'options': {
+          'width': 1500,
+          'height': 700,
+          'legend': 'right',
+        }
+      });
+  
+      var data = new google.visualization.DataTable();
+      data.addColumn("datetime","time");
+      data.addColumn("number", "Total");
+//data inputing here
+      totaldata = [];
+      for(i=0;i<datajson.datasamples.length;i++){
+        row = [];
+		var timeyear = datajson.datasamples[i].CreationTimestamp.slice(0,4);
+		var timemonth = datajson.datasamples[i].CreationTimestamp.slice(5,7)-1;
+		var timeday = datajson.datasamples[i].CreationTimestamp.slice(8,10);
+		var timehour = datajson.datasamples[i].CreationTimestamp.slice(11,13);
+		var timeminute = datajson.datasamples[i].CreationTimestamp.slice(14,16);
+		row.push(new Date(timeyear, timemonth, timeday, timehour, timeminute));
+        row.push(parseFloat(datajson.datasamples[i].Value));
+        totaldata.push(row);
+      }
+      data.addRows(totaldata);
+
+      dashboard.bind(programmaticSlider, programmaticChart);
+      dashboard.draw(data);
+}
 </script>
