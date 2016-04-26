@@ -16,8 +16,8 @@
 	<li1><a href="../about/">About</a></li1>
 </ul1>
 <ul2>
-	<li2 style=float:left;><a class="active" href="../minute/">Minute Data</a></li2>
-	<li2><a href="">Hourly Data</a></li2>
+	<li2 style=float:left;><a class="active" href="">Minute Data</a></li2>
+	<li2><a href="../hour/">Hourly Data</a></li2>
 	<li2><a href="../day/">Daily Data</a></li2>
 	<li2><a href="../week/">Weekly Data</a></li2>
 	<li2><a href="../month/">Monthly Data</a></li2>
@@ -115,7 +115,6 @@ window.onload = getdata();
 
 function getdata() {
 	data.addColumn('datetime', 'Time');
-	var amountSensor = 0;
 	var sensorids = [];
 
 	$.ajax({
@@ -126,9 +125,9 @@ function getdata() {
 			var sensordata = JSON.parse(text);
 			for (i = 0; i < sensordata.sensors.length; i++) {
 				data.addColumn("number", sensordata.sensors[i].Title);
-				amountSensor++;
 				sensorids.push(sensordata.sensors[i].SensorID);
 			}
+            data.addColumn("number", "Total");
 		}
 	});
 
@@ -141,8 +140,8 @@ function getdata() {
 			// function here with minutedata
 			var datapoints = [];
 
-			var whilestop = false;
-			var firstID = minutedata.datasamples[0].SensorID;
+			//var whilestop = false;
+			//var firstID = minutedata.datasamples[0].SensorID;
 			
 			// var temptimearray = [minutedata.datasamples[counter].CreationTimestamp];
 			// datapoints.push(temptimearray)
@@ -150,99 +149,119 @@ function getdata() {
 //alle times aanmaken en in de table steken, mss nog inefficienter als ik eerst al vreesde :/
 
 			datapoints.push([]);	
-			var timeyear = minutedata.datasamples.firstTimestamp.slice(0,4);
-			var timemonth = minutedata.datasamples.firstTimestamp.slice(5,7);
-			var timeday = minutedata.datasamples.firstTimestamp.slice(8,10);
-			var timehour = minutedata.datasamples.firstTimestamp.slice(11,13);
-			var timeminute = minutedata.datasamples.firstTimestamp.slice(14,16);
+			var timeyear = minutedata.firstTimestamp.slice(0,4);
+			var timemonth = minutedata.firstTimestamp.slice(5,7);
+			var timeday = minutedata.firstTimestamp.slice(8,10);
+			var timehour = minutedata.firstTimestamp.slice(11,13);
+			var timeminute = minutedata.firstTimestamp.slice(14,16);
 			datapoints[0].push(new Date(timeyear, timemonth, timeday, timehour, timeminute));
-			for( i = 0 ; i<2 ; i++){
-				for(j = 0; j <24;j++){
-					for(k=0;k < 60; k++){
-						if(timeminute >= 60){
-							timeminute = 0;
-							if(timehour >= 24){
-								timehour = 0;
-								if(timeday >= 31){
-									timeday = 0;
-									if(timemonth>=12){
-										timemonth = 0;
-										timeyear++;
-									}
-									else{
-										timemonth++;
-									}
+
+			for(j = 0; j <49;j++){
+				for(k=0;k < 60; k++){
+					if(timeminute >= 59){
+						timeminute = 0;
+						if(timehour >= 23){
+							timehour = 0;
+							if(timeday >= 31){
+								timeday = 1;
+								if(timemonth>=11){
+									timemonth = 0;
+									timeyear++;
 								}
-								else if(timeday>=30 AND (timemonth == 4 OR timemonth == 6 OR timemonth == 9 OR timemonth == 11) ){
-									timeday = 0;
-									if(timemonth>=12){
-										timemonth = 0;
-										timeyear++;
-									}
-									else{
-										timemonth++;
-									}
+								else{
+									timemonth++;
 								}
-								else if(timeday >=28 AND timemonth == 2 ){
-									timeday = 0; //does not give a single f*ck about leap years... my bad :p
-									if(timemonth>=12){
-										timemonth = 0;
-										timeyear++;
-									}
-									else{
-										timemonth++;
-									}
+							}
+							else if(timeday>=30 && (timemonth == 3 || timemonth == 5 || timemonth == 8 || timemonth == 10) ){
+								timeday = 1;
+								if(timemonth>=11){
+									timemonth = 0;
+									timeyear++;
 								}
-								else {
-									timeday++;
+								else{
+									timemonth++;
+								}
+							}
+							else if(timeday >=28 && timemonth == 1 ){
+								timeday = 1; //does not give a single f*ck about leap years... my bad :p
+								if(timemonth>=11){
+									timemonth = 0;
+									timeyear++;
+								}
+								else{
+									timemonth++;
 								}
 							}
 							else {
-								timehour++;
+								timeday++;
 							}
 						}
 						else {
-							timeminute++;
+							timehour++;
 						}
-						datapoints[0].push(new Date(timeyear, timemonth, timeday, timehour, timeminute));
 					}
-
-				}
-									
+					else {
+						timeminute++;
+					}
+					datapoints[0].push(new Date(timeyear, timemonth, timeday, timehour, timeminute));
+				}						
 			}
+            
 			var counter = 0;
-			for(i = 0; i < sensorids.length; i++){
-				datapoints.push([]);
-				for(j = 0; j < datapoints[0].length; j++){
+            var testcount = 0;
+            if(minutedata.datasamples.length > 0){
+			    for(i = 0; i < sensorids.length; i++){
+				    datapoints.push([]);
+				    for(j = 0; j < datapoints[0].length; j++){
 
-					var yearcompare = minutedata.datasamples[counter].CreationTimestamp.slice(0,4);
-					var monthcompare = minutedata.datasamples[counter].CreationTimestamp.slice(5,7);
-					var daycompare = minutedata.datasamples[counter].CreationTimestamp.slice(8,10);
-					var hourcompare = minutedata.datasamples[counter].CreationTimestamp.slice(11,13);
-					var minutecompare = minutedata.datasamples[counter].CreationTimestamp.slice(14,16);
-					var datecompare = new Date(yearcompare, monthcompare, daycompare, hourcompare, minutecompare);
+					    var yearcompare = minutedata.datasamples[counter].CreationTimestamp.slice(0,4);
+					    var monthcompare = minutedata.datasamples[counter].CreationTimestamp.slice(5,7);
+					    var daycompare = minutedata.datasamples[counter].CreationTimestamp.slice(8,10);
+					    var hourcompare = minutedata.datasamples[counter].CreationTimestamp.slice(11,13);
+					    var minutecompare = minutedata.datasamples[counter].CreationTimestamp.slice(14,16);
+					    var datecompare = new Date(yearcompare, monthcompare, daycompare, hourcompare, minutecompare);
 
-					if(minutedata.datasamples[counter].SensorID != sensorids[i]){
-						for(j; j < datapoints[0].length; j++){
-							datapoints[i+1].push(0);
-						}
+					    if(minutedata.datasamples[counter].SensorID != sensorids[i]){
+                          //  console.log(minutedata.datasamples[counter].SensorID);
+                           // console.log(sensorids[i]);
+						    for(j; j < datapoints[0].length; j++){
+							    datapoints[i+1].push(0);
+						    }
 						
-					}
+					    }
 
 
-					else if(minutedata.datasamples[counter].creationTimestamp > datecompare){
-						datapoints[i+1].push(0);
-					}
-					else{
+					    else if(datapoints[0][j].getTime() != datecompare.getTime()){
+						    datapoints[i+1].push(0);
+					    }
+					    else{
+                            testcount++;
+						    datapoints[i+1].push(parseFloat(minutedata.datasamples[counter].Value));
+						    counter++;
+						    if(counter>=minutedata.datasamples.length){
+							    sensorids[i]=sensorids[i]+2;
+                                counter--;
+						    }
+					    }
 
-						datapoints[i+1].push(minutedata.datasamples[counter].Value);
-						counter++;
-						if(counter>=minutedata.datasamples.length){
-							sensorids[i]=sensorids[i]+1;
-						}
-					}
-				}
-			}
+				    }
+			    }
+            }
+            else{
+               // console.log("gets here");
+		        for(i = 0; i < sensorids.length; i++){
+			        datapoints.push([]);
+	                for(j=0; j < datapoints[0].length; j++){
+		                datapoints[i+1].push(0);
+	                }
+                }
+            }
+           // var testDate1 = datapoints[0][500];
+            //var testDate2 = new Date(2016,4,24,5,12);
+ //           console.log(testDate1);
+   //         console.log(testDate2);
+     //       console.log(testDate1.getTime() == testDate2.getTime());
+       //     console.log(counter);
 			//while(whilestop == false){
 			//	if(counter >= minutedata.datasamples.length){
 			//		whilestop = true;
@@ -271,13 +290,16 @@ function getdata() {
 			var total = [];
 			for(i = 0; i < datapoints[0].length; i++) {
 				var row = [];
+                var totalsum = 0;
 				// console.log(datapoints.length);
-				for(j = 0; j < datapoints.length; j++) {
+                row.push(datapoints[0][i]);
+				for(j = 1; j < datapoints.length; j++) {
 					row.push(datapoints[j][i]);
+
+                    totalsum = totalsum + datapoints[j][i];
+                    
 				}
-				for(j = 0; j < (amountSensor - datapoints.length + 1); j++) {
-					row.push(0);
-				}
+                row.push(parseFloat(totalsum));
 				total.push(row);
 			}
 			data.addRows(total);
