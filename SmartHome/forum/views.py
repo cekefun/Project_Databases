@@ -12,4 +12,9 @@ def homepageForum(request):
 
 
 def showWall(request, wallname):
-	return HttpResponse(str(wallname))
+	return HttpResponse("Looking at wall: " + str(wallname))
+
+
+
+def addMessage(request, wallname):
+	return HttpResponse("You are trying to add a message to wall: " + str(wallname))

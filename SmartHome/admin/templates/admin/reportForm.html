@@ -171,27 +171,40 @@ padding:12px;
 var defaultForm = undefined;
 
 function showStreetnameCityInput() {
+    var timeFrom = $('[name=start]').val();
+    var timeTo = $('[name=to]').val();
     var selectedTime = $('[name="selecttime"]').val();
 	$("#generatereport").html(defaultForm);
 	$("[value='streetnamecity']").prop("checked", true);
 	$("#generatereport").append("<p><label> City: </label><input type='text' name='city'></p> <p><label>Streetname (optional): </label><input type='text' name='streetname'></p>  <br><input type='submit'>");
     $("[name='selecttime']").val(selectedTime);
+    $('[name=start]').val(timeFrom);
+    $('[name=to]').val(timeTo);
+
 }
 
 function showPostalcodeInput() {
+    var timeFrom = $('[name=start]').val();
+    var timeTo = $('[name=to]').val();
     var selectedTime = $('[name="selecttime"]').val();
 	$("#generatereport").html(defaultForm);
 	$("[value='postalcode']").prop("checked", true);
 	$("#generatereport").append("<p><label>Postal code: </label><input type='text' name='postalcode'> </p><br><input type='submit'>");
     $("[name='selecttime']").val(selectedTime);
+    $('[name=start]').val(timeFrom);
+    $('[name=to]').val(timeTo);
 }
 
 function showCountryInput() {
+    var timeFrom = $('[name=start]').val();
+    var timeTo = $('[name=to]').val();
     var selectedTime = $('[name="selecttime"]').val();
 	$("#generatereport").html(defaultForm);
 	$("[value='country']").prop("checked", true);
 	$("#generatereport").append("<p><label>Country:</label> <input type='text' name='country'> </p><br><input type='submit'>");
     $("[name='selecttime']").val(selectedTime);
+    $('[name=start]').val(timeFrom);
+    $('[name=to]').val(timeTo);
 }
 
 function StoreDefault() {
