@@ -1,9 +1,9 @@
 #!/bin/sh
-FILE=MY_FILE.csv
-JSON=MY_CONFIGURE.json
-PROGRAM=main.py
 SITE=http://91.176.207.129:5901/upload/
+JSON=MY_CONFIGURE.json
 FAMILY=1
+FILE=MY_FILE.csv
+PROGRAM=main.py
 NOW=$(date +"%Y-%m-%dT%H:%M")
 EARLIER=$(date --date="1 minutes ago" +"%Y-%m-%dT%H:%M")
 
