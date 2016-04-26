@@ -45,13 +45,6 @@ create table Message(
 	Graph MEDIUMBLOB
 );
 
-create table Comment(
-	ID int auto_increment primary key,
-	Message varchar(255),
-	SensorID int not null references Sensor(ID),
-	foreign key (SensorID) references Sensor(ID) ON DELETE CASCADE,
-);
-
 create table Address(
 	ID int auto_increment primary key,
 	StreetName varchar(50) not null,
@@ -77,6 +70,13 @@ create table Sensor(
 	Description varchar(255) DEFAULT '',
 	Unit varchar(10) DEFAULT 'Wh',
 	CONSTRAINT UniqueName UNIQUE(Title,InstalledOn)
+);
+
+create table Comment(
+	ID int auto_increment primary key,
+	Message varchar(255),
+	SensorID int not null references Sensor(ID),
+	foreign key (SensorID) references Sensor(ID) ON DELETE CASCADE
 );
 
 create table MinuteData(
@@ -118,4 +118,15 @@ create table YearData(
 	Value float not null,
 	primary key(CreationTimestamp, SensorID)
 );
+
+INSERT INTO User(FirstName,LastName,Email,UserName,Password) VALUES ('FOO','BAR','foo@bar.com','FooBar','password');
+INSERT INTO Admin VALUES (1);
+INSERT INTO Address(StreetName,StreetNumber,City,Country,PostalCode) VALUES ('Foolane',0,'Bartown','Antarctica',0);
+
+
+
+
+
+
+
 
