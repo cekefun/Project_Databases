@@ -1,5 +1,5 @@
 #!/bin/sh
-SITE=http://91.176.207.129:5901/upload/
+SITE=http://rpifq.no-ip.org:8000/upload/
 JSON=MY_CONFIGURE.json
 FAMILY=1
 FILE=MY_FILE.csv
