@@ -173,7 +173,12 @@ def getreport(request):
                 else:
                     context = {'message': 'Please select a region'}
                 return HttpResponse(template.render(context, request))
-            return HttpResponse(aggr.toJson())
+            if(request.session['Language'] == 'nl'):
+                template = loader.get_template("admin/graph_nl.html")
+            else:
+                template = loader.get_template("admin/graph.html")
+            context = {'data': aggr.toJson()}
+            return HttpResponse(template.render(context,request))
         if(request.session['Language'] == 'nl'):
             context = {'message': 'Vul alstublieft alle velden in'}            
         else:
