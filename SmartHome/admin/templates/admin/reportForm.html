@@ -286,10 +286,10 @@ function drawGraph(datajson) {
       data.addColumn("number", "Total");
 //data inputing here
       totaldata = [];
-      for(i=0;i<datajson.datasamples;i++){
+      for(i=0;i<datajson.datasamples.length;i++){
         row = [];
 		var timeyear = datajson.datasamples[i].CreationTimestamp.slice(0,4);
-		var timemonth = mdatajson.datasamples[i].CreationTimestamp.slice(5,7)-1;
+		var timemonth = datajson.datasamples[i].CreationTimestamp.slice(5,7)-1;
 		var timeday = datajson.datasamples[i].CreationTimestamp.slice(8,10);
 		var timehour = datajson.datasamples[i].CreationTimestamp.slice(11,13);
 		var timeminute = datajson.datasamples[i].CreationTimestamp.slice(14,16);
