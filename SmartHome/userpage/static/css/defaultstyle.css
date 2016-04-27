@@ -148,8 +148,12 @@ li1 .active:hover {
     background-color: #4CAF50;
 }
 
-.active {
+li1 .active {
     background-color: green;
+}
+
+li1 .greyed-out {
+    background-color: #f9f9f9;
 }
 
 ul2 {
