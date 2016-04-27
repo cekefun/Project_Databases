@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.http import HttpResponse
 from django.template import loader,RequestContext
 from .forms import RegisterForm, LoginForm
@@ -35,6 +35,8 @@ def register(request):
                 return HttpResponse(template.render(context,request))
             
             Register.Save(form.cleaned_data['Voornaam'],form.cleaned_data['Achternaam'],form.cleaned_data['Usernaam'],form.cleaned_data['Emailadres'],form.cleaned_data['Wachtwoord'])
+            return redirect("/login/")
+
             context = {'message':'Succesfully registered'}
             if(request.session['Language'] == "nl"):
                 context = {'message' : 'Registratie is gelukt'}

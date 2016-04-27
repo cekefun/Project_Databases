@@ -230,6 +230,7 @@ $("body").on("submit", $("#generatereport"), function(eventobject) {
         success: function(response) {
             var datajson = JSON.parse(response);
             $("#generatereport").remove();
+            console.log(datajson);
             drawGraph(datajson);
         }
     });

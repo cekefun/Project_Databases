@@ -41,7 +41,7 @@
 				<td>{{user.FirstName}}</td>
 				<td>{{user.LastName}}</td>
 				<td>{{user.Email}}</td>
-				<td ondblclick="updateAdmin(this)">{% if user.Admin %} <span class="checkmark"><div class="checkmark_circle"></div><div class="checkmark_stem"></div><div class="checkmark_kick"></div></span> {% else %}<span class="crossmark"><div class="crossmark_circle"></div><div class="crossmark_slash"></div><div class="crossmark_backslash"></div></span>{% endif %}</td>
+				<td ondblclick="updateAdmin(this)">{% if user.Admin %} <span value="1" class="checkmark"><div class="checkmark_circle"></div><div class="checkmark_stem"></div><div class="checkmark_kick"></div></span> {% else %}<span value="0" class="crossmark"><div class="crossmark_circle"></div><div class="crossmark_slash"></div><div class="crossmark_backslash"></div></span>{% endif %}</td>
 			</tr>
 		{% endfor %}
 		</table>
@@ -57,6 +57,11 @@
 <script>
 
 function updateAdmin(element) {
+	console.log(element);
+	console.log(element.firstElementChild);
+	if (element.firstElementChild.getAttribute("value") == "1")
+		return;
+
 	var Right = confirm("Are you sure you want to make this user an admin?");
 	if (Right == false){
 		return;
@@ -76,7 +81,7 @@ function updateAdmin(element) {
 		success: function() {
 			element.removeChild(element.firstChild);	
 			element.appendChild(Checkmark());
-			element.setAttribute("value", "1");
+			element.firstElementChild.setAttribute("value", "1");
 		},
 		error: function() {
 			alert("Could not activate the Admin.");
