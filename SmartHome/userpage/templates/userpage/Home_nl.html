@@ -114,8 +114,13 @@ div.desc {
 <ul1>
   <li1><a class="active" href="">Start</a></li1>
   {% if request.session.Username|length > 0 %}
+  {% if request.session.HasHouse == True %}
   <li1><a href="sensors/">Sensoren</a></li1>
   <li1><a href="minute/">Energieverbruik</a></li1>
+  {% else %}
+  <li1><a class="greyed-out">Sensoren</a></li1>
+  <li1><a class="greyed-out">Energieverbruik</a></li1>
+  {% endif %}
   {% endif %}
   {% if request.session.IsAdmin %}
   <li1><a href="../admin/users">Gebruikers</a></li1>

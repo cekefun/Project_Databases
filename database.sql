@@ -119,6 +119,13 @@ create table YearData(
 	primary key(CreationTimestamp, SensorID)
 );
 
+create view WeekData as select CreationTimestamp, SensorID, Value 
+from DayData
+where CreationTimestamp between
+timestamp( date_sub(makedate(year(now()), dayofyear(now())), interval 7 day), maketime(0,0,0)) and
+timestamp( makedate(year(now()), dayofyear(now())), maketime(0,0,0));
+
+
 INSERT INTO User(FirstName,LastName,Email,UserName,Password) VALUES ('FOO','BAR','foo@bar.com','FooBar','password');
 INSERT INTO Admin VALUES (1);
 INSERT INTO Address(StreetName,StreetNumber,City,Country,PostalCode) VALUES ('Foolane',0,'Bartown','Antarctica',0);

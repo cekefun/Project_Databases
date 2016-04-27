@@ -98,17 +98,26 @@ li1 a {
     text-decoration: none;
 }
 
-li1 a:hover:not(.active) {
+li1 a:hover{
     background-color: #0000C0;
 }
+
 
 li1 .active:hover {
     background-color: #4CAF50;
 }
 
-.active {
+li1 .active {
     background-color: green;
 }
+
+li1 .greyed-out {
+    background-color: #7a7a7a;
+}
+li1 .greyed-out:hover {
+    background-color: #747474;
+}
+
 
 ul2 {
     position:fixed;
