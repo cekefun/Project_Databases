@@ -154,7 +154,7 @@ function getdata() {
 			var timeday = minutedata.firstTimestamp.slice(8,10);
 			datapoints[0].push(new Date(timeyear, timemonth, timeday));
 
-				for(k=0;k < 365; k++){
+				for(k=0;k < 396; k++){
 						if(timeday >= 31){
 							timeday = 1;
 							if(timemonth>=11){
@@ -201,7 +201,7 @@ function getdata() {
 				    for(j = 0; j < datapoints[0].length; j++){
 
 					    var yearcompare = minutedata.datasamples[counter].CreationTimestamp.slice(0,4);
-					    var monthcompare = minutedata.datasamples[counter].CreationTimestamp.slice(5,7);
+					    var monthcompare = minutedata.datasamples[counter].CreationTimestamp.slice(5,7)-1;
 					    var daycompare = minutedata.datasamples[counter].CreationTimestamp.slice(8,10);
 					    var datecompare = new Date(yearcompare, monthcompare, daycompare);
                         
