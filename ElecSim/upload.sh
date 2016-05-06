@@ -4,7 +4,7 @@ JSON=MY_CONFIGURE.json
 FAMILY=1
 FILE=MY_FILE.csv
 PROGRAM=main.py
-NOW=$(date --date="next" +"%Y-%m-%dT%H:%M")
+NOW=$(date --date="next minute" +"%Y-%m-%dT%H:%M")
 EARLIER=$(date +"%Y-%m-%dT%H:%M")
 
 python3 $PROGRAM --mode=generate --config_file=$JSON --household=$FAMILY --from=$EARLIER --to=$NOW --output=$FILE
