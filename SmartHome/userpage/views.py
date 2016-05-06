@@ -20,10 +20,13 @@ def RedirectNotLoggedIn(request):
 
 
 
-def indexpage(request):
+def indexPage(request):
 #	if (IsLoggedIn(request) == False):
 #		return RedirectNotLoggedIn(request)
 
+
+	if ("Language" not in request.session): #when the user hasn't visited the site yet
+		 request.session["Language"] = "en"
 
 	language = request.session["Language"]
 
@@ -305,6 +308,10 @@ def aboutPage(request):
 	# if (IsLoggedIn(request) == False):
 	# 	return RedirectNotLoggedIn(request)
 
+
+	if ("Language" not in request.session): #when the user hasn't visited the site yet
+		 request.session["Language"] = "en"
+
 	htmlpage = "userpage/About.html"
 	language = request.session["Language"]
 
@@ -530,3 +537,12 @@ def JSON_householdsprice(request):
 
 def JSON_commentssensor(request, sensorID):
 	return HttpResponse(CommentsFromSensor(sensorID).getCommentsJSON())
+
+
+def JSON_CurrentMinute(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+
+	household = request.session["HouseID"]
+
+	return HttpResponse(currentMinuteUsage(household).getSamples())

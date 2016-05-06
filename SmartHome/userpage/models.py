@@ -39,6 +39,11 @@ def SQL_SelectHouseHoldPrice(UserID):
 	return command
 
 
+def SQL_SelectCurrentMinuteData(houseID):
+	command = (""" select MinuteData.CreationTimestamp as CreationTimestamp, MinuteData.SensorID as SensorID, MinuteData.Value as Value from MinuteData, Sensor where Sensor.InstalledOn=%i and Sensor.ID = MinuteData.SensorID and (MinuteData.CreationTimestamp between timestamp(makedate(year(now()), dayofyear(now())), maketime(hour(now()), minute(now()), 0)) and timestamp(makedate(year(now()), dayofyear(now())), maketime(hour(now()), minute(now()), 59)) ); """ % (houseID))
+	return command
+
+
 def dictfetchall(cursor):
 	"function that returns the results from an SQL query in dictionary format"
 	desc = cursor.description
@@ -469,13 +474,23 @@ class NewHouse:
 		self.addHouse(newAddressID)
 
 	def addAddress(self):
-		self.cursor.execute(("""insert into Address values (0, "%s", %i, "%s","%s",%i);""" % (self.Streetname, self.Streetnumber, self.City, self.Country, self.Postalcode)))
+		'''this method will not add a new address if it is already added in the database'''
+
+		if (self.alreadyExists() == False):
+			self.cursor.execute(("""insert into Address values (0, "%s", %i, "%s","%s",%i);""" % (self.Streetname, self.Streetnumber, self.City, self.Country, self.Postalcode)))
+	
 		self.cursor.execute((""" select ID from Address where StreetName="%s" and StreetNumber=%i and City="%s" and Country="%s" and PostalCode=%i;""" % (self.Streetname, self.Streetnumber, self.City, self.Country, self.Postalcode)))
 		result = self.cursor.fetchone()
 		return int(result[0])
 
 	def addHouse(self,AddressID):
 		self.cursor.execute(("""insert into House values (0,%i, %f, %i); """ % (AddressID, self.Price, self.UserID)))
+
+	def alreadyExists(self):
+		self.cursor.execute((""" select * from Address where StreetName="%s" and StreetNumber=%i and City="%s" and Country="%s" and PostalCode=%i;""" % (self.Streetname, self.Streetnumber, self.City, self.Country, self.Postalcode)))
+		if (self.cursor.fetchone() != None):
+			return True
+		return False
 
 
 
@@ -570,3 +585,32 @@ class houseHold:
 		self.cursor.execute("select PricePerUnit from House where ID=%i" % (self.ID))
 		resultPrice = dictfetchall(self.cursor)
 		return resultPrice[0]["PricePerUnit"]
+
+
+
+class currentMinuteUsage:
+	def __init__(self, householdID):
+		self.householdID = householdID
+		self.cursor = connection.cursor()
+
+
+	def getSamples(self):
+		self.cursor.execute(SQL_SelectCurrentMinuteData(self.householdID))
+		results = dictfetchall(self.cursor)
+
+		total = 0
+		resultingJSON = {}
+		resultingJSON["Datasamples"] = []
+		for i in results:
+			datasample = {}
+			datasample["CreationTimestamp"] = i["CreationTimestamp"].isoformat()
+			datasample["SensorID"] = i["SensorID"]
+			datasample["Value"] = i["Value"]
+			resultingJSON["Datasamples"].append(datasample)
+			total += float(i["Value"])
+			
+		resultingJSON["Total"] = str(total)
+		#TODO change this line of code later on
+		resultingJSON["Dangerzone"] = str(total * 2) #JUST TEMPORARY FOR TESTING PURPOSES
+		return json.dumps(resultingJSON)
+

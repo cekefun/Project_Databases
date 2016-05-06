@@ -9,7 +9,7 @@ from MinuteData
 where CreationTimestamp between 
  timestamp( makedate( year(now()), dayofyear(now()) ), maketime( hour(now()) - 1, 0, 0 ) )
  and 
- timestamp( makedate( year(now()), dayofyear(now()) ), maketime( hour(now()) - 1, 59, 59) ) 
+ timestamp( makedate( year(now()), dayofyear(now()) ), date_sub(maketime( hour(now()), 59, 59), interval 1 hour) ) 
 group by SensorID;
 
 '''
@@ -37,7 +37,7 @@ class HourlyAggregation:
 
 	def insertHourlyTuples(self):
 
-		command = """ insert into HourData select timestamp( makedate( year(now()), dayofyear(now()) ), maketime( hour(now()) - 1, 0, 0 ) ) as CreationTimestamp, MinuteData.SensorID as SensorID, SUM(MinuteData.Value) as Value from MinuteData where CreationTimestamp between timestamp( makedate( year(now()), dayofyear(now()) ), maketime( hour(now()) - 1, 0, 0 ) ) and timestamp( makedate( year(now()), dayofyear(now()) ), maketime( hour(now()) - 1, 59, 59) ) group by SensorID;"""
+		command = """ insert into HourData select timestamp( makedate( year(now()), dayofyear(now()) ), maketime( hour(now()) - 1, 0, 0 ) ) as CreationTimestamp, MinuteData.SensorID as SensorID, SUM(MinuteData.Value) as Value from MinuteData where CreationTimestamp between timestamp( makedate( year(now()), dayofyear(now()) ), maketime( hour(now()) - 1, 0, 0 ) ) and timestamp( makedate( year(now()), dayofyear(now()) ), date_sub(maketime( hour(now()), 59, 59), interval 1 hour) ) group by SensorID;"""
 		self.cursor.execute(command)
 
 
