@@ -608,9 +608,9 @@ class currentMinuteUsage:
 			datasample["Value"] = i["Value"]
 			resultingJSON["Datasamples"].append(datasample)
 			total += float(i["Value"])
-			
-		resultingJSON["Total"] = str(total)
+
+		resultingJSON["Total"] = total
 		#TODO change this line of code later on
-		resultingJSON["Dangerzone"] = str(total * 2) #JUST TEMPORARY FOR TESTING PURPOSES
+		resultingJSON["Dangerzone"] = total * 2 #JUST TEMPORARY FOR TESTING PURPOSES
 		return json.dumps(resultingJSON)
 
