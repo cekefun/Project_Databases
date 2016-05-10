@@ -344,6 +344,18 @@ function drawStuff() {
 
     setInterval(function() {
       data.removeRow(0);
+        var sensorids = [];
+	    $.ajax({
+		    url:"/index/sensors/currentTitles/",
+		    method:"GET",
+		    async: false,
+		    success: function(text) {
+			    var sensordata = JSON.parse(text);
+			    for (i = 0; i < sensordata.sensors.length; i++) {
+				    sensorids.push(sensordata.sensors[i].SensorID);
+			    }
+		    }
+	    });
     $.ajax({
 	    url:"/index/minute/currentMinute/",
 	    method:"GET",
