@@ -600,13 +600,13 @@ class currentMinuteUsage:
 
 		total = 0
 		resultingJSON = {}
-		resultingJSON["Datasamples"] = []
+		resultingJSON["datasamples"] = []
 		for i in results:
 			datasample = {}
 			datasample["CreationTimestamp"] = i["CreationTimestamp"].isoformat()
 			datasample["SensorID"] = i["SensorID"]
 			datasample["Value"] = i["Value"]
-			resultingJSON["Datasamples"].append(datasample)
+			resultingJSON["datasamples"].append(datasample)
 			total += float(i["Value"])
 
 		resultingJSON["Total"] = total
