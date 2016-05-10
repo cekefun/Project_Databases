@@ -136,9 +136,11 @@ function drawStuff() {
 			    var timeday = minutedata.firstTimestamp.slice(8,10);
 			    var timehour = minutedata.firstTimestamp.slice(11,13);
 			    var timeminute = minutedata.firstTimestamp.slice(14,16);
-			    datapoints[0].push(new Date(timeyear, timemonth, timeday, timehour, timeminute));
-			    for(j = 0; j <49;j++){
-				    for(k=0;k < 60; k++){
+                var firsttime = new Date(timeyear, timemonth, timeday, timehour, timeminute)
+			    datapoints[0].push(firsttime);
+                var lasttime = Date.now();
+                var totaltime = (lasttime.getTime() - firsttime.getTime())/60000;
+			    for(j = 0; j <totaltime;j++){
 					    if(timeminute >= 59){
 						    timeminute = 0;
 						    if(timehour >= 23){
@@ -185,7 +187,7 @@ function drawStuff() {
 						    timeminute++;
 					    }
 					    datapoints[0].push(new Date(timeyear, timemonth, timeday, timehour, timeminute));
-				    }						
+				    						
 			    }
                 
 			    var counter = 0;
@@ -354,45 +356,47 @@ function drawStuff() {
 			    for (i = 0; i < sensordata.sensors.length; i++) {
 				    sensorids.push(sensordata.sensors[i].SensorID);
 			    }
+               $.ajax({
+                    url:"/index/minute/currentMinute/",
+                    method:"GET",
+                    async: false,
+                    success: function(text) {
+	                    var lastminute = JSON.parse(text);
+                        var newdatapoints = [[]];
+
+	                    var timeyear = lastminute.datasamples[0].CreationTimestamp.slice(0,4);
+	                    var timemonth = lastminute.datasamples[0].CreationTimestamp.slice(5,7)-1;
+	                    var timeday = lastminute.datasamples[0].CreationTimestamp.slice(8,10);
+	                    var timehour = lastminute.datasamples[0].CreationTimestamp.slice(11,13);
+	                    var timeminute = lastminute.datasamples[0].CreationTimestamp.slice(14,16);
+	                    newdatapoints[0].push(new Date(timeyear, timemonth, timeday, timehour, timeminute));
+
+                        var counter = 0;
+                        for(i = 0; i < sensorids.length; i++){
+	                        if(lastminute.datasamples[counter].SensorID != sensorids[i]){
+                              //  console.log(minutedata.datasamples[counter].SensorID);
+                               // console.log(sensorids[i]);
+		                       newdatapoints[0].push(0);
+		                       
+		
+	                        }
+                            else{
+                                newdatapoints[0].push(parseFloat(lastminute.datasamples[counter].Value));
+                                counter++;
+		                        if(counter>=lastminute.datasamples.length){
+			                        sensorids[i]=sensorids[i]+2;
+                                    counter--;
+		                        }
+                            }
+                        }
+                        newdatapoints[0].push(parseFloat(lastminute.Total));
+                    data.addRows(newdatapoints);
+
+                    }
+                });
 		    }
 	    });
-    $.ajax({
-	    url:"/index/minute/currentMinute/",
-	    method:"GET",
-	    async: false,
-	    success: function(text) {
-		    var lastminute = JSON.parse(text);
-            var newdatapoints = [[]];
-
-		    var timeyear = lastminute.datasamples[0].CreationTimestamp.slice(0,4);
-		    var timemonth = lastminute.datasamples[0].CreationTimestamp.slice(5,7)-1;
-		    var timeday = lastminute.datasamples[0].CreationTimestamp.slice(8,10);
-		    var timehour = lastminute.datasamples[0].CreationTimestamp.slice(11,13);
-		    var timeminute = lastminute.datasamples[0].CreationTimestamp.slice(14,16);
-		    newdatapoints[0].push(new Date(timeyear, timemonth, timeday, timehour, timeminute));
-
-            var counter = 0;
-	        for(i = 0; i < sensorids.length; i++){
-		        if(lastminute.datasamples[counter].SensorID != sensorids[i]){
-                  //  console.log(minutedata.datasamples[counter].SensorID);
-                   // console.log(sensorids[i]);
-			       newdatapoints[0].push(0);
-			       
-			
-		        }
-                else{
-                    newdatapoints[0].push(lastminute.datasamples[counter].Value);
-                    counter++;
-			        if(counter>=lastminute.datasamples.length){
-				        sensorids[i]=sensorids[i]+2;
-                        counter--;
-			        }
-                }
-            }
-        data.addRows(newdatapoints);
-
-	    }
-    });
+ 
       
       
 
