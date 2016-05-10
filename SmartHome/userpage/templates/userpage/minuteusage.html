@@ -345,18 +345,18 @@ function drawStuff() {
     setInterval(function() {
       data.removeRow(0);
     $.ajax({
-	    url:"index/minute/currentMinute/",
+	    url:"/index/minute/currentMinute/",
 	    method:"GET",
 	    async: false,
 	    success: function(text) {
 		    var lastminute = JSON.parse(text);
             var newdatapoints = [[]];
 
-		    var timeyear = minutedata.firstTimestamp.slice(0,4);
-		    var timemonth = minutedata.firstTimestamp.slice(5,7)-1;
-		    var timeday = minutedata.firstTimestamp.slice(8,10);
-		    var timehour = minutedata.firstTimestamp.slice(11,13);
-		    var timeminute = minutedata.firstTimestamp.slice(14,16);
+		    var timeyear = lastminute.datasamples[0].CreationTimestamp.slice(0,4);
+		    var timemonth = lastminute.datasamples[0].CreationTimestamp.slice(5,7)-1;
+		    var timeday = lastminute.datasamples[0].CreationTimestamp.slice(8,10);
+		    var timehour = lastminute.datasamples[0].CreationTimestamp.slice(11,13);
+		    var timeminute = lastminute.datasamples[0].CreationTimestamp.slice(14,16);
 		    newdatapoints[0].push(new Date(timeyear, timemonth, timeday, timehour, timeminute));
 
             var counter = 0;
@@ -377,12 +377,13 @@ function drawStuff() {
 			        }
                 }
             }
+        data.addRows(newdatapoints);
 
 	    }
     });
       
       
-      data.addRows(newdatapoints);
+
       dashboard.draw(data);
       }
     , 60000
