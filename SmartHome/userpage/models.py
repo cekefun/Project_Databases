@@ -43,6 +43,10 @@ def SQL_SelectCurrentMinuteData(houseID):
 	command = (""" select MinuteData.CreationTimestamp as CreationTimestamp, MinuteData.SensorID as SensorID, MinuteData.Value as Value from MinuteData, Sensor where Sensor.InstalledOn=%i and Sensor.ID = MinuteData.SensorID and (MinuteData.CreationTimestamp between timestamp(makedate(year(now()), dayofyear(now())), maketime(hour(now()), minute(now()), 0)) and timestamp(makedate(year(now()), dayofyear(now())), maketime(hour(now()), minute(now()), 59)) ); """ % (houseID))
 	return command
 
+def SQL_SelectCurrentHourData(houseID):
+	command = (""" select HourData.CreationTimestamp as CreationTimestamp, HourData.SensorID as SensorID, HourData.Value as Value from HourData, Sensor where Sensor.InstalledOn=%i and Sensor.ID = HourData.SensorID and (HourData.CreationTimestamp = date_sub(timestamp(makedate(year(now()), dayofyear(now())), maketime(hour(now()), 0,0)), interval 1 hour)) order by SensorID;   """ % (houseID))
+	return command
+
 
 def dictfetchall(cursor):
 	"function that returns the results from an SQL query in dictionary format"
@@ -614,3 +618,27 @@ class currentMinuteUsage:
 		resultingJSON["Dangerzone"] = total * 2 #JUST TEMPORARY FOR TESTING PURPOSES
 		return json.dumps(resultingJSON)
 
+
+class lastHourUsage:
+	def __init__(self, householdID):
+		self.householdID = householdID
+		self.cursor = connection.cursor()
+
+
+	def getSamples(self):
+		self.cursor.execute(SQL_SelectCurrentHourData(self.householdID))
+		results = dictfetchall(self.cursor)
+
+		total = 0
+		resultingJSON = {}
+		resultingJSON["datasamples"] = []
+		for i in results:
+			datasample = {}
+			datasample["CreationTimestamp"] = i["CreationTimestamp"].isoformat()
+			datasample["SensorID"] = i["SensorID"]
+			datasample["Value"] = i["Value"]
+			resultingJSON["datasamples"].append(datasample)
+			total += float(i["Value"])
+
+		resultingJSON["Total"] = total
+		return json.dumps(resultingJSON)

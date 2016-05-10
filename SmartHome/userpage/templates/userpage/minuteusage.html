@@ -139,7 +139,7 @@ function drawStuff() {
                 var firsttime = new Date(timeyear, timemonth, timeday, timehour, timeminute)
 			    datapoints[0].push(firsttime);
                 var lasttime = Date.now();
-                var totaltime = (lasttime.getTime() - firsttime.getTime())/60000;
+                var totaltime = Math.floor((lasttime - firsttime.getTime())/60000);
 			    for(j = 0; j <totaltime;j++){
 					    if(timeminute >= 59){
 						    timeminute = 0;

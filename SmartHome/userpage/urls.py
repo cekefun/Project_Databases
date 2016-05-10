@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^sensors/all/$', views.JSON_allsensors, name="jsonsensordata"), #used for testing
     url(r'^minute/all/$', views.JSON_allminutedata, name='jsonminutedata'), #used for testing
     url(r'^minute/currentMinute/$', views.JSON_CurrentMinute, name="CurrentMinute"),
+    url(r'^hour/lastHour/$', views.JSON_LastHour, name="LastHour"),
     
     url(r'^minute/(?P<householdid>[0-9]*)/$', views.JSON_minuteusagehouse, name='minuteusehousehold'),
     url(r'^hour/(?P<householdid>[0-9]*)/$', views.JSON_hourusagehouse, name='hourusehouse'),
