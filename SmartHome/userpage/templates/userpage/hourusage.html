@@ -350,22 +350,28 @@ columnFilter.draw();
 				    sensorids.push(sensordata.sensors[i].SensorID);
 			    }
                $.ajax({
-                    url:"/index/minute/lastHour/",
+                    url:"/index/hour/lastHour/",
                     method:"GET",
                     async: false,
                     success: function(text) {
-	                    var lastminute = JSON.parse(text);
+	                    var lasthour = JSON.parse(text);
+	                    if (lasthour.datasamples.length == 0) {
+	                    	return;
+	                    }
                         var newdatapoints = [[]];
-	                    var timeyear = lastminute.datasamples[0].CreationTimestamp.slice(0,4);
-	                    var timemonth = lastminute.datasamples[0].CreationTimestamp.slice(5,7)-1;
-	                    var timeday = lastminute.datasamples[0].CreationTimestamp.slice(8,10);
-	                    var timehour = lastminute.datasamples[0].CreationTimestamp.slice(11,13);
+	                    var timeyear = lasthour.datasamples[0].CreationTimestamp.slice(0,4);
+	                    var timemonth = lasthour.datasamples[0].CreationTimestamp.slice(5,7)-1;
+	                    var timeday = lasthour.datasamples[0].CreationTimestamp.slice(8,10);
+	                    var timehour = lasthour.datasamples[0].CreationTimestamp.slice(11,13);
                         var timestamp = new Date(timeyear, timemonth, timeday, timehour);
 	                    newdatapoints[0].push(timestamp);
-                        if(last_timestamp_in_data.getTime() != timestamp.getTime())
+
+
+                        if(last_timestamp_in_data.getTime() < timestamp.getTime()){
                             var counter = 0;
+                            last_timestamp_in_data = timestamp;
                             for(i = 0; i < sensorids.length; i++){
-                                if(lastminute.datasamples[counter].SensorID != sensorids[i]){
+                                if(lasthour.datasamples[counter].SensorID != sensorids[i]){
                                   //  console.log(minutedata.datasamples[counter].SensorID);
                                    // console.log(sensorids[i]);
 	                               newdatapoints[0].push(0);
@@ -373,15 +379,15 @@ columnFilter.draw();
 	
                                 }
                                 else{
-                                    newdatapoints[0].push(parseFloat(lastminute.datasamples[counter].Value));
+                                    newdatapoints[0].push(parseFloat(lasthour.datasamples[counter].Value));
                                     counter++;
-	                                if(counter>=lastminute.datasamples.length){
+	                                if(counter>=lasthour.datasamples.length){
 		                                sensorids[i]=sensorids[i]+2;
                                         counter--;
 	                                }
                                 }
                             }
-                            newdatapoints[0].push(parseFloat(lastminute.Total));
+                            newdatapoints[0].push(parseFloat(lasthour.Total));
                             data.addRows(newdatapoints);
                         }
                     }
