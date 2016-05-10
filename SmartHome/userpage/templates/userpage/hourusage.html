@@ -338,7 +338,6 @@ columnFilter.draw();
 	dashboard.draw(data);
 
     setInterval(function() {
-      data.removeRow(0);
         var sensorids = [];
 	    $.ajax({
 		    url:"/index/sensors/currentTitles/",
@@ -349,7 +348,7 @@ columnFilter.draw();
 			    for (i = 0; i < sensordata.sensors.length; i++) {
 				    sensorids.push(sensordata.sensors[i].SensorID);
 			    }
-               $.ajax({
+            	$.ajax({
                     url:"/index/hour/lastHour/",
                     method:"GET",
                     async: false,
@@ -366,8 +365,7 @@ columnFilter.draw();
                         var timestamp = new Date(timeyear, timemonth, timeday, timehour);
 	                    newdatapoints[0].push(timestamp);
 
-
-                        if(last_timestamp_in_data.getTime() < timestamp.getTime()){
+                        if (last_timestamp_in_data.getTime() < timestamp.getTime()) {
                             var counter = 0;
                             last_timestamp_in_data = timestamp;
                             for(i = 0; i < sensorids.length; i++){
@@ -389,6 +387,7 @@ columnFilter.draw();
                             }
                             newdatapoints[0].push(parseFloat(lasthour.Total));
                             data.addRows(newdatapoints);
+      						data.removeRow(0);
                         }
                     }
                 });
@@ -398,8 +397,7 @@ columnFilter.draw();
       
       
       dashboard.draw(data);
-      }
-    , 60000
-    );
+      }, 60000);
 }
+
 </script>
