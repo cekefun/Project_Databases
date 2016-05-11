@@ -3,6 +3,54 @@
 <head>
 {% load staticfiles %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/defaultstyle.css' %}">
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+  google.charts.load('current', {'packages':['gauge']});
+  google.charts.setOnLoadCallback(drawChart);
+  function drawChart() {
+    var redzone = 300;
+    $.ajax({
+        url:"/index/minute/currentMinute/",
+        method:"GET",
+        async: false,
+        success: function(text) {
+            var lastminute = JSON.parse(text);
+            
+            redzone = lastminute.Dangerzone;
+        }
+    });
+    var data = google.visualization.arrayToDataTable([
+      ['Label', 'Value'],
+    ]);
+
+    var options = {
+      width: 400, height: 120,
+      redFrom: redzone, redTo: redzone+75,
+      yellowFrom:redzone-75, yellowTo: redzone,
+      minorTicks: 5,
+      max: redzone+75
+    };
+
+    var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+
+    chart.draw(data, options);
+
+    setInterval(function() {
+        $.ajax({
+            url:"/index/minute/currentMinute/",
+            method:"GET",
+            async: false,
+            success: function(text) {
+                var lastminute = JSON.parse(text);
+                
+                data.setValue(lastminute.Total);
+            }
+        });
+      chart.draw(data, options);
+    }, 
+    60000);
+  }
+</script>
 <style>
 div.img1 {
 position : absolute;
@@ -15,19 +63,16 @@ position : absolute;
     width: 500px;
     transition: all 1s;
 }
-
 div.img1:hover {
     width: 1100px;
     top:200px;
     left:300px;
     z-index: +1;
 }
-
 div.img1 img {
     width: 100%;
     height: auto;
 }
-
 div.img2 {
 position : absolute;
     top:200px;
@@ -39,14 +84,12 @@ position : absolute;
     width: 500px;
     transition: all 1s;
 }
-
 div.img2:hover {
     width: 1100px;
     top:200px;
     left:300px;
     z-index: +1;
 }
-
 div.img2 img {
     width: 100%;
     height: auto;
@@ -63,7 +106,6 @@ position : absolute;
     height: 230px;
     transition: all 1s;
 }
-
 div.img3:hover {
     width: 1100px;
     height:501px;
@@ -71,13 +113,12 @@ div.img3:hover {
     left:300px;
     z-index: +1;
 }
-
 div.img3 img {
     width: 100%;
     height: 230px;
     height:100%
 }
-div.img4 {
+/*div.img4 {
 position : absolute;
     top:467px;
     left:850px;
@@ -88,26 +129,23 @@ position : absolute;
     width: 500px;
     transition: all 1s;
 }
-
 div.img4:hover {
     width: 1100px;
     top:200px;
     left:300px;
     z-index: +1;
 }
-
 div.img4 img {
     width: 100%;
     height: auto;
 }
-
 div.desc {
     padding: 10px;
     text-align: center;
     z-index: +1;
     background-color: #000078;
     color: white;
-}
+}*/
 </style>
 </head>
 <body>
@@ -158,12 +196,8 @@ div.desc {
   </a>
   <div class ="desc">Share energy tips and tricks with others</div>
 </div>
-<div class="img4">
-  <a target = "_blank" href="{% static 'img/graph.png' %}">
-    <img src="{% static 'img/graph.png' %}" alt="graph" width="600" height="400">
-  </a>
-  <div class ="desc">Easily readable interactive graphs</div>
-</div>
+<div id="chart_div" style="width: 400px; height: 120px;"></div>
 </body>
 </html>
+
 
