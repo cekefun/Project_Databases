@@ -232,7 +232,10 @@ class MinuteData:
 	def selectByHouseholdID(self, householdID):
 		self.clean()
 
-		self.cursor.execute(SQL_SensorDataByHouseholdID("MinuteData", householdID))
+		command = """ select distinct MinuteData.CreationTimestamp, MinuteData.SensorID, MinuteData.Value from MinuteData inner join Sensor on MinuteData.SensorID=Sensor.ID where (MinuteData.CreationTimestamp between date_sub(now(), interval 2 day) and date_add(now(), interval 10 minute)) and Sensor.InstalledOn = %i order by MinuteData.SensorID, MinuteData.CreationTimestamp; """ % (householdID)
+
+		self.cursor.execute(command)
+		# self.cursor.execute(SQL_SensorDataByHouseholdID("MinuteData", householdID))
 		rows = self.cursor.fetchall()
 		for i in rows:
 			self.results.append(MinuteDataSample(i))
@@ -257,7 +260,8 @@ class MinuteData:
 		for i in self.results:
 			result["datasamples"].append(dict(i))
 
-		result["firstTimestamp"] = str(currentTimeStamp().timestampFirstMinute()["firstTimestamp"])
+		result["firstTimestamp"] = self.results[0].CreationTimestamp
+		# result["firstTimestamp"] = str(currentTimeStamp().timestampFirstMinute()["firstTimestamp"])
 		result["pricePerUnit"] = str(houseHold(householdID).getPrice())
 
 		return json.dumps(result)
