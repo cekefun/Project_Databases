@@ -119,6 +119,13 @@ create table YearData(
 	primary key(CreationTimestamp, SensorID)
 );
 
+CREATE TABLE CrashData(
+	HouseID int references House(ID),
+	Mean double,
+	Deviation double,
+	foreign key (HouseID) references Sensor(ID) ON DELETE CASCADE
+);
+
 create view WeekData as select CreationTimestamp, SensorID, Value 
 from DayData
 where CreationTimestamp between
