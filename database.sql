@@ -132,6 +132,13 @@ where CreationTimestamp between
 timestamp( date_sub(makedate(year(now()), dayofyear(now())), interval 7 day), maketime(0,0,0)) and
 timestamp( makedate(year(now()), dayofyear(now())), maketime(0,0,0));
 
+create view currentHourData as select date_sub(date_sub(now(), interval (minute(now())) minute), interval (second(now())) second) as CreationTimestamp,
+ MinuteData.SensorID as SensorID,
+ SUM(MinuteData.Value) as Value 
+from MinuteData 
+where CreationTimestamp between timestamp(makedate(year(now()), dayofyear(now())), maketime(hour(now()), 0, 0)) and now() 
+group by SensorID;
+
 
 INSERT INTO User(FirstName,LastName,Email,UserName,Password) VALUES ('FOO','BAR','foo@bar.com','FooBar','password');
 INSERT INTO Admin VALUES (1);

@@ -553,3 +553,12 @@ def JSON_LastHour(request):
 
 	household = request.session["HouseID"]
 	return HttpResponse(lastHourUsage(household).getSamples())
+
+
+def JSON_partialCurrentHour(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+
+	household = request.session["HouseID"]
+
+	return HttpResponse(partialHour(household).getSamples())

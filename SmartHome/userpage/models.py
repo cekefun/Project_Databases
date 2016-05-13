@@ -279,11 +279,14 @@ class HourData:
 
 	def selectByHouseholdID(self, householdID):
 		self.clean()
-		self.cursor.execute(SQL_SensorDataByHouseholdID("HourData", householdID))
+		command = """ select distinct HourData.CreationTimestamp, HourData.SensorID, HourData.Value from HourData inner join Sensor on HourData.SensorID = Sensor.ID where HourData.CreationTimestamp between date_sub(now(), interval 2 day) and now() and Sensor.InstalledOn=%i order by HourData.SensorID, HourData.CreationTimestamp; """ % (householdID)
+		# self.cursor.execute(SQL_SensorDataByHouseholdID("HourData", householdID))
+		self.cursor.execute(command)
+		self.results = dictfetchall(self.cursor)
 
-		rows = self.cursor.fetchall()
-		for i in rows:
-			self.results.append(HourDataSample(i))
+		# rows = self.cursor.fetchall()
+		# for i in rows:
+		# 	self.results.append(HourDataSample(i))
 		return self.getTuples()
 
 
@@ -291,9 +294,10 @@ class HourData:
 		self.clean()
 		self.cursor.execute("select * from HourData order by CreationTimestamp;")
 
-		rows = self.cursor.fetchall()
-		for i in rows:
-			self.results.append(HourDataSample(i))
+		self.results = dictfetchall(self.cursor)
+		# rows = self.cursor.fetchall()
+		# for i in rows:
+		# 	self.results.append(HourDataSample(i))
 		return self.getTuples()	
 
 	def toJSON(self, householdID):
@@ -301,8 +305,15 @@ class HourData:
 		result['datasamples'] = []
 
 		for i in self.results:
-			result["datasamples"].append(dict(i))
-		result["firstTimestamp"] = str(currentTimeStamp().timestampFirstHour()["firstTimestamp"])
+			datasample = {}
+			datasample["CreationTimestamp"] = str(i["CreationTimestamp"])
+			datasample["SensorID"] = i["SensorID"]
+			datasample["Value"] = i["Value"]
+
+			result["datasamples"].append(datasample)
+
+		if (len(self.results) != 0):
+			result["firstTimestamp"] = str(self.results[0]["CreationTimestamp"])
 		result["pricePerUnit"] = str(houseHold(householdID).getPrice())
 		
 		return json.dumps(result)
@@ -641,6 +652,35 @@ class lastHourUsage:
 			datasample["Value"] = i["Value"]
 			resultingJSON["datasamples"].append(datasample)
 			total += float(i["Value"])
+
+		resultingJSON["Total"] = total
+		return json.dumps(resultingJSON)
+
+
+class partialHour:
+	def __init__(self, householdID):
+		self.householdID = householdID
+		self.cursor = connection.cursor()
+
+	def getSamples(self):
+		command = """ select * from currentHourData order by SensorID; """
+		self.cursor.execute(command)
+
+		results = dictfetchall(self.cursor)
+
+		resultingJSON = {}
+		if (results == None):
+			return resultingJSON
+		
+		total = 0
+		resultingJSON["Timestamp"] = str(results[0]["CreationTimestamp"])
+		resultingJSON["datasamples"] = []
+		for i in results:
+			datasample = {}
+			datasample["SensorID"] = i["SensorID"]
+			datasample["Value"] = i["Value"]
+			total += float(i["Value"])
+			resultingJSON["datasamples"].append(datasample)
 
 		resultingJSON["Total"] = total
 		return json.dumps(resultingJSON)
