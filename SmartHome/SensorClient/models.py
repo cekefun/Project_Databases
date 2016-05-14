@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.db import models , connection
 
 import datetime
-
+import threading
 import os.path
 
 import csv
@@ -42,6 +42,33 @@ def save_uploaded_jsonfile(f):
     return filename
 
 
+class CrashThread:
+    def __init__(self,date,value,HouseID,Mean,SD):
+        self.House = HouseID
+        self.Total = value
+        self.Moment = date
+        self.Mean = Mean
+        self.SD = SD
+        thread = threading.Thread(target=self.run,args=())
+        thread.daemon = False
+        thread.start()
+
+    def normpdf(x, mean, sd):               #FUNCTION COPIED FROM http://stackoverflow.com/questions/12412895/calculate-probability-in-normal-distribution-given-mean-std-in-python
+        var = float(sd)**2
+        pi = math.pi
+        denom = (2*pi*var)**.5
+        num = math.exp(-(float(x)-float(mean))**2/(2*var))
+        return num/denom
+        
+    def run(self):
+        chance = normpdf(self.Total,self.Mean,self.SD)
+        if(chance < 0.01):
+            #do shit
+        else:
+            return
+        
+        
+        
 
 class CSVDecoder:
     def __init__(self):
@@ -52,6 +79,14 @@ class CSVDecoder:
         reader = csv.reader(ifile,delimiter=str(';'))
         rownum = 0
         timeColumn = -1
+        totalColumn = -1
+        Mean = 0
+        SD = 1
+        self.cursor.execute("SELECT Mean, Deviation FROM CrashData WHERE HouseID = %s",[HouseID])
+        info = self.cursor.fetchone()
+        if info != None:
+            Mean = info[0]
+            SD = info[1]
         for row in reader:
             if rownum == 0:
                 header = row
@@ -59,14 +94,19 @@ class CSVDecoder:
                 for col in header:
                     if col == "Timestamp":
                         timeColumn = headerNum
-                        break
-                if timeColumn < 0:
+                    if col == "Total":
+                        totalColumn = headerNum
+                if timeColumn < 0 or totalColumn < 0:
                     ifile.close()
                     return False
             
             else:
                 column = 0
                 for col in row: 
+                    if column == timeColumn:
+                        continue
+                    if column == totalColumn:
+                        CrashThread(str(row[timeColumn]),col,HouseID,Mean,SD)
                     self.cursor.execute("SELECT ID FROM Sensor WHERE InstalledOn = %s AND Title = %s",[HouseID,header[column]])
                     AppID = self.cursor.fetchone()
                     if AppID == None:
