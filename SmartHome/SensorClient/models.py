@@ -105,7 +105,7 @@ class CSVDecoder:
                 for col in row: 
                     if column == timeColumn:
                         continue
-                    if column == totalColumn:
+                    if column == totalColumn and info != None:
                         CrashThread(str(row[timeColumn]),col,HouseID,Mean,SD)
                     self.cursor.execute("SELECT ID FROM Sensor WHERE InstalledOn = %s AND Title = %s",[HouseID,header[column]])
                     AppID = self.cursor.fetchone()
