@@ -126,6 +126,20 @@ CREATE TABLE CrashData(
 	foreign key (HouseID) references Sensor(ID) ON DELETE CASCADE
 );
 
+CREATE TABLE Crashes(
+	HouseID int references House(ID),
+	foreign key (HouseID) references Sensor(ID) ON DELETE CASCADE,
+	CrashDate datetime not null,
+	PeakValue double,
+	FirstSensor int references Sensor(ID),
+	FirstValue float,
+	SecondSensor int references Sensor(ID),
+	SecondValue float,
+	ThirdSensor int references Sensor(ID),
+	ThirdValue float,
+	primary key (CrashDate,HouseID)
+);
+
 create view WeekData as select CreationTimestamp, SensorID, Value 
 from DayData
 where CreationTimestamp between

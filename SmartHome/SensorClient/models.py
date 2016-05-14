@@ -6,6 +6,8 @@ import datetime
 import threading
 import os.path
 
+from scipy.stats import norm
+import MySQLdb as mysql
 import csv
 import json
 
@@ -43,9 +45,12 @@ def save_uploaded_jsonfile(f):
 
 
 class CrashThread:
-    def __init__(self,date,value,HouseID,Mean,SD):
+    def __init__(self,date,HouseID,Mean,SD):
+        self.database = mysql.connect("localhost", "root", "", "smarthome")
+        self.database.autocommit(True)
+        self.cursor = self.database.cursor()
         self.House = HouseID
-        self.Total = value
+        self.Total = 0
         self.Moment = date
         self.Mean = Mean
         self.SD = SD
@@ -53,19 +58,35 @@ class CrashThread:
         thread.daemon = False
         thread.start()
 
-    def normpdf(x, mean, sd):               #FUNCTION COPIED FROM http://stackoverflow.com/questions/12412895/calculate-probability-in-normal-distribution-given-mean-std-in-python
-        var = float(sd)**2
-        pi = math.pi
-        denom = (2*pi*var)**.5
-        num = math.exp(-(float(x)-float(mean))**2/(2*var))
-        return num/denom
-        
+    def getPrevDate(self):
+        command = '''SELECT CreationTimestamp,SUM(Value) FROM MinuteData WHERE SensorID IN(SELECT ID from Sensor WHERE InstalledOn = %s) ORDER BY CreationTimestamp DESC LIMIT 1;''' 
+        self.cursor.execute(command,[self.House])
+        time = self.cursor.fetchone()
+        self.Moment = time[0]
+        self.Total = time[1]
+    
     def run(self):
-        chance = normpdf(self.Total,self.Mean,self.SD)
-        if(chance < 0.01):
-            #do shit
+        print 'RUNNING THREAD'
+        self.getPrevDate()
+        print self.Total
+        chance = 1 - norm.cdf(self.Total,self.Mean,self.SD)
+        print chance
+        if(chance < 0.05):
+            command = '''SELECT SensorID, Value FROM MinuteData WHERE CreationTimestamp = %s AND SensorID in (SELECT ID from Sensor WHERE InstalledOn = %s) ORDER BY Value DESC LIMIT 3;'''
+            self.cursor.execute(command,[self.Moment,self.House])
+            sensorData = [[0,0],[0,0],[0,0]]
+            counter = 0
+            for sensor in self.cursor:
+                sensorData[counter][0]=sensor[0]
+                sensorData[counter][1]=sensor[1]
+                counter += 1
+            
+            command = '''INSERT INTO Crashes VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)'''
+            self.cursor.execute(command,[self.House,self.Moment,self.Total,sensorData[0][0],sensorData[0][1],sensorData[1][0],sensorData[1][1],sensorData[2][0],sensorData[2][1]])
+            return    
         else:
             return
+
         
         
         
@@ -96,6 +117,7 @@ class CSVDecoder:
                         timeColumn = headerNum
                     if col == "Total":
                         totalColumn = headerNum
+                    headerNum += 1
                 if timeColumn < 0 or totalColumn < 0:
                     ifile.close()
                     return False
@@ -104,9 +126,16 @@ class CSVDecoder:
                 column = 0
                 for col in row: 
                     if column == timeColumn:
+                        column += 1
                         continue
-                    if column == totalColumn and info != None:
-                        CrashThread(str(row[timeColumn]),col,HouseID,Mean,SD)
+                    if rownum == 1 and column == totalColumn and info != None:
+                        column += 1
+                        CrashThread(str(row[timeColumn]),HouseID,Mean,SD)
+                        continue
+                    elif column == totalColumn and info != None and col == 0:
+                        column += 1
+                        CrashThread(str(row[timeColumn]),HouseID,Mean,SD)
+                        continue
                     self.cursor.execute("SELECT ID FROM Sensor WHERE InstalledOn = %s AND Title = %s",[HouseID,header[column]])
                     AppID = self.cursor.fetchone()
                     if AppID == None:
