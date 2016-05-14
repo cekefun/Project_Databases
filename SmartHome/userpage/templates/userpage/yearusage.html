@@ -150,12 +150,16 @@ function getdata() {
 //alle times aanmaken en in de table steken, mss nog inefficienter als ik eerst al vreesde :/
 
 			datapoints.push([]);	
-			var timeyear = minutedata.firstTimestamp.slice(0,4);
-			datapoints[0].push(new Date(timeyear));
+			var timeyear = minutedata.firstTimestamp.slice(0,4);;
 
-			for(j = 0; j <100;j++){
+            var firsttime = new Date(timeyear, 0,0);
+		    datapoints[0].push(firsttime);
+            var lasttime = Date.now();
+            var totaltime = Math.floor((lasttime - firsttime.getTime())/31536000000);
+
+			for(j = 0; j <totaltime;j++){
 					timeyear++;
-    				datapoints[0].push(new Date(timeyear));
+    				datapoints[0].push(new Date(timeyear, 0, 0));
 										
 			}
 			var counter = 0;
@@ -166,7 +170,7 @@ function getdata() {
 				    for(j = 0; j < datapoints[0].length; j++){
 
 					    var yearcompare = minutedata.datasamples[counter].CreationTimestamp.slice(0,4);
-					    var datecompare = new Date(yearcompare);
+					    var datecompare = new Date(yearcompare,0,0);
                         
 					    if(minutedata.datasamples[counter].SensorID != sensorids[i]){
                             console.log(minutedata.datasamples[counter].SensorID);
