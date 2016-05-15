@@ -80,9 +80,9 @@ class CrashThread:
             
             command = '''INSERT INTO Crashes VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)'''
             self.cursor.execute(command,[self.House,self.Moment,self.Total,sensorData[0][0],sensorData[0][1],sensorData[1][0],sensorData[1][1],sensorData[2][0],sensorData[2][1]])
-            return    
-        else:
-            return
+        self.cursor.close()
+        self.database.close()
+        return    
 
         
         
