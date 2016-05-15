@@ -525,6 +525,14 @@ def JSON_CurrentYearData(request):
 
 	return JSON_yearusagehouse(request, request.session["HouseID"])
 
+def JSON_CurrentWeekDataTotals(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+
+	weekdata = WeekData()
+	weekdata.selectByHouseholdIDTotal(request.session["HouseID"])
+	return HttpResponse(weekdata.toJSON())
+
 
 def JSON_householdsprice(request):
 	if (IsLoggedIn(request) == False):
@@ -562,3 +570,4 @@ def JSON_partialCurrentHour(request):
 	household = request.session["HouseID"]
 
 	return HttpResponse(partialHour(household).getSamples())
+

@@ -78,40 +78,74 @@ function drawStuff() {
 	var datasamples_update = undefined;
 
 	setInterval(function() {
-		// console.log("doing this every 5 seconds");
 		var now = Date.now();
 		var amountMilliseconds = now % 60000;
 		var seconds = Math.floor(amountMilliseconds / 1000);
-		console.log(seconds);
+		// console.log(seconds);
 
 		if (sensorids_update == undefined || datasamples_update == undefined) {
-			//first time using this function, fill in the sensorids and datasamples
 			readSensorIDsUpdate();
 			readDatasamplesUpdate();
-			
-		}
 
-		if (seconds == 1) {
-			//make sure the last minute has the right values
+			var timestamp = convertToDate(datasamples_update.datasamples[0].CreationTimestamp);
+			if (timestamp.getTime() > last_timestamp_in_data.getTime()) {
+				// console.log("adding the new timestamp at the start.");
+				newDatapoints = [[]];
+				newDatapoints[0].push(timestamp);
+				for (i = 0; i < sensorids_update.length+1; i++) {
+					newDatapoints[0].push(0);
+				}
+				data.addRows(newDatapoints);
+				last_timestamp_in_data = timestamp;
+			}
+			// console.log("modifying the first values.");
+
 			var counter = 0;
 			for (i = 0; i < sensorids_update.length; i++) {
-				//push 0's since this is the start of the minute
 				if (datasamples_update.datasamples[counter].SensorID != sensorids_update[i]) {
 					data.setValue(data.getNumberOfRows()-1, i+1, 0);
 				}
 				else {
-					data.setValue(data.getNumberOfRows()-1, i+1, datasamples_update.datasamples[counter].Value);
+					data.setValue(data.getNumberOfRows()-1, i+1, datasamples_update.datasamples[counter].Value * (seconds/60));
 					counter += 1;
 					if (counter >= datasamples_update.datasamples.length) {
 						counter--;
 					}
 				}
 			}
-			data.setValue(data.getNumberOfRows()-1, data.getNumberOfColumns()-1, datasamples_update.Total);
+			data.setValue(data.getNumberOfRows()-1, data.getNumberOfColumns()-1, datasamples_update.Total * (seconds/60));
+			drawChart();
+			return;
+		}
 
-			//update the sensorids and datasamples, add the new data points to data
+		if (seconds == 3) {
+
+			var old_sensorids = sensorids_update;
+			var old_datasamples = datasamples_update;
+
 			readSensorIDsUpdate();
 			readDatasamplesUpdate();
+			if (last_timestamp_in_data.getTime() == convertToDate(datasamples_update.datasamples[0].CreationTimestamp).getTime()) {
+				return;
+			}
+
+			//make sure the last minute has the right values
+			var counter = 0;
+			for (i = 0; i < old_sensorids.length; i++) {
+				//push 0's since this is the start of the minute
+				if (old_datasamples.datasamples[counter].SensorID != old_sensorids[i]) {
+					data.setValue(data.getNumberOfRows()-1, i+1, 0);
+				}
+				else {
+					data.setValue(data.getNumberOfRows()-1, i+1, old_datasamples.datasamples[counter].Value);
+					counter += 1;
+					if (counter >= old_datasamples.datasamples.length) {
+						counter--;
+					}
+				}
+			}
+			data.setValue(data.getNumberOfRows()-1, data.getNumberOfColumns()-1, old_datasamples.Total);
+
 
 			var newDatasamples = [[]];
 			var timestamp = convertToDate(datasamples_update.datasamples[0].CreationTimestamp);
@@ -125,14 +159,12 @@ function drawStuff() {
 			}
 			newDatasamples[0].push(0); //push the total
 			data.addRows(newDatasamples);
+			drawChart();
 		}
 		else if (seconds % 5 == 0 && seconds != 0) {
-			console.log("do something now");
-
-
+			// console.log("Changing the current existing values.");
 			var counter = 0;
 			for (i = 0; i < sensorids_update.length; i++) {
-				//push 0's since this is the start of the minute
 				if (datasamples_update.datasamples[counter].SensorID != sensorids_update[i]) {
 					data.setValue(data.getNumberOfRows()-1, i+1, 0);
 				}
@@ -145,8 +177,8 @@ function drawStuff() {
 				}
 			}
 			data.setValue(data.getNumberOfRows()-1, data.getNumberOfColumns()-1, datasamples_update.Total * (seconds/60));
+			drawChart();
 		}
-		drawChart();
 	}, 1000);
 	
 	function readSensorIDsUpdate() {
@@ -175,54 +207,6 @@ function drawStuff() {
 			}
 		});
 	}
-
-/*
-	setInterval(function() {
-	  	data.removeRow(0);
-		var sensorids = [];
-		$.ajax({
-			url:"/index/sensors/currentTitles/",
-			method:"GET",
-			async: false,
-			success: function(text) {
-				var sensordata = JSON.parse(text);
-				for (i = 0; i < sensordata.sensors.length; i++) {
-					sensorids.push(sensordata.sensors[i].SensorID);
-				}
-				$.ajax({
-					url:"/index/minute/currentMinute/",
-					method:"GET",
-					async: false,
-					success: function(text) {
-						var lastminute = JSON.parse(text);
-						var newdatapoints = [[]];
-
-						var newTimestamp = convertToDate(lastminute.datasamples[0].CreationTimestamp);
-						newdatapoints[0].push(newTimestamp);
-						last_timestamp_in_data = newTimestamp;
-						var counter = 0;
-						for (i = 0; i < sensorids.length; i++) {
-							if (lastminute.datasamples[counter].SensorID != sensorids[i]) {
-							   newdatapoints[0].push(0);
-							}
-							else{
-								newdatapoints[0].push(parseFloat(lastminute.datasamples[counter].Value));
-								counter++;
-								if(counter>=lastminute.datasamples.length){
-									sensorids[i]=sensorids[i]+2;
-									counter--;
-								}
-							}
-						}
-						newdatapoints[0].push(parseFloat(lastminute.Total));
-						data.addRows(newdatapoints);
-					}
-				});
-			}
-		});
-		drawChart();
-		}, 60000);
-*/
 
 	window.onload = getdata();
 
@@ -257,7 +241,7 @@ function drawStuff() {
 
 				datapoints[0].push(firsttime);
 				var lasttime = Date.now();
-				var totaltime = Math.floor((lasttime - firsttime.getTime())/60000);
+				var totaltime = Math.floor((lasttime - firsttime.getTime())/60000)-1;
 
 				for (j = 0; j < totaltime; j++) {
 					datapoints[0].push(dateAddMinutes(firsttime, j+1));
@@ -271,9 +255,18 @@ function drawStuff() {
 					for (i = 0; i < sensorids.length; i++) {
 						datapoints.push([]);
 						for (j = 0; j < datapoints[0].length; j++) {
+							while (minutedata.datasamples[counter].SensorID < sensorids[i]) {
+								//skip the next values since we don't need them
+								counter++;
+								if (counter >= minutedata.datasamples.length) {
+									counter--;
+									break;
+								}
+							}
 							var datecompare = convertToDate(minutedata.datasamples[counter].CreationTimestamp);
 
-							if (minutedata.datasamples[counter].SensorID != sensorids[i]) {
+
+							if (minutedata.datasamples[counter].SensorID > sensorids[i]) {
 								//sensorid does not match anymore, means there are no datasamples left for the current sensor --> fill everything up with 0
 								for (j; j < datapoints[0].length; j++) {
 									datapoints[i+1].push(0);
@@ -354,14 +347,14 @@ function drawStuff() {
 		containerId: 'colFilter_div',
 		dataTable: columnsTable,
 		options: {
-				filterColumnLabel: 'colLabel',
-				ui: {
-						label: ' ',
-						allowTyping: false,
-						allowMultiple: true,
-						allowNone: false,
-						selectedValuesLayout: 'belowStacked'
-				}
+			filterColumnLabel: 'colLabel',
+			ui: {
+				label: ' ',
+				allowTyping: false,
+				allowMultiple: true,
+				allowNone: false,
+				selectedValuesLayout: 'belowStacked'
+			}
 		},
 		state: initState
 	});

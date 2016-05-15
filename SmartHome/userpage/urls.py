@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^day/current/$', views.JSON_CurrentDayData, name="CurrentDayData"),
     url(r'^month/current/$', views.JSON_CurrentMonthData, name="CurrentMonthData"),
     url(r'^year/current/$', views.JSON_CurrentYearData, name="CurrentYearData"),
+    url(r'^week/currentTotals/$', views.JSON_CurrentWeekDataTotals, name="CurrentWeekDataTotals"),
 
     url(r'^sensors/all/$', views.JSON_allsensors, name="jsonsensordata"), #used for testing
     url(r'^minute/all/$', views.JSON_allminutedata, name='jsonminutedata'), #used for testing

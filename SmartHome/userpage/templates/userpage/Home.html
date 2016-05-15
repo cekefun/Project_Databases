@@ -157,7 +157,9 @@ div.desc {
   <div class ="desc">Easily readable interactive graphs</div>
 </div>
 {% else %}
-<div id="chart_div" style="margin-top: 50px; margin-left: 85%;width: 400px; height: 120px;"></div>
+<div id="chart_div" style="margin-top: 50px; margin-left: 85%;"></div>
+<div id="chart_weekdata_div" style="margin-top: 5%;"></div>
+<!--<div id="chart_weekdata_div" style="margin-top: 100px; margin-left: 30px; "></div>-->
 {% endif %}
 </body>
 </html>
@@ -166,9 +168,15 @@ div.desc {
 <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-  google.charts.load('current', {'packages':['gauge']});
-  google.charts.setOnLoadCallback(drawChart);
-  function drawChart() {
+google.charts.load('current', {'packages':['gauge', 'corechart']});
+google.charts.setOnLoadCallback(drawCharts);
+
+function drawCharts() {
+	drawGauge();
+	drawWeekChart();
+}
+
+function drawGauge() {
 	var redzone = 60;
 	$.ajax({
 		url:"/index/minute/currentMinute/",
@@ -184,7 +192,7 @@ div.desc {
 	});
 	var data = google.visualization.arrayToDataTable([
 	  ['Label', 'Value'],
-	  ["Wh", 0]
+	  ["Watt/hour", 0]
 	]);
 	
 	var options = {
@@ -192,7 +200,7 @@ div.desc {
 		minorTicks: 5,
 		redFrom: redzone-Math.floor(redzone/10), redTo: redzone+Math.floor(redzone/5),
 		yellowFrom:redzone-3*Math.floor(redzone/10), yellowTo: redzone-Math.floor(redzone/10),
-        greenFrom: 0, greenTo:redzone-3*Math.floor(redzone/10),
+		greenFrom: 0, greenTo:redzone-3*Math.floor(redzone/10),
 		max: redzone+Math.floor(redzone/5),
 	};
 	var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
@@ -219,7 +227,119 @@ div.desc {
 		chart.draw(data, options);
 	}, 
 	3000);
-  }
+}
+
+function drawWeekChart() {
+	var data = new google.visualization.DataTable();
+	var options = {
+		width: 1000,
+		height: 400,
+		title: "Current weekdata",
+		bar: {groupWidth: "65%"},
+		legend: {position: "none"},
+		animation: {
+			duration: 2000,
+			easing: 'out',
+			startup: true,
+		},
+	};
+	var chart = new google.visualization.ColumnChart(document.getElementById("chart_weekdata_div"));
+
+	function getDrawData() {
+		$.ajax({
+			url:"week/currentTotals/",
+			method:"GET",
+			async: true,
+			success: function(text) {
+				var weekdata = JSON.parse(text);
+				if (weekdata == undefined) {
+					console.log("uh oh");
+					return;
+				}
+
+				if (weekdata.datasamples.length == 0) {
+					console.log("No datasamples available.");
+					// return;
+				}
+
+				data.addColumn("datetime", "Time");
+				data.addColumn("number","Total");
+
+				var datapoints = [];
+				
+				datapoints.push([]);
+				var today = new Date(Date.now());
+				today.setMilliseconds(0);
+				today.setSeconds(0);
+				today.setMinutes(0);
+				today.setHours(0);
+				var startdate = new Date(today.getTime() - (7*24*60*60*1000));
+				
+				datapoints[0].push(startdate);
+				for (i = 0; i < 6; i++) {
+					datapoints[0].push(dateAddMinutes(startdate, (i+1)*24*60));
+				}
+
+				// for (i = 0; i < datapoints[0].length; i++) {
+				// 	console.log(datapoints[0][i]);
+				// }
+
+				if (weekdata.datasamples.length > 0) {
+					datapoints.push([]);
+					var counter = 0;
+					for (j = 0; j < datapoints[0].length; j++) {
+						var timestamp = convertToDate(weekdata.datasamples[counter].CreationTimestamp);
+						if (timestamp.getTime() == datapoints[0][j].getTime()) {
+							datapoints[1].push(weekdata.datasamples[counter].Total);
+							counter++;
+
+							if (counter >= weekdata.datasamples.length) {
+								counter--;
+							}
+						}
+						else {
+							datapoints[1].push(0);
+						}
+					}
+				}
+				else {
+					datapoints.push([]);
+					for (i = 0; i < datapoints[0].length; i++) {
+						datapoints[1].push(0);
+					}
+				}
+
+				var total = []
+				for (i = 0; i < datapoints[0].length; i++) {
+					row = []
+					row.push(datapoints[0][i]);
+					row.push(datapoints[1][i]);
+					total.push(row);
+				}
+				data.addRows(total);
+
+				chart.draw(data, options);
+			}
+		});
+	}
+
+
+	getDrawData();
+}
+
+function convertToDate(timestamp) {
+	var timeyear = timestamp.slice(0,4);
+	var timemonth = timestamp.slice(5,7)-1;
+	var timeday = timestamp.slice(8,10);
+	var timehour = timestamp.slice(11,13);
+	var timeminute = timestamp.slice(14,16);
+	return (new Date(timeyear, timemonth, timeday, timehour, timeminute))
+}
+
+function dateAddMinutes(date, minutes) {
+	return new Date(date.getTime() + minutes * 60000);
+}
+
 </script>
 {% endif %}
 

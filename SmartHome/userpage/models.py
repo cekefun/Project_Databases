@@ -440,6 +440,29 @@ class YearData:
 		result["pricePerUnit"] = str(houseHold(householdID).getPrice())
 		return json.dumps(result)
 
+class WeekData:
+	def __init__(self):
+		self.cursor = connection.cursor()
+		self.results = []
+
+	def selectByHouseholdIDTotal(self, householdid):
+		command = """ select WeekData.CreationTimestamp as CreationTimestamp, Sum(WeekData.Value) as Total from WeekData inner join Sensor on Sensor.ID = WeekData.SensorID and Sensor.InstalledOn=%i and WeekData.CreationTimestamp != timestamp(makedate(year(now()), dayofyear(now())), maketime(0,0,0)) group by WeekData.CreationTimestamp order by WeekData.CreationTimestamp; """ % householdid
+		self.cursor.execute(command)
+		self.results = dictfetchall(self.cursor)
+
+	def toJSON(self):
+		resultingJSON = {}
+
+		resultingJSON["datasamples"] = []
+
+		for i in self.results:
+			datasample = {}
+			datasample["CreationTimestamp"] = str(i["CreationTimestamp"])
+			datasample["Total"] = i["Total"]
+			resultingJSON["datasamples"].append(datasample)
+
+		return json.dumps(resultingJSON)
+
 
 class SensorTitle:
 	def __init__(self, houseID):
