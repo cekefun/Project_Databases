@@ -59,9 +59,10 @@ class CrashThread:
         thread.start()
 
     def getPrevDate(self):
-        command = '''SELECT CreationTimestamp,SUM(Value) FROM MinuteData WHERE SensorID IN(SELECT ID from Sensor WHERE InstalledOn = %s) ORDER BY CreationTimestamp DESC LIMIT 1;''' 
-        self.cursor.execute(command,[self.House])
+        command = '''SELECT CreationTimestamp,SUM(Value) FROM MinuteData WHERE CreationTimestamp < %s AND SensorID IN(SELECT ID from Sensor WHERE InstalledOn = %s) GROUP BY CreationTimestamp ORDER BY CreationTimestamp DESC LIMIT 1;''' 
+        self.cursor.execute(command,[self.Moment,self.House])
         time = self.cursor.fetchone()
+        print time
         self.Moment = time[0]
         self.Total = time[1]
     
@@ -77,6 +78,7 @@ class CrashThread:
             sensorData = [[0,0],[0,0],[0,0]]
             counter = 0
             for sensor in self.cursor:
+                print sensor
                 sensorData[counter][0]=sensor[0]
                 sensorData[counter][1]=sensor[1]
                 counter += 1
@@ -132,7 +134,7 @@ class CSVDecoder:
                         column += 1
                         CrashThread(str(row[timeColumn]),HouseID,Mean,SD)
                         continue
-                    elif column == totalColumn and info != None and col == 0:
+                    elif column == totalColumn and info != None and int(float(col)) == 0:
                         column += 1
                         CrashThread(str(row[timeColumn]),HouseID,Mean,SD)
                         continue

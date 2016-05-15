@@ -12,8 +12,7 @@ class CrashAggregation:
 			self.handleValue(row)
 
 	def getValues(self):
-		command = '''SELECT ID,AVG(SumValue),STDDEV_SAMP(SumValue)FROM (SELECT House.ID AS ID,SUM(VALUE) AS SumValue FROM House inner join Sensor on House.ID = Sensor.InstalledOn inner join MinuteData on Sensor.ID = MinuteData.SensorID WHERE CreationTimestamp between timestamp( date_sub(makedate(year(now()), dayofyear(now())), interval 1 day), maketime(0, 0, 0)) and timestamp( date_sub(
-makedate(year(now()), dayofyear(now())), interval 1 day), maketime(23, 59, 59)) GROUP BY House.ID,CreationTimeStamp) AS TEMP GROUP BY ID;'''
+		command = '''SELECT ID,AVG(SumValue),STDDEV_SAMP(SumValue)FROM (SELECT House.ID AS ID,SUM(VALUE) AS SumValue FROM House inner join Sensor on House.ID = Sensor.InstalledOn inner join MinuteData on Sensor.ID = MinuteData.SensorID WHERE CreationTimestamp between timestamp( date_sub(makedate(year(now()), dayofyear(now())), interval 1 day), maketime(0, 0, 0)) and timestamp( date_sub(makedate(year(now()), dayofyear(now())), interval 1 day), maketime(23, 59, 59)) GROUP BY House.ID,CreationTimeStamp) AS TEMP GROUP BY ID;'''
 		self.cursor.execute(command)
 		return
 		
