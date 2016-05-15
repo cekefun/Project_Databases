@@ -62,23 +62,18 @@ class CrashThread:
         command = '''SELECT CreationTimestamp,SUM(Value) FROM MinuteData WHERE CreationTimestamp < %s AND SensorID IN(SELECT ID from Sensor WHERE InstalledOn = %s) GROUP BY CreationTimestamp ORDER BY CreationTimestamp DESC LIMIT 1;''' 
         self.cursor.execute(command,[self.Moment,self.House])
         time = self.cursor.fetchone()
-        print time
         self.Moment = time[0]
         self.Total = time[1]
     
     def run(self):
-        print 'RUNNING THREAD'
         self.getPrevDate()
-        print self.Total
         chance = 1 - norm.cdf(self.Total,self.Mean,self.SD)
-        print chance
         if(chance < 0.05):
             command = '''SELECT SensorID, Value FROM MinuteData WHERE CreationTimestamp = %s AND SensorID in (SELECT ID from Sensor WHERE InstalledOn = %s) ORDER BY Value DESC LIMIT 3;'''
             self.cursor.execute(command,[self.Moment,self.House])
             sensorData = [[0,0],[0,0],[0,0]]
             counter = 0
             for sensor in self.cursor:
-                print sensor
                 sensorData[counter][0]=sensor[0]
                 sensorData[counter][1]=sensor[1]
                 counter += 1
