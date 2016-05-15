@@ -33,7 +33,7 @@
 </div>
 <br><br><br><br><br><br>
 
-<div id="programmatic_dashboard_div" style="padding-top:80px ;border: 1px solid #ccc">
+<div id="programmatic_dashboard_div" style="padding-top:10px ;">
 	<table class="columns">
 		<tr>
 			<td>
@@ -145,6 +145,46 @@ function drawStuff() {
 			async:false,
 			success: function(text) {
 
+				var now = Date.now();
+				var minuteandseconds = now % 3600000;
+				if (minuteandseconds > 120000 && minuteandseconds < 180000) {
+					console.log("got into the if.");
+					$.ajax({
+						url:"/index/hour/lastHour/",
+						method:"GET",
+						async: false,
+						success: function(text) {
+							var lasthour = JSON.parse(text);
+							if (lasthour.datasamples.length == 0) {
+								console.log("no data yet");
+								return;
+							}
+							var timestamp = convertToDate(lasthour.datasamples[0].CreationTimestamp);
+
+							for (i = 0; i < data.getNumberOfRows(); i++) {
+								console.log("searching....");
+								if (data.getValue(i,0).getTime() == timestamp.getTime()) {
+									console.log("found the row with the correct timestamp");
+									var counter = 0;
+									for (sensor = 0; sensor < sensorids.length; sensor++) {
+										if (lasthour.datasamples[counter].SensorID != sensorids[sensor]) {
+											data.setValue(i, sensor+1, 0);
+										}
+										else {
+											data.setValue(i, sensor+1, lasthour.datasamples[counter].Value);
+											counter++;
+											if (counter >= lasthour.datasamples.length) {
+												sensorids[sensor] = sensorids[sensor]+2;
+												counter--;
+											}
+										}
+									}
+									break;
+								}
+							}
+						}
+					});
+				}
 
 
 				var partialdata = JSON.parse(text);
@@ -354,7 +394,8 @@ function drawStuff() {
 	setChartView();
 	columnFilter.draw();
 	dashboard.bind(programmaticSlider, programmaticChart, columnFilter);
-	drawChart()
+	drawChart();
+
 
 	function drawChart(shouldupdate) {
 		shouldupdate = typeof shouldupdate !== "undefined" ? shouldupdate : false;
@@ -377,7 +418,7 @@ function drawStuff() {
 			});
 			programmaticSlider.draw();
 		}
-		dashboard.draw(data, options);
+		dashboard.draw(data);
 	}
 }
 
