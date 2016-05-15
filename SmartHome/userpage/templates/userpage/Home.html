@@ -3,159 +3,101 @@
 <head>
 {% load staticfiles %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/defaultstyle.css' %}">
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript">
-  google.charts.load('current', {'packages':['gauge']});
-  google.charts.setOnLoadCallback(drawChart);
-  function drawChart() {
-    var redzone = 300;
-    $.ajax({
-        url:"/index/minute/currentMinute/",
-        method:"GET",
-        async: false,
-        success: function(text) {
-            var lastminute = JSON.parse(text);
-            if(lastminute.Dangerzone!=0){
-                redzone = lastminute.Dangerzone;
-                no_outage = false;
-            }
-        }
-    });
-    var data = google.visualization.arrayToDataTable([
-      ['Label', 'Value'],
-    ]);
-    
-    var options = {
-        width: 400, height: 120,
-        minorTicks: 5,
-        //redFrom: redzone, redTo: redzone+75,
-        //yellowFrom:redzone-75, yellowTo: redzone,
-        max: redzone+75,
-    };
-
-    var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
-
-    chart.draw(data, options);
-
-    setInterval(function() {
-        $.ajax({
-            url:"/index/minute/currentMinute/",
-            method:"GET",
-            async: false,
-            success: function(text) {
-                var lastminute = JSON.parse(text);
-                var yearcompare = lastminute.datasamples[0].CreationTimestamp.slice(0,4);
-		        var monthcompare = lastminute.datasamples[0].CreationTimestamp.slice(5,7)-1;
-		        var daycompare = lastminute.datasamples[0].CreationTimestamp.slice(8,10);
-		        var hourcompare = lastminute.datasamples[0].CreationTimestamp.slice(11,13);
-		        var minutecompare = lastminute.datasamples[0].CreationTimestamp.slice(14,16);
-		        var datecompare = new Date(yearcompare, monthcompare, daycompare, hourcompare, minutecompare);
-                
-                var Time_ticks = (Date.now() - datecompare.getTime())/3000; //aantal 20sten van een minuut we verder zijn dan de vorige timestamp
-                
-                data.setValue(parseFloat(Math.floor((Time_ticks * 1/20) * lastminute.Total)));
-            }
-        });
-      chart.draw(data, options);
-    }, 
-    3000);
-  }
-</script>
 <style>
 div.img1 {
 position : absolute;
-    top:200px;
-    left:300px;
-    z-index: -1;
-    margin: 5px;
-    border: 1px solid #ccc;
-    float: left;
-    width: 500px;
-    transition: all 1s;
+	top:200px;
+	left:300px;
+	z-index: -1;
+	margin: 5px;
+	border: 1px solid #ccc;
+	float: left;
+	width: 500px;
+	transition: all 1s;
 }
 div.img1:hover {
-    width: 1100px;
-    top:200px;
-    left:300px;
-    z-index: +1;
+	width: 1100px;
+	top:200px;
+	left:300px;
+	z-index: +1;
 }
 div.img1 img {
-    width: 100%;
-    height: auto;
+	width: 100%;
+	height: auto;
 }
 div.img2 {
 position : absolute;
-    top:200px;
-    left:850px;
-    z-index: -1;
-    margin: 5px;
-    border: 1px solid #ccc;
-    float: left;
-    width: 500px;
-    transition: all 1s;
+	top:200px;
+	left:850px;
+	z-index: -1;
+	margin: 5px;
+	border: 1px solid #ccc;
+	float: left;
+	width: 500px;
+	transition: all 1s;
 }
 div.img2:hover {
-    width: 1100px;
-    top:200px;
-    left:300px;
-    z-index: +1;
+	width: 1100px;
+	top:200px;
+	left:300px;
+	z-index: +1;
 }
 div.img2 img {
-    width: 100%;
-    height: auto;
+	width: 100%;
+	height: auto;
 }
 div.img3 {
 position : absolute;
-    top:467px;
-    left:300px;
-    z-index: -1;
-    margin: 5px;
-    border: 1px solid #ccc;
-    float: left;
-    width: 500px;
-    height: 230px;
-    transition: all 1s;
+	top:467px;
+	left:300px;
+	z-index: -1;
+	margin: 5px;
+	border: 1px solid #ccc;
+	float: left;
+	width: 500px;
+	height: 230px;
+	transition: all 1s;
 }
 div.img3:hover {
-    width: 1100px;
-    height:501px;
-    top:200px;
-    left:300px;
-    z-index: +1;
+	width: 1100px;
+	height:501px;
+	top:200px;
+	left:300px;
+	z-index: +1;
 }
 div.img3 img {
-    width: 100%;
-    height: 230px;
-    height:100%
+	width: 100%;
+	height: 230px;
+	height:100%
 }
-/*div.img4 {
+div.img4 {
 position : absolute;
-    top:467px;
-    left:850px;
-    z-index: -1;
-    margin: 5px;
-    border: 1px solid #ccc;
-    float: left;
-    width: 500px;
-    transition: all 1s;
+	top:467px;
+	left:850px;
+	z-index: -1;
+	margin: 5px;
+	border: 1px solid #ccc;
+	float: left;
+	width: 500px;
+	transition: all 1s;
 }
 div.img4:hover {
-    width: 1100px;
-    top:200px;
-    left:300px;
-    z-index: +1;
+	width: 1100px;
+	top:200px;
+	left:300px;
+	z-index: +1;
 }
 div.img4 img {
-    width: 100%;
-    height: auto;
+	width: 100%;
+	height: auto;
 }
 div.desc {
-    padding: 10px;
-    text-align: center;
-    z-index: +1;
-    background-color: #000078;
-    color: white;
-}*/
+	padding: 10px;
+	text-align: center;
+	z-index: +1;
+	background-color: #000078;
+	color: white;
+}
 </style>
 </head>
 <body>
@@ -180,34 +122,105 @@ div.desc {
   <button class="dropbtn" style="float:right">Account</button>
   <div class="dropdown-content a">
 {% if request.session.Username|length > 0 %}
-      <a href="settings/">Settings</a>
-      <a href="addHouse/">Add a House</a>
-      <a href="/logout/">Log out</a>
+	  <a href="settings/">Settings</a>
+	  <a href="addHouse/">Add a House</a>
+	  <a href="/logout/">Log out</a>
 {% else %}
-      <a href='../login'>Log in</a>
+	  <a href='../login'>Log in</a>
 {% endif %}
   </div>
 </div>
+{% if request.session.Username|length == 0 %}
 <div class="img1">
   <a target = "_blank" href="{% static 'img/graph.png' %}">
-    <img src="{% static 'img/graph.png' %}" alt="graph" width="600" height="400">
+	<img src="{% static 'img/graph.png' %}" alt="graph" width="600" height="400">
   </a>
   <div class ="desc">Easily readable interactive graphs</div>
 </div>
 <div class="img2">
   <a target = "_blank" href="{% static 'img/sensortable.png' %}">
-    <img src="{% static 'img/sensortable.png' %}" alt="graph" width="600" height="400">
+	<img src="{% static 'img/sensortable.png' %}" alt="graph" width="600" height="400">
   </a>
   <div class ="desc">Select and manage your sensors</div>
 </div>
 <div class="img3">
   <a target = "_blank" href="{% static 'img/forum.png' %}">
-    <img src="{% static 'img/forum.png' %}" alt="graph" width="600" height="400">
+	<img src="{% static 'img/forum.png' %}" alt="graph" width="600" height="400">
   </a>
   <div class ="desc">Share energy tips and tricks with others</div>
 </div>
-<div id="chart_div" style="width: 400px; height: 120px;"></div>
+
+<div class="img4">
+  <a target = "_blank" href="{% static 'img/graph.png' %}">
+	<img src="{% static 'img/graph.png' %}" alt="graph" width="600" height="400">
+  </a>
+  <div class ="desc">Easily readable interactive graphs</div>
+</div>
+{% else %}
+<div id="chart_div" style="margin-top: 50px; margin-left: 85%;width: 400px; height: 120px;"></div>
+{% endif %}
 </body>
 </html>
 
+{% if request.session.Username|length > 0 %}
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+  google.charts.load('current', {'packages':['gauge']});
+  google.charts.setOnLoadCallback(drawChart);
+  function drawChart() {
+	var redzone = 60;
+	$.ajax({
+		url:"/index/minute/currentMinute/",
+		method:"GET",
+		async: false,
+		success: function(text) {
+			var lastminute = JSON.parse(text);
+			if(lastminute.Dangerzone!=0){
+				redzone = Math.floor(lastminute.Dangerzone);
+				no_outage = false;
+			}
+		}
+	});
+	var data = google.visualization.arrayToDataTable([
+	  ['Label', 'Value'],
+	  ["Wh", 0]
+	]);
+	
+	var options = {
+		width: 500, height: 250,
+		minorTicks: 5,
+		//redFrom: redzone, redTo: redzone+75,
+		//yellowFrom:redzone-75, yellowTo: redzone,
+		max: redzone+20,
+	};
 
+	var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+
+	chart.draw(data, options);
+
+	setInterval(function() {
+		$.ajax({
+			url:"/index/minute/currentMinute/",
+			method:"GET",
+			async: false,
+			success: function(text) {
+				var lastminute = JSON.parse(text);
+				var yearcompare = lastminute.datasamples[0].CreationTimestamp.slice(0,4);
+				var monthcompare = lastminute.datasamples[0].CreationTimestamp.slice(5,7)-1;
+				var daycompare = lastminute.datasamples[0].CreationTimestamp.slice(8,10);
+				var hourcompare = lastminute.datasamples[0].CreationTimestamp.slice(11,13);
+				var minutecompare = lastminute.datasamples[0].CreationTimestamp.slice(14,16);
+				var datecompare = new Date(yearcompare, monthcompare, daycompare, hourcompare, minutecompare);
+				
+				var Time_ticks = (Date.now() - datecompare.getTime())/3000; //aantal 20sten van een minuut we verder zijn dan de vorige timestamp
+				
+				data.setValue(0,1,parseFloat(Math.floor((Time_ticks * 1/20) * lastminute.Total)));
+			}
+		});
+		chart.draw(data, options);
+	}, 
+	3000);
+  }
+</script>
+{% endif %}

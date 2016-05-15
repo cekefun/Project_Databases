@@ -91,7 +91,7 @@ function drawStuff() {
 			
 		}
 
-		if (seconds == 3) {
+		if (seconds == 1) {
 			//make sure the last minute has the right values
 			var counter = 0;
 			for (i = 0; i < sensorids_update.length; i++) {
@@ -257,7 +257,7 @@ function drawStuff() {
 
 				datapoints[0].push(firsttime);
 				var lasttime = Date.now();
-				var totaltime = Math.floor((lasttime - firsttime.getTime())/60000)-1;
+				var totaltime = Math.floor((lasttime - firsttime.getTime())/60000);
 
 				for (j = 0; j < totaltime; j++) {
 					datapoints[0].push(dateAddMinutes(firsttime, j+1));
