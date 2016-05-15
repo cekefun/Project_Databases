@@ -15,20 +15,22 @@
         async: false,
         success: function(text) {
             var lastminute = JSON.parse(text);
-            
-            redzone = lastminute.Dangerzone;
+            if(lastminute.Dangerzone!=0){
+                redzone = lastminute.Dangerzone;
+                no_outage = false;
+            }
         }
     });
     var data = google.visualization.arrayToDataTable([
       ['Label', 'Value'],
     ]);
-
+    
     var options = {
-      width: 400, height: 120,
-      redFrom: redzone, redTo: redzone+75,
-      yellowFrom:redzone-75, yellowTo: redzone,
-      minorTicks: 5,
-      max: redzone+75
+        width: 400, height: 120,
+        minorTicks: 5,
+        //redFrom: redzone, redTo: redzone+75,
+        //yellowFrom:redzone-75, yellowTo: redzone,
+        max: redzone+75,
     };
 
     var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
@@ -42,13 +44,21 @@
             async: false,
             success: function(text) {
                 var lastminute = JSON.parse(text);
+                var yearcompare = lastminute.datasamples[0].CreationTimestamp.slice(0,4);
+		        var monthcompare = lastminute.datasamples[0].CreationTimestamp.slice(5,7)-1;
+		        var daycompare = lastminute.datasamples[0].CreationTimestamp.slice(8,10);
+		        var hourcompare = lastminute.datasamples[0].CreationTimestamp.slice(11,13);
+		        var minutecompare = lastminute.datasamples[0].CreationTimestamp.slice(14,16);
+		        var datecompare = new Date(yearcompare, monthcompare, daycompare, hourcompare, minutecompare);
                 
-                data.setValue(lastminute.Total);
+                var Time_ticks = (Date.now() - datecompare.getTime())/3000; //aantal 20sten van een minuut we verder zijn dan de vorige timestamp
+                
+                data.setValue(parseFloat(Math.floor((Time_ticks * 1/20) * lastminute.Total)));
             }
         });
       chart.draw(data, options);
     }, 
-    60000);
+    3000);
   }
 </script>
 <style>
