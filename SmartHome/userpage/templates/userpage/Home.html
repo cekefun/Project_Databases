@@ -190,15 +190,13 @@ div.desc {
 	var options = {
 		width: 500, height: 250,
 		minorTicks: 5,
-		//redFrom: redzone, redTo: redzone+75,
-		//yellowFrom:redzone-75, yellowTo: redzone,
-		max: redzone+20,
+		redFrom: redzone-Math.floor(redzone/10), redTo: redzone+Math.floor(redzone/5),
+		yellowFrom:redzone-3*Math.floor(redzone/10), yellowTo: redzone-Math.floor(redzone/10),
+        greenFrom: 0, greenTo:redzone-3*Math.floor(redzone/10),
+		max: redzone+Math.floor(redzone/5),
 	};
-
 	var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
-
 	chart.draw(data, options);
-
 	setInterval(function() {
 		$.ajax({
 			url:"/index/minute/currentMinute/",
@@ -224,3 +222,4 @@ div.desc {
   }
 </script>
 {% endif %}
+
