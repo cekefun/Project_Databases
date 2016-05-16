@@ -817,3 +817,58 @@ class Status:
 
 
 		return json.dumps(resultingJSON)
+
+
+class HistoricCrashes:
+	def __init__(self, householdID):
+		self.cursor = connection.cursor()
+		self.resultsPeakValues = []
+		self.resultsNeighbourhoodValues = []
+		self.HouseholdID = householdID
+
+	def getPeakValues(self):
+		command = """ SELECT PeakCrashes.PeakValue as PeakValue, PeakCrashes.FirstValue as SensorValue1, PeakCrashes.SecondValue as SensorValue2, PeakCrashes.ThirdValue as SensorValue3,Sensor1.Title as SensorTitle1,Sensor2.Title as SensorTitle2,Sensor3.Title as SensorTitle3,Crashes.CrashDate as Timestamp FROM PeakCrashes INNER JOIN Crashes ON PeakCrashes.CrashID = Crashes.ID INNER JOIN Sensor AS Sensor1 ON PeakCrashes.FirstSensor = Sensor1.ID INNER JOIN Sensor AS Sensor2 ON PeakCrashes.SecondSensor = Sensor2.ID INNER JOIN Sensor AS Sensor3 ON PeakCrashes.ThirdSensor = Sensor3.ID WHERE Crashes.HouseID = %i ORDER BY Crashes.CrashDate DESC LIMIT 10; """ % self.HouseholdID
+		self.cursor.execute(command)
+		self.resultsPeakValues = dictfetchall(self.cursor)
+
+	def getNeighbourhoodValues(self):
+		command = """ SELECT Address.StreetName as StreetName,Address.City as City,Address.Country as Country,Crashes.CrashDate as Timestamp FROM StreetCrashes JOIN Crashes ON StreetCrashes.CrashID = Crashes.ID JOIN House ON Crashes.HouseID = House.ID JOIN Address ON House.AddressID = Address.ID WHERE House.ID = %i ORDER BY Crashes.CrashDate DESC LIMIT 10; """ % self.HouseholdID
+		self.cursor.execute(command)
+		self.resultsNeighbourhoodValues = dictfetchall(self.cursor)
+
+
+	def getNeighbourhoodObjects(self):
+		class NeighbourhoodObject:
+			def __init__(self, dictObject):
+				self.StreetName = dictObject["StreetName"]
+				self.City = dictObject["City"]
+				self.Country = dictObject["Country"]
+				self.Timestamp = dictObject["Timestamp"]
+
+		results = []
+		for i in self.resultsNeighbourhoodValues:
+			results.append(NeighbourhoodObject(i))
+		return results
+
+
+
+	def getPeakValueObjects(self):
+		class PeakValueObject:
+			def __init__(self, dictObject):
+				self.PeakValue = dictObject["PeakValue"]
+				self.SensorTitle1 = dictObject["SensorTitle1"]
+				self.SensorTitle2 = dictObject["SensorTitle2"]
+				self.SensorTitle3 = dictObject["SensorTitle3"]
+				self.SensorValue1 = dictObject["SensorValue1"]
+				self.SensorValue2 = dictObject["SensorValue2"]
+				self.SensorValue3 = dictObject["SensorValue3"]
+				self.Timestamp = dictObject["Timestamp"]
+
+		result = []
+		for i in self.resultsPeakValues:
+			result.append(PeakValueObject(i))
+		return result
+
+	def getData(self):
+		self.getPeakValues()
+		self.getNeighbourhoodValues()

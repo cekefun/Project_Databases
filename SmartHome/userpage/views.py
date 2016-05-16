@@ -442,9 +442,16 @@ def historyOutages(request):
 	if (language == "nl"):
 		htmlfile = "userpage/history_outages_nl.html"
 
+	historiccrashes = HistoricCrashes(request.session["HouseID"])
+	historiccrashes.getData()
+
 	template = loader.get_template(htmlfile)
-	context = {}
+	context = {
+		'objects_peakoutages': historiccrashes.getPeakValueObjects(),
+		'objects_neighbourhoodoutages': historiccrashes.getNeighbourhoodObjects(),
+	}
 	return HttpResponse(template.render(context, request))
+
 
 def powerOutageSensors(request):
 	if (IsLoggedIn(request) == False):
@@ -455,11 +462,11 @@ def powerOutageSensors(request):
 
 	if (language == "nl"):
 		htmlfile = "userpage/sensor_overconsumption_nl.html"
-
+	
 	template = loader.get_template(htmlfile)
-	context = {
-	}
+	context = {}
 	return HttpResponse(template.render(context, request))
+
 
 
 
