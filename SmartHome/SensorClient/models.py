@@ -45,16 +45,18 @@ def save_uploaded_jsonfile(f):
 
 
 class CrashThread:
-    def __init__(self,date,HouseID,Mean,SD):
+    def __init__(self,value,date,HouseID,Mean,SD):
         self.database = mysql.connect("localhost", "root", "", "smarthome")
         self.database.autocommit(True)
         self.cursor = self.database.cursor()
         self.House = HouseID
+        self.currentValue = value
         self.Total = 0
         self.Moment = date
-	self.prevMoment = datetime.datetime.now()
+        self.prevMoment = datetime.datetime.now()
         self.Mean = Mean
         self.SD = SD
+        self.ID = 0
         thread = threading.Thread(target=self.run,args=())
         thread.daemon = False
         thread.start()
@@ -68,10 +70,19 @@ class CrashThread:
     
     def run(self):
         self.getPrevDate()
+        if(self.Moment == self.prevMoment and int(self.currentValue) != 0):
+            return
+        command = '''INSERT INTO Crashes (HouseID,CrashDate) VALUES (%s,date_sub(%s,interval 1 minute));'''
+        self.cursor.execute(command,[self.House,self.prevMoment])
+        command = '''SELECT ID FROM Crashes WHERE HouseID = %s and CrashDate = date_sub(%s,interval 1 minute);'''
+        self.cursor.execute(command,[self.House,self.prevMoment])
+        IDrow = self.cursor.fetchone()
+        self.ID = IDrow[0]
         chance = 1 - norm.cdf(self.Total,self.Mean,self.SD)
+	    
         if(chance < 0.05):
-            command = '''SELECT SensorID, Value FROM MinuteData WHERE CreationTimestamp = %s AND SensorID in (SELECT ID from Sensor WHERE InstalledOn = %s) ORDER BY Value DESC LIMIT 3;'''
-            self.cursor.execute(command,[self.Moment,self.House])
+            command = '''SELECT SensorID, Value FROM MinuteData WHERE CreationTimestamp = date_sub(%s,interval 1 minute) AND SensorID in (SELECT ID from Sensor WHERE InstalledOn = %s) ORDER BY Value DESC LIMIT 3;'''
+            self.cursor.execute(command,[self.prevMoment,self.House])
             sensorData = [[0,0],[0,0],[0,0]]
             counter = 0
             for sensor in self.cursor:
@@ -79,8 +90,19 @@ class CrashThread:
                 sensorData[counter][1]=sensor[1]
                 counter += 1
             
-            command = '''INSERT INTO Crashes VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)'''
-            self.cursor.execute(command,[self.House,self.Moment,self.Total,sensorData[0][0],sensorData[0][1],sensorData[1][0],sensorData[1][1],sensorData[2][0],sensorData[2][1]])
+            command = '''INSERT INTO PeakCrashes VALUES (%s,%s,%s,%s,%s,%s,%s,%s)'''
+            self.cursor.execute(command,[self.ID,self.Total,sensorData[0][0],sensorData[0][1],sensorData[1][0],sensorData[1][1],sensorData[2][0],sensorData[2][1]])
+        else:
+            command = '''SELECT StreetName FROM Address INNER JOIN House ON Address.ID = AddressID WHERE House.ID = %s;'''
+            self.cursor.execute(command,[self.House])
+            street = self.cursor.fetchone()
+            street = street[0]
+            command = '''SELECT COUNT(ID) FROM Crashes WHERE CrashDate = date_sub(%s,interval 1 minute) AND HouseID IN (SELECT House.ID FROM House INNER JOIN Address ON AddressID = Address.ID WHERE StreetName = %s) AND ID NOT IN( SELECT CrashID FROM PeakCrashes);'''
+            self.cursor.execute(command,[self.prevMoment,street])
+            crashesInStreet = self.cursor.fetchone()
+            if (int(crashesInStreet[0])>=3):
+                command = '''INSERT INTO StreetCrashes SELECT ID FROM Crashes WHERE CrashDate = date_sub(%s,interval 1 minute) AND ID NOT IN (SELECT CrashID FROM PeakCrashes) AND ID NOT IN(SELECT CrashID FROM StreetCrashes) AND HouseID IN (SELECT House.ID FROM House INNER JOIN Address ON AddressID = Address.ID WHERE StreetName = %s);'''
+                self.cursor.execute(command,[self.prevMoment,street])
         self.cursor.close()
         self.database.close()
         return    
@@ -128,11 +150,11 @@ class CSVDecoder:
                         continue
                     if rownum == 1 and column == totalColumn and info != None:
                         column += 1
-                        CrashThread(str(row[timeColumn]),HouseID,Mean,SD)
+                        CrashThread(col,str(row[timeColumn]),HouseID,Mean,SD)
                         continue
                     elif column == totalColumn and info != None and int(float(col)) == 0:
                         column += 1
-                        CrashThread(str(row[timeColumn]),HouseID,Mean,SD)
+                        CrashThread(col,str(row[timeColumn]),HouseID,Mean,SD)
                         continue
                     self.cursor.execute("SELECT ID FROM Sensor WHERE InstalledOn = %s AND Title = %s",[HouseID,header[column]])
                     AppID = self.cursor.fetchone()
