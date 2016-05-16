@@ -259,7 +259,7 @@ class MinuteData:
 		for i in self.results:
 			result["datasamples"].append(dict(i))
 
-		result["firstTimestamp"] = self.results[0].CreationTimestamp
+		result["firstTimestamp"] =  str(currentTimeStamp().timestampFirstMinute()["firstTimestamp"])
 		result["pricePerUnit"] = str(houseHold(householdID).getPrice())
 
 		return json.dumps(result)
@@ -280,13 +280,9 @@ class HourData:
 	def selectByHouseholdID(self, householdID):
 		self.clean()
 		command = """ select distinct HourData.CreationTimestamp, HourData.SensorID, HourData.Value from HourData inner join Sensor on HourData.SensorID = Sensor.ID where HourData.CreationTimestamp between date_sub(now(), interval 2 day) and now() and Sensor.InstalledOn=%i order by HourData.SensorID, HourData.CreationTimestamp; """ % (householdID)
-		# self.cursor.execute(SQL_SensorDataByHouseholdID("HourData", householdID))
 		self.cursor.execute(command)
 		self.results = dictfetchall(self.cursor)
 
-		# rows = self.cursor.fetchall()
-		# for i in rows:
-		# 	self.results.append(HourDataSample(i))
 		return self.getTuples()
 
 
@@ -295,9 +291,6 @@ class HourData:
 		self.cursor.execute("select * from HourData order by CreationTimestamp;")
 
 		self.results = dictfetchall(self.cursor)
-		# rows = self.cursor.fetchall()
-		# for i in rows:
-		# 	self.results.append(HourDataSample(i))
 		return self.getTuples()	
 
 	def toJSON(self, householdID):
@@ -313,7 +306,7 @@ class HourData:
 			result["datasamples"].append(datasample)
 
 		if (len(self.results) != 0):
-			result["firstTimestamp"] = str(self.results[0]["CreationTimestamp"])
+			result["firstTimestamp"] =  str(currentTimeStamp().timestampFirstHour()["firstTimestamp"])
 		result["pricePerUnit"] = str(houseHold(householdID).getPrice())
 		
 		return json.dumps(result)
@@ -590,12 +583,12 @@ class currentTimeStamp:
 		self.cursor = connection.cursor()
 
 	def timestampFirstMinute(self):
-		self.cursor.execute("select timestamp(date_sub(makedate(year(now()), dayofyear(now())), interval 2 day), maketime(hour(now()), 0, 0)) as firstTimestamp;")
+		self.cursor.execute("select timestamp(date_sub(makedate(year(now()), dayofyear(now())), interval 2 hour), maketime(hour(now()), minute(now()), 0)) as firstTimestamp;")
 		resultTime = dictfetchall(self.cursor)
 		return resultTime[0]
 
 	def timestampFirstHour(self):
-		self.cursor.execute("select timestamp(date_sub(makedate(year(now()), dayofyear(now())), interval 2 month), maketime(0, 0, 0)) as firstTimestamp;")
+		self.cursor.execute("select timestamp(date_sub(makedate(year(now()), dayofyear(now())), interval 2 day), date_add(maketime(hour(now()), 0, 0), interval 1 hour)) as firstTimestamp;")
 		resultTime = dictfetchall(self.cursor)
 		return resultTime[0]
 
@@ -706,4 +699,44 @@ class partialHour:
 			resultingJSON["datasamples"].append(datasample)
 
 		resultingJSON["Total"] = total
+		return json.dumps(resultingJSON)
+
+
+class HighMinuteUsage:
+	def __init__(self, householdid):
+		self.cursor = connection.cursor()
+		self.highUsageSensors = []
+		self.lowUsageSensors = []
+		self.Total = 0
+		self.HouseholdID = householdid
+
+	def getData(self):
+		self.cursor.execute(""" select Sensor.Title as Title, MinuteData.Value as Value from Sensor inner join MinuteData on Sensor.ID = MinuteData.SensorID where Sensor.InstalledOn = %i and MinuteData.CreationTimestamp = date_sub(now(), interval second(now()) second) order by MinuteData.Value DESC; """ % self.HouseholdID)
+		return dictfetchall(self.cursor)
+
+	def getJSON(self):
+		allData = self.getData()
+		
+		for i in allData:
+			self.Total += float(i["Value"])
+
+
+		#sensors get classified as high or low here, could be changed to be more complex
+		tempValue = 0
+		for i in allData:
+			if (tempValue >= self.Total / 3):
+				self.lowUsageSensors.append(i)
+			else:
+				self.highUsageSensors.append(i)
+				tempValue += float(i["Value"])
+
+		return self.toJSON()
+
+
+	def toJSON(self):
+		resultingJSON = {}
+		resultingJSON["highSenors"] = self.highUsageSensors
+		resultingJSON["lowSenors"] = self.lowUsageSensors
+		resultingJSON["Total"] = self.Total
+
 		return json.dumps(resultingJSON)

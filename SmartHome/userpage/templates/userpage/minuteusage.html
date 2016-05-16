@@ -86,7 +86,15 @@ function drawStuff() {
 			readSensorIDsUpdate();
 			readDatasamplesUpdate();
 
-			var timestamp = convertToDate(datasamples_update.datasamples[0].CreationTimestamp);
+			var timestamp = undefined;
+
+			if (datasamples_update.datasamples.length == 0) {
+				//push 0's since there is no data available (outage)
+				timestamp = dateAddMinutes(last_timestamp_in_data, 1);
+			}
+			else {
+				timestamp = convertToDate(datasamples_update.datasamples[0].CreationTimestamp);
+			}
 			if (timestamp.getTime() > last_timestamp_in_data.getTime()) {
 				// console.log("adding the new timestamp at the start.");
 				newDatapoints = [[]];
@@ -97,7 +105,12 @@ function drawStuff() {
 				data.addRows(newDatapoints);
 				last_timestamp_in_data = timestamp;
 			}
-			// console.log("modifying the first values.");
+
+			if (datasamples_update.datasamples.length == 0) {
+				// don't update the values
+				drawChart();
+				return;
+			}
 
 			var counter = 0;
 			for (i = 0; i < sensorids_update.length; i++) {
@@ -124,30 +137,29 @@ function drawStuff() {
 
 			readSensorIDsUpdate();
 			readDatasamplesUpdate();
-			if (last_timestamp_in_data.getTime() == convertToDate(datasamples_update.datasamples[0].CreationTimestamp).getTime()) {
-				return;
-			}
-
-			//make sure the last minute has the right values
-			var counter = 0;
-			for (i = 0; i < old_sensorids.length; i++) {
-				//push 0's since this is the start of the minute
-				if (old_datasamples.datasamples[counter].SensorID != old_sensorids[i]) {
-					data.setValue(data.getNumberOfRows()-1, i+1, 0);
-				}
-				else {
-					data.setValue(data.getNumberOfRows()-1, i+1, old_datasamples.datasamples[counter].Value);
-					counter += 1;
-					if (counter >= old_datasamples.datasamples.length) {
-						counter--;
+			
+			if (old_datasamples.datasamples.length != 0) {
+				//make sure the last minute has the right values
+				var counter = 0;
+				for (i = 0; i < old_sensorids.length; i++) {
+					//push 0's since this is the start of the minute
+					if (old_datasamples.datasamples[counter].SensorID != old_sensorids[i]) {
+						data.setValue(data.getNumberOfRows()-1, i+1, 0);
+					}
+					else {
+						data.setValue(data.getNumberOfRows()-1, i+1, old_datasamples.datasamples[counter].Value);
+						counter += 1;
+						if (counter >= old_datasamples.datasamples.length) {
+							counter--;
+						}
 					}
 				}
+				data.setValue(data.getNumberOfRows()-1, data.getNumberOfColumns()-1, old_datasamples.Total);
 			}
-			data.setValue(data.getNumberOfRows()-1, data.getNumberOfColumns()-1, old_datasamples.Total);
-
 
 			var newDatasamples = [[]];
-			var timestamp = convertToDate(datasamples_update.datasamples[0].CreationTimestamp);
+			var timestamp = dateAddMinutes(last_timestamp_in_data, 1);
+			// var timestamp = convertToDate(datasamples_update.datasamples[0].CreationTimestamp);
 			newDatasamples[0].push(timestamp);
 			last_timestamp_in_data = timestamp;
 
@@ -158,10 +170,16 @@ function drawStuff() {
 			}
 			newDatasamples[0].push(0); //push the total
 			data.addRows(newDatasamples);
+			data.removeRow(0);
 			drawChart();
 		}
-		else if (seconds % 5 == 0 && seconds != 0) {
+		else if (seconds % 2 == 0 && seconds != 0 && seconds != 1 && seconds != 2) {
 			// console.log("Changing the current existing values.");
+
+			if (datasamples_update.datasamples.length == 0) {
+				return;
+			}
+
 			var counter = 0;
 			for (i = 0; i < sensorids_update.length; i++) {
 				if (datasamples_update.datasamples[counter].SensorID != sensorids_update[i]) {
@@ -385,7 +403,7 @@ function drawStuff() {
 		var currentEndTime = currentState.range.end;
 		if (currentEndTime.getTime() >= last_timestamp_in_data.getTime()) {
 		}
-		else if (currentEndTime.getTime() > (dateAddMinutes(last_timestamp_in_data, -20)).getTime()) {
+		else if (currentEndTime.getTime() > (dateAddMinutes(last_timestamp_in_data, -5)).getTime()) {
 			programmaticSlider.setState({
 				range: {
 					start: currentState.range.start ,

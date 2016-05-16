@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'^sensors/currentTitles/$', views.CurrentTitleSensors, name="currentTitleSensors"),
     url(r'^sensors/comments/$', views.commentsPage, name="commentspage"),
     url(r'^sensors/comments/addComment/$', views.addCommentSensor, name="addCommentSensor"),
+    url(r'^sensors/usageSensors/$', views.JSON_usageSensors, name="JSONusageSensors"),
     
     url(r'^sensors/current/$', views.JSON_CurrentSensors, name="CurrentSensors"),
     url(r'^minute/current/$', views.JSON_CurrentMinuteData, name="CurrentMinuteData"),

@@ -571,3 +571,10 @@ def JSON_partialCurrentHour(request):
 
 	return HttpResponse(partialHour(household).getSamples())
 
+
+def JSON_usageSensors(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+
+	household = request.session["HouseID"]
+	return HttpResponse(HighMinuteUsage(household).getJSON())
