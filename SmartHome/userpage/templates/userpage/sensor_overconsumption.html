@@ -6,6 +6,29 @@
 <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
 
 <style>
+    .tooltip {
+        position:absolute;
+    }
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 1;
+        top: -5px;
+        left: 105%;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+    }
     div#redtable {
     }
     table.tablered {
@@ -28,6 +51,7 @@
         background-color: #af4c50;
         color: white;
     }
+    
     div#greentable {
     }
     table.tablegreen {
@@ -83,19 +107,23 @@
   </div>
 </div>
 <br><br><br><br>
+
 <div id="redtable">
     <table class="tablered" style="width:40%;position:absolute;margin-left:2%">
-	    <tr id="badsensortableheader">
-		    <th>Title</th>
+        <tr id="badsensortableheader">
+            <th>Title</th>
             <th>Consumption</th>
-	    </tr>
+            <th>Switch one of these off if possible</th>
+        </tr>
     </table>
 </div>
+
 <div id="greentable">
     <table class="tablegreen" style="width40%;position:absolute;margin-left:50%">
         <tr id="goodsensortableheader">
 		    <th>Title</th>
             <th>Consumption</th>
+            <th>Switching these off could help a little</th>
         </tr>
     </table>
 </div>
@@ -103,7 +131,7 @@
 </html>
 
 <script type="text/javascript">
-function getData() {
+/*function getData() {
 	var data = undefined;
 	$.ajax({
 		url: "/index/sensors/usageSensors/",
@@ -118,34 +146,34 @@ function getData() {
 			return undefined;
 		}
 	});
-}
+}*/
 function Displaysensors(data) {
 	// var data = getData();
 	if (data == undefined) {
 		console.log("No sensors found");
 		// return;
 	}
-	/*var datapoint1 = {Title:"Hi-Fi", Value:"7"};
+	var datapoint1 = {Title:"Hi-Fi", Value:"7"};
 	var datapoint2 = {Title:"Kettle", Value:"4"};
 	var datapoint3 = {Title:"Electric shower", Value:"3"};
 	var datapoint4 = {Title:"tv", Value:"7"};
 	AddTableRowred(datapoint1);
 	AddTableRowgreen(datapoint2);
 	AddTableRowred(datapoint3);
-	AddTableRowgreen(datapoint4);*/
+	AddTableRowgreen(datapoint4);
 	//do something with the data here
-    for(i = 0; i < data.lowSensors.length; i++){
+    /*for(i = 0; i < data.lowSensors.length; i++){
         AddTableRowgreen(data.lowSensors[i]);
     }
     for(i = 0; i < data.highSensors.length; i++){
         AddTableRowred(data.highSensors[i]);
-    }
+    }*/
 }
 function AddTableRowgreen(datapoint) {
-	$("#greentable tr:last").after('<tr><td>{0}</td><td>{1}</td></tr>'.format(datapoint.Title, datapoint.Value));
+	$("#greentable tr:last").after('<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>'.format(datapoint.Title, datapoint.Value, " "));
 }
 function AddTableRowred(datapoint) {
-	$("#redtable tr:last").after('<tr><td>{0}</td><td>{1}</td></tr>'.format(datapoint.Title, datapoint.Value));
+	$("#redtable tr:last").after('<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>'.format(datapoint.Title, datapoint.Value, " "));
 }
 if (!String.prototype.format) { //function from stackoverflow: http://stackoverflow.com/questions/18405736/is-there-a-c-sharp-string-format-equivalent-in-javascript
   String.prototype.format = function() {
@@ -158,7 +186,7 @@ if (!String.prototype.format) { //function from stackoverflow: http://stackoverf
     });
   };
 }
-window.onload = getData;
-/*var data;
-window.onload = Displaysensors(data);*/
+/*window.onload = getData;*/
+var data;
+window.onload = Displaysensors(data);
 </script>
