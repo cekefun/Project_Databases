@@ -131,7 +131,7 @@
 </html>
 
 <script type="text/javascript">
-/*function getData() {
+function getData() {
 	var data = undefined;
 	$.ajax({
 		url: "/index/sensors/usageSensors/",
@@ -146,28 +146,28 @@
 			return undefined;
 		}
 	});
-}*/
+}
 function Displaysensors(data) {
 	// var data = getData();
 	if (data == undefined) {
 		console.log("No sensors found");
 		// return;
 	}
-	var datapoint1 = {Title:"Hi-Fi", Value:"7"};
+	/*var datapoint1 = {Title:"Hi-Fi", Value:"7"};
 	var datapoint2 = {Title:"Kettle", Value:"4"};
 	var datapoint3 = {Title:"Electric shower", Value:"3"};
 	var datapoint4 = {Title:"tv", Value:"7"};
 	AddTableRowred(datapoint1);
 	AddTableRowgreen(datapoint2);
 	AddTableRowred(datapoint3);
-	AddTableRowgreen(datapoint4);
+	AddTableRowgreen(datapoint4);*/
 	//do something with the data here
-    /*for(i = 0; i < data.lowSensors.length; i++){
+    for(i = 0; i < data.lowSensors.length; i++){
         AddTableRowgreen(data.lowSensors[i]);
     }
     for(i = 0; i < data.highSensors.length; i++){
         AddTableRowred(data.highSensors[i]);
-    }*/
+    }
 }
 function AddTableRowgreen(datapoint) {
 	$("#greentable tr:last").after('<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>'.format(datapoint.Title, datapoint.Value, " "));
@@ -186,7 +186,7 @@ if (!String.prototype.format) { //function from stackoverflow: http://stackoverf
     });
   };
 }
-/*window.onload = getData;*/
-var data;
-window.onload = Displaysensors(data);
+window.onload = getData;
+/*var data;
+window.onload = Displaysensors(data);*/
 </script>
