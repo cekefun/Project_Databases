@@ -98,6 +98,51 @@ div.desc {
 	background-color: #000078;
 	color: white;
 }
+
+
+.info, .success, .warning, .error, .validation {
+	font-family:Arial, Helvetica, sans-serif; 
+	font-size:16px;
+	border: 1px solid;
+	margin: 10px 0px;
+	padding:15px 30px 15px 15px;
+	background-repeat: no-repeat;
+	background-position: 10px center;
+	width: 30%;
+	position: absolute;
+	top: 100px;
+	left: 150px;
+	z-index: 1;
+}
+.info {
+	color: #00529B;
+	background-color: #BDE5F8;
+}
+.success {
+	color: #4F8A10;
+	background-color: #DFF2BF;
+}
+.warning {
+	color: #9F6000;
+	background-color: #FEEFB3;
+}
+.error {
+	color: #D8000C;
+	background-color: #FFBABA;
+}
+#close {
+	float:right;
+	/*display:inline-block;*/
+	color:#D8000C;
+	background:#FFBABA;
+}
+#close:hover {
+	float:right;
+	/*display:inline-block;*/
+	background:#FFBABA;
+	color:#000000;
+}
+
 </style>
 </head>
 <body>
@@ -157,9 +202,11 @@ div.desc {
   <div class ="desc">Easily readable interactive graphs</div>
 </div>
 {% else %}
-<div id="chart_div" style="margin-top: 50px; margin-left: 85%;"></div>
-<div id="chart_weekdata_div" style="margin-top: 5%;"></div>
-<!--<div id="chart_weekdata_div" style="margin-top: 100px; margin-left: 30px; "></div>-->
+<div id="chart_div" style="position: absolute; margin-top: 275px; margin-left: 75%;"></div>
+<div id="chart_weekdata_div" style="position: absolute ; margin-top: 200px;"></div>
+
+<div id="outage_yourhome" class="error" style="display: none;">Warning: you are using alot of power at the moment. This might cause a blackout. <a href="">Click here</a> for more info.</div>
+<div id="outage_neighbourhood" class="warning" style="display: none;">There seems to be a problem with the power in your neighbourhood. <a href="">Click here</a> for more info.</div>
 {% endif %}
 </body>
 </html>
@@ -206,6 +253,8 @@ function drawGauge() {
 	var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
 	chart.draw(data, options);
 	setInterval(function() {
+		$("#outage_yourhome").hide();
+		$("#outage_neighbourhood").hide();
 		$.ajax({
 			url:"/index/minute/currentMinute/",
 			method:"GET",
@@ -222,6 +271,10 @@ function drawGauge() {
 				var Time_ticks = (Date.now() - datecompare.getTime())/3000; //aantal 20sten van een minuut we verder zijn dan de vorige timestamp
 				
 				data.setValue(0,1,parseFloat(Math.floor((Time_ticks * 1/20) * lastminute.Total)));
+
+				if (parseFloat(lastminute.Total) > redzone-Math.floor(redzone/10)) {
+					$("#outage_yourhome").show();
+				}
 			}
 		});
 		chart.draw(data, options);
@@ -242,6 +295,12 @@ function drawWeekChart() {
 			easing: 'out',
 			startup: true,
 		},
+		vAxis: {
+			title: 'Watt'
+		},
+		hAxis: {
+			title: 'Time'
+		},
 	};
 	var chart = new google.visualization.ColumnChart(document.getElementById("chart_weekdata_div"));
 
@@ -253,13 +312,7 @@ function drawWeekChart() {
 			success: function(text) {
 				var weekdata = JSON.parse(text);
 				if (weekdata == undefined) {
-					console.log("uh oh");
 					return;
-				}
-
-				if (weekdata.datasamples.length == 0) {
-					console.log("No datasamples available.");
-					// return;
 				}
 
 				data.addColumn("datetime", "Time");
@@ -279,11 +332,6 @@ function drawWeekChart() {
 				for (i = 0; i < 6; i++) {
 					datapoints[0].push(dateAddMinutes(startdate, (i+1)*24*60));
 				}
-
-				// for (i = 0; i < datapoints[0].length; i++) {
-				// 	console.log(datapoints[0][i]);
-				// }
-
 				if (weekdata.datasamples.length > 0) {
 					datapoints.push([]);
 					var counter = 0;
@@ -325,6 +373,7 @@ function drawWeekChart() {
 
 
 	getDrawData();
+
 }
 
 function convertToDate(timestamp) {
