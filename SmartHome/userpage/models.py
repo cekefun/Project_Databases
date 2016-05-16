@@ -597,7 +597,7 @@ class currentTimeStamp:
 		self.cursor = connection.cursor()
 
 	def timestampFirstMinute(self):
-		self.cursor.execute("select timestamp(date_sub(makedate(year(now()), dayofyear(now())), interval 2 hour), maketime(hour(now()), minute(now()), 0)) as firstTimestamp;")
+		self.cursor.execute("select timestamp(date_sub(makedate(year(now()), dayofyear(now())), interval 2 hour), date_add(maketime(hour(now()), minute(now()), 0), interval 1 minute)) as firstTimestamp;")
 		resultTime = dictfetchall(self.cursor)
 		return resultTime[0]
 
@@ -657,8 +657,25 @@ class currentMinuteUsage:
 			total += float(i["Value"])
 
 		resultingJSON["Total"] = total
-		#TODO change this line of code later on
-		resultingJSON["Dangerzone"] = total * 2 #JUST TEMPORARY FOR TESTING PURPOSES
+
+		self.cursor.execute(""" SELECT PeakValue FROM PeakCrashes INNER JOIN Crashes ON PeakCrashes.CrashID = Crashes.ID WHERE Crashes.HouseID = %i ORDER BY CrashDate DESC LIMIT 1;  """ % self.householdID)
+		result = dictfetchall(self.cursor)
+		if (len(result) == 0):
+			resultingJSON["Dangerzone"] = 0
+		else:
+			resultingJSON["Dangerzone"] = result[0]["PeakValue"]
+
+
+		self.cursor.execute(""" select CrashData.Mean as Mean, CrashData.Deviation as Deviation from CrashData where HouseID=%i; """ % self.householdID)
+		result = dictfetchall(self.cursor)
+		if (len(result) == 0):
+			resultingJSON["Mean"] = 0
+			resultingJSON["Deviation"] = 0
+		else:
+			resultingJSON["Mean"] = result[0]["Mean"]
+			resultingJSON["Deviation"] = result[0]["Deviation"]
+
+
 		return json.dumps(resultingJSON)
 
 
@@ -752,5 +769,51 @@ class HighMinuteUsage:
 		resultingJSON["highSenors"] = self.highUsageSensors
 		resultingJSON["lowSenors"] = self.lowUsageSensors
 		resultingJSON["Total"] = self.Total
+
+		return json.dumps(resultingJSON)
+
+
+
+class Status:
+	def __init__(self, householdid):
+		self.cursor = connection.cursor()
+		self.HouseholdID = householdid
+
+
+	def getJSON(self):
+		resultingJSON = {}
+
+		self.cursor.execute(""" SELECT StreetName,StreetNumber,City,Country FROM Address INNER JOIN House ON Address.ID = House.AddressID WHERE StreetName IN (SELECT StreetName FROM Address INNER JOIN House ON Address.ID = House.AddressID WHERE House.ID = %i) AND House.ID NOT IN (SELECT ID FROM House WHERE 0 != (SELECT SUM(Value) FROM MinuteData INNER JOIN Sensor ON MinuteData.SensorID = Sensor.ID WHERE MinuteData.CreationTimestamp = date_sub(NOW(), interval second(now()) second) AND House.ID = Sensor.InstalledOn)); """ % self.HouseholdID)
+		resultNeighbour = dictfetchall(self.cursor)
+
+		self.cursor.execute(""" select Sum(MinuteData.Value) from MinuteData inner join Sensor on Sensor.ID = MinuteData.SensorID where CreationTimestamp = date_sub(now(), interval second(now()) second) and Sensor.InstalledOn=%i group by MinuteData.CreationTimestamp; """ % self.HouseholdID)
+		resultTemp = self.cursor.fetchone()
+		resultCurrentSum = 0.0
+		if (resultTemp != None):
+			resultCurrentSum = float(resultTemp[0])
+
+		self.cursor.execute(""" SELECT PeakValue FROM PeakCrashes INNER JOIN Crashes ON PeakCrashes.CrashID = Crashes.ID WHERE Crashes.HouseID = %i ORDER BY CrashDate DESC LIMIT 1; """ % self.HouseholdID)
+		resultTemp = self.cursor.fetchone()
+		resultPeakValue = (resultCurrentSum * 2) + 1
+		if (resultTemp != None):
+			resultPeakValue = float(resultTemp[0])
+
+
+		if (len(resultNeighbour) >= 3):
+			resultingJSON["status"] = "OutageNeighbourhood"
+			resultingJSON["houses"] = []
+			for i in resultNeighbour:
+				house = {}
+				house["StreetName"] = i["StreetName"]
+				house["StreetNumber"] = i["StreetNumber"]
+				house["City"] = i["City"]
+				house["Country"] = i["Country"]
+				resultingJSON.append(house)
+
+		elif (resultPeakValue * 9 / 10 <= resultCurrentSum):
+			resultingJSON["status"] = "HighUsage"
+		else:
+			resultingJSON["status"] = "Normal"
+
 
 		return json.dumps(resultingJSON)

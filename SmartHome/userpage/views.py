@@ -613,4 +613,4 @@ def JSON_status(request):
 		return RedirectNotLoggedIn(request)
 
 	household = request.session["HouseID"]
-	return HttpResponse("{}")
+	return HttpResponse(Status(household).getJSON())

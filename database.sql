@@ -120,7 +120,7 @@ create table YearData(
 );
 
 CREATE TABLE CrashData(
-	HouseID int references House(ID),
+	HouseID int references House(ID) primary key,
 	Mean double,
 	Deviation double,
 	foreign key (HouseID) references Sensor(ID) ON DELETE CASCADE
