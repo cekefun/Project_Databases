@@ -6,68 +6,50 @@
 <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
 
 <style>
-
-
     div#redtable {
-
     }
     table.tablered {
-	font: 100%/30px 'Helvetica Neue', helvetica, arial, sans-serif;
-	text-shadow: 0 1px 0 #fff;
 	background-color: #af4c50;
-	border-collapse: separate;
+    border-collapse: collapse;
 	box-shadow: inset 0 1px 0 #fff;
-	font-size: 12px;
+	font-size: 14px;
 	line-height: 24px;
 	margin: 30px auto;
 	text-align: left;
 	width: 45%;
     }
-
     table.tablered th, td {
         text-align: left;
         padding: 8px;
     }
-
-    table.tablered tr:nth-child(even){background-color: #e0c0c0}
-    table.tablered tr:nth-child(odd){background-color: #d06060}
-
-
+    table.tablered tr:nth-child(even){background-color: #f0c0c0}
+    table.tablered tr:nth-child(odd){background-color: #d08080}
     table.tablered th {
         background-color: #af4c50;
         color: white;
     }
-
     div#greentable {
-
     }
     table.tablegreen {
-	font: 100%/30px 'Helvetica Neue', helvetica, arial, sans-serif;
-	text-shadow: 0 1px 0 #fff;
 	background: #4caf50;
-	border-collapse: separate;
+    border-collapse: collapse;
 	box-shadow: inset 0 1px 0 #fff;
-	font-size: 12px;
+	font-size: 14px;
 	line-height: 24px;
 	margin: 30px auto;
 	text-align: left;
 	width: 45%;
     }
-
     table.tablegreen th, td {
         text-align: left;
         padding: 8px;
     }
-
-
-    table.tablegreen tr:nth-child(even){background-color: #c0e0c0}
-    table.tablegreen tr:nth-child(odd){background-color: #60d060}
-
+    table.tablegreen tr:nth-child(even){background-color: #c0f0c0}
+    table.tablegreen tr:nth-child(odd){background-color: #80d080}
     table.tablegreen th {
         background-color: #4CAF50;
         color: white;
     }
-
 </style>
 </head>
 <body>
@@ -130,7 +112,6 @@ function getData() {
 		success: function(text) {
 			statusObject = JSON.parse(text);
       console.log(statusObject);
-
 			Displaysensors(statusObject);
 		},
 		error: function(text) {
@@ -144,13 +125,14 @@ function Displaysensors(data) {
 		console.log("No sensors found");
 		// return;
 	}
-
 	/*var datapoint1 = {Title:"Hi-Fi", Value:"7"};
 	var datapoint2 = {Title:"Kettle", Value:"4"};
 	var datapoint3 = {Title:"Electric shower", Value:"3"};
+	var datapoint4 = {Title:"tv", Value:"7"};
 	AddTableRowred(datapoint1);
 	AddTableRowgreen(datapoint2);
-	AddTableRowred(datapoint3);*/
+	AddTableRowred(datapoint3);
+	AddTableRowgreen(datapoint4);*/
 	//do something with the data here
     for(i = 0; i < data.lowSensors.length; i++){
         AddTableRowgreen(data.lowSensors[i]);
@@ -176,6 +158,7 @@ if (!String.prototype.format) { //function from stackoverflow: http://stackoverf
     });
   };
 }
-
 window.onload = getData;
+/*var data;
+window.onload = Displaysensors(data);*/
 </script>
