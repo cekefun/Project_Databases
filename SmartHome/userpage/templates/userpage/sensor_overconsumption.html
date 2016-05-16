@@ -129,18 +129,17 @@ function getData() {
 		async: true,
 		success: function(text) {
 			statusObject = JSON.parse(text);
-			if (statusObject === undefined) {
-				return undefined;
-			}
-			return data;
+      console.log(statusObject);
+
+			Displaysensors(statusObject);
 		},
 		error: function(text) {
 			return undefined;
 		}
 	});
 }
-function Displaysensors() {
-	var data = getData();
+function Displaysensors(data) {
+	// var data = getData();
 	if (data == undefined) {
 		console.log("No sensors found");
 		// return;
@@ -154,10 +153,10 @@ function Displaysensors() {
 	AddTableRowred(datapoint3);*/
 	//do something with the data here
     for(i = 0; i < data.lowSensors.length; i++){
-        AddTableRowgreen(data[i]);
+        AddTableRowgreen(data.lowSensors[i]);
     }
     for(i = 0; i < data.highSensors.length; i++){
-        AddTableRowred(data[i]);
+        AddTableRowred(data.highSensors[i]);
     }
 }
 function AddTableRowgreen(datapoint) {
@@ -178,5 +177,5 @@ if (!String.prototype.format) { //function from stackoverflow: http://stackoverf
   };
 }
 
-window.onload = Displaysensors;
+window.onload = getData;
 </script>

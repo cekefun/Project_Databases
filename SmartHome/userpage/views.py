@@ -446,6 +446,20 @@ def historyOutages(request):
 	context = {}
 	return HttpResponse(template.render(context, request))
 
+def powerOutageSensors(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+
+	language = request.session["Language"]
+	htmlfile = "userpage/sensor_overconsumption.html"
+
+	if (language == "nl"):
+		htmlfile = "userpage/sensor_overconsumption_nl.html"
+
+	template = loader.get_template(htmlfile)
+	context = {
+	}
+	return HttpResponse(template.render(context, request))
 
 
 

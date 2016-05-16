@@ -766,8 +766,8 @@ class HighMinuteUsage:
 
 	def toJSON(self):
 		resultingJSON = {}
-		resultingJSON["highSenors"] = self.highUsageSensors
-		resultingJSON["lowSenors"] = self.lowUsageSensors
+		resultingJSON["highSensors"] = self.highUsageSensors
+		resultingJSON["lowSensors"] = self.lowUsageSensors
 		resultingJSON["Total"] = self.Total
 
 		return json.dumps(resultingJSON)
