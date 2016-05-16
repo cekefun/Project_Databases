@@ -54,4 +54,5 @@ urlpatterns = [
     url(r'^status/$', views.JSON_status, name="status"),
 
     url(r'^status/neighbourhood/$', views.powerOutageNeighbourhood, name="poweroutage_neighbourhood"),
+    url(r'^blackouts/$', views.historyOutages, name="historyOutages"),
 ]

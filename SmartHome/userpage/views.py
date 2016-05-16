@@ -432,6 +432,20 @@ def powerOutageNeighbourhood(request):
 
 
 
+def historyOutages(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+
+	language = request.session["Language"]
+	htmlfile = "userpage/history_outages.html"
+
+	if (language == "nl"):
+		htmlfile = "userpage/history_outages_nl.html"
+
+	template = loader.get_template(htmlfile)
+	context = {}
+	return HttpResponse(template.render(context, request))
+
 
 
 

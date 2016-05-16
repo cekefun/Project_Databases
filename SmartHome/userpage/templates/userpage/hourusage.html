@@ -7,8 +7,7 @@
 <body>
 <ul1>
 	<li1 style=float:left;><a href="../">Home</a></li1>
-	<li1><a href="../sensors/">Sensors</a></li1>Current weekdata
-
+	<li1><a href="../sensors/">Sensors</a></li1>
 	<li1><a class="active" href="">Power Usage</a></li1>
 	{% if request.session.IsAdmin %}
 	<li1><a href="../../admin/users">Users</a></li1>
@@ -26,9 +25,10 @@
 <div class="dropdown" >
 <button class="dropbtn" style="float:right">Account</button>
 	<div class="dropdown-content a">
-			<a href="../settings/">Settings</a>
-			<a href="../addHouse/">Add a House</a>
-			<a href="/logout/">Log out</a>
+		<a href="../settings/">Settings</a>
+		<a href="../addHouse/">Add a House</a>
+		<a href="../blackouts/">Blackouts</a>
+		<a href="/logout/">Log out</a>
 	</div>
 </div>
 <br><br><br><br><br><br>

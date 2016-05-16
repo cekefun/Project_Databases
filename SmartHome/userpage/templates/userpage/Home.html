@@ -167,11 +167,12 @@ div.desc {
   <button class="dropbtn" style="float:right">Account</button>
   <div class="dropdown-content a">
 {% if request.session.Username|length > 0 %}
-	  <a href="settings/">Settings</a>
-	  <a href="addHouse/">Add a House</a>
-	  <a href="/logout/">Log out</a>
+		<a href="settings/">Settings</a>
+		<a href="addHouse/">Add a House</a>
+  		<a href="blackouts/">Blackouts</a>
+		<a href="/logout/">Log out</a>
 {% else %}
-	  <a href='../login'>Log in</a>
+		<a href='../login'>Log in</a>
 {% endif %}
   </div>
 </div>
