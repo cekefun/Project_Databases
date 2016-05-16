@@ -52,6 +52,7 @@ class CrashThread:
         self.House = HouseID
         self.Total = 0
         self.Moment = date
+	self.prevMoment = datetime.datetime.now()
         self.Mean = Mean
         self.SD = SD
         thread = threading.Thread(target=self.run,args=())
@@ -59,10 +60,10 @@ class CrashThread:
         thread.start()
 
     def getPrevDate(self):
-        command = '''SELECT CreationTimestamp,SUM(Value) FROM MinuteData WHERE CreationTimestamp < %s AND SensorID IN(SELECT ID from Sensor WHERE InstalledOn = %s) GROUP BY CreationTimestamp ORDER BY CreationTimestamp DESC LIMIT 1;''' 
+        command = '''SELECT date_add(CreationTimestamp, interval 1 minute),SUM(Value) FROM MinuteData WHERE CreationTimestamp < %s AND SensorID IN(SELECT ID from Sensor WHERE InstalledOn = %s) GROUP BY CreationTimestamp ORDER BY CreationTimestamp DESC LIMIT 1;''' 
         self.cursor.execute(command,[self.Moment,self.House])
         time = self.cursor.fetchone()
-        self.Moment = time[0]
+        self.prevMoment = time[0]
         self.Total = time[1]
     
     def run(self):

@@ -127,9 +127,15 @@ CREATE TABLE CrashData(
 );
 
 CREATE TABLE Crashes(
+	ID int auto_increment primary key,
 	HouseID int references House(ID),
-	foreign key (HouseID) references Sensor(ID) ON DELETE CASCADE,
-	CrashDate datetime not null,
+	foreign key (HouseID) references House(ID) ON DELETE CASCADE,
+	CrashDate datetime not null
+);
+
+CREATE TABLE PeakCrashes(
+	CrashID int references Crashes(ID),
+	foreign key (CrashID) references Crashes(ID) ON DELETE CASCADE,
 	PeakValue double,
 	FirstSensor int references Sensor(ID),
 	FirstValue float,
@@ -137,7 +143,13 @@ CREATE TABLE Crashes(
 	SecondValue float,
 	ThirdSensor int references Sensor(ID),
 	ThirdValue float,
-	primary key (CrashDate,HouseID)
+	primary key (CrashID)
+);
+
+CREATE TABLE StreetCrashes(
+	CrashID int references Crashes(ID),
+	foreign key (CrashID) references Crashes(ID) ON DELETE CASCADE,
+	primary key (CrashID)
 );
 
 create view WeekData as select CreationTimestamp, SensorID, Value 
