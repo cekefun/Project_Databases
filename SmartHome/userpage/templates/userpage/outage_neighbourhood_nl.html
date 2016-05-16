@@ -219,29 +219,29 @@ tbody:hover tr:hover td {
 </head>
 <body>
 <ul1>
-	<li1 style=float:left;><a href="../../">Home</a></li1>
-	<li1><a href="../../sensors/">Sensors</a></li1>
-	<li1><a href="../../minute">Power Usage</a></li1>
+	<li1 style=float:left;><a href="../../">Start</a></li1>
+	<li1><a href="../../sensors/">Sensoren</a></li1>
+	<li1><a href="../../minute">Energieverbruik</a></li1>
 	{% if request.session.IsAdmin %}
-	<li1><a href="../../../admin/users">Users</a></li1>
-	<li1><a href="../../../admin/report">Report</a></li1>
+	<li1><a href="../../../admin/users">Gebruikers</a></li1>
+	<li1><a href="../../../admin/report">Verslag</a></li1>
 	{% endif %}
 	<li1><a href="../../about/">About</a></li1>
 </ul1>
 <div class="dropdown" >
 <button class="dropbtn" style="float:right">Account</button>
 	<div class="dropdown-content a">
-		<a href="../../settings/">Settings</a>
-		<a href="../../addHouse/">Add a House</a>
-	  	<a href="../../blackouts/">Blackouts</a>
-		<a href="/logout/">Log out</a>
+		<a href="../../settings/">Instellingen</a>
+		<a href="../../addHouse/">Voeg huis toe</a>
+	  	<a href="../../blackouts/">Stroompannes</a>
+		<a href="/logout/">Uitloggen</a>
 	</div>
 </div>
 <br><br><br><br><br><br>
 <section>
 <div id="explanationtext">
 	<p>
-		There seems to be a power outage in the neighbourhood at the moment. We have found some houses in your vicinity who don't have power either. These houses are listed in the table below (including your own house).
+		Er blijkt een stroompanne te zijn in uw buurt op dit moment. We hebben enkele huizen in de omgeving gevonden die ook zonder stroom zitten. Deze huizen staan opgesomd in de tabel hieronder (inclusief uw eigen huis).
 	</p>
 </div>
 </section>
@@ -250,10 +250,10 @@ tbody:hover tr:hover td {
 	<table>
 		<thead>
 			<tr>
-				<th>Streetname</th>
-				<th>Streetnumber</th>
-				<th>City</th>
-				<th>Country</th>
+				<th>Straatnaam</th>
+				<th>Huisnummer<th>
+				<th>Stad</th>
+				<th>Land</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -308,16 +308,6 @@ function DisplayHouses(data) {
 	for (i = 0; i < data.length; i++) {
 		AddTableRow(data[i]);
 	}
-
-	// var datapoint1 = {StreetName:"Apollostraat", StreetNumber:10, City:"Borgerhout", Country:"Belgium"};
-	// var datapoint2 = {StreetName:"Apollostraat", StreetNumber:20, City:"Borgerhout", Country:"Belgium"};
-	// var datapoint3 = {StreetName:"Apollostraat", StreetNumber:30, City:"Borgerhout", Country:"Belgium"};
-
-	// AddTableRow(datapoint1);
-	// AddTableRow(datapoint2);
-	// AddTableRow(datapoint3);
-
-	//do something with the data here
 }
 
 function AddTableRow(datapoint) {
