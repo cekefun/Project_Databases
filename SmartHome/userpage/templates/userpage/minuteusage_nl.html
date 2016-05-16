@@ -19,7 +19,6 @@
   <li2 style=float:left;><a class="active" href="">Minuutverbruik</a></li2>
   <li2><a href="../hour/">Uurverbruik</a></li2>
   <li2><a href="../day/">Dagverbruik</a></li2>
-  <li2><a href="../week/">Weekverbruik</a></li2>
   <li2><a href="../month/">Maandverbruik</a></li2>
   <li2><a href="../year/">Jaarverbruik</a></li2>
 </ul2>
@@ -33,8 +32,7 @@
 </div>
 <br><br><br><br><br><br>
 
-
-<div id="programmatic_dashboard_div" style="padding-top:80px ;border: 1px solid #ccc">
+<div id="programmatic_dashboard_div" style="padding-top:80px ;">
 	<table class="columns">
 		<tr>
 			<td>
@@ -52,6 +50,8 @@
 			</td>
 	</table>
 </div>
+
+
 </body>
 </html>
 
@@ -60,14 +60,9 @@
 <script type="text/javascript">
 google.charts.load('current', {'packages':['corechart', 'controls','timeline']});
 google.charts.setOnLoadCallback(drawStuff);
-
-
-
+//hier is de call
 function drawStuff() {
-
-	var dashboard = new google.visualization.Dashboard(
-		document.getElementById('programmatic_dashboard_div'));
-
+	var dashboard = new google.visualization.Dashboard(document.getElementById('programmatic_dashboard_div'));
 	programmaticSlider = new google.visualization.ControlWrapper({
 		'controlType': 'ChartRangeFilter',
 		'containerId': 'programmatic_control_div',
@@ -75,274 +70,363 @@ function drawStuff() {
 			'filterColumnIndex': '0',
 			'ui': {'labelStacking': 'Vertical'}
 		}
-});
-
-var data = new google.visualization.DataTable();
-window.onload = getdata();
-
-
-function getdata() {
-	data.addColumn('datetime', 'Time');
-	var sensorids = [];
-
-	$.ajax({
-		url:"/index/sensors/currentTitles/",
-		method:"GET",
-		async: false,
-		success: function(text) {
-			var sensordata = JSON.parse(text);
-			for (i = 0; i < sensordata.sensors.length; i++) {
-				data.addColumn("number", sensordata.sensors[i].Title);
-				sensorids.push(sensordata.sensors[i].SensorID);
-			}
-            data.addColumn("number", "Totaal");
-		}
 	});
+	var data = new google.visualization.DataTable();
+	var last_timestamp_in_data;
+	var sensorids_update = undefined;
+	var datasamples_update = undefined;
 
-	$.ajax({
-		url:"current/",
-		method:"GET",
-		async: false,
-		success: function(text) {
-			var minutedata = JSON.parse(text);
-			// function here with minutedata
-			var datapoints = [];
+	setInterval(function() {
+		var now = Date.now();
+		var amountMilliseconds = now % 60000;
+		var seconds = Math.floor(amountMilliseconds / 1000);
+		// console.log(seconds);
 
-			//var whilestop = false;
-			//var firstID = minutedata.datasamples[0].SensorID;
+		if (sensorids_update == undefined || datasamples_update == undefined) {
+			readSensorIDsUpdate();
+			readDatasamplesUpdate();
+
+			var timestamp = undefined;
+
+			if (datasamples_update.datasamples.length == 0) {
+				//push 0's since there is no data available (outage)
+				timestamp = dateAddMinutes(last_timestamp_in_data, 1);
+			}
+			else {
+				timestamp = convertToDate(datasamples_update.datasamples[0].CreationTimestamp);
+			}
+			if (timestamp.getTime() > last_timestamp_in_data.getTime()) {
+				// console.log("adding the new timestamp at the start.");
+				newDatapoints = [[]];
+				newDatapoints[0].push(timestamp);
+				for (i = 0; i < sensorids_update.length+1; i++) {
+					newDatapoints[0].push(0);
+				}
+				data.addRows(newDatapoints);
+				last_timestamp_in_data = timestamp;
+			}
+
+			if (datasamples_update.datasamples.length == 0) {
+				// don't update the values
+				drawChart();
+				return;
+			}
+
+			var counter = 0;
+			for (i = 0; i < sensorids_update.length; i++) {
+				if (datasamples_update.datasamples[counter].SensorID != sensorids_update[i]) {
+					data.setValue(data.getNumberOfRows()-1, i+1, 0);
+				}
+				else {
+					data.setValue(data.getNumberOfRows()-1, i+1, datasamples_update.datasamples[counter].Value * (seconds/60));
+					counter += 1;
+					if (counter >= datasamples_update.datasamples.length) {
+						counter--;
+					}
+				}
+			}
+			data.setValue(data.getNumberOfRows()-1, data.getNumberOfColumns()-1, datasamples_update.Total * (seconds/60));
+			drawChart();
+			return;
+		}
+
+		if (seconds == 3) {
+
+			var old_sensorids = sensorids_update;
+			var old_datasamples = datasamples_update;
+
+			readSensorIDsUpdate();
+			readDatasamplesUpdate();
 			
-			// var temptimearray = [minutedata.datasamples[counter].CreationTimestamp];
-			// datapoints.push(temptimearray)
-
-//alle times aanmaken en in de table steken, mss nog inefficienter als ik eerst al vreesde :/
-
-			datapoints.push([]);	
-			var timeyear = minutedata.firstTimestamp.slice(0,4);
-			var timemonth = minutedata.firstTimestamp.slice(5,7)-1;
-			var timeday = minutedata.firstTimestamp.slice(8,10);
-			var timehour = minutedata.firstTimestamp.slice(11,13);
-			var timeminute = minutedata.firstTimestamp.slice(14,16);
-			datapoints[0].push(new Date(timeyear, timemonth, timeday, timehour, timeminute));
-
-			for(j = 0; j <49;j++){
-				for(k=0;k < 60; k++){
-					if(timeminute >= 59){
-						timeminute = 0;
-						if(timehour >= 23){
-							timehour = 0;
-							if(timeday >= 31){
-								timeday = 1;
-								if(timemonth>=11){
-									timemonth = 0;
-									timeyear++;
-								}
-								else{
-									timemonth++;
-								}
-							}
-							else if(timeday>=30 && (timemonth == 3 || timemonth == 5 || timemonth == 8 || timemonth == 10) ){
-								timeday = 1;
-								if(timemonth>=11){
-									timemonth = 0;
-									timeyear++;
-								}
-								else{
-									timemonth++;
-								}
-							}
-							else if(timeday >=28 && timemonth == 1 ){
-								timeday = 1; //does not give a single f*ck about leap years... my bad :p
-								if(timemonth>=11){
-									timemonth = 0;
-									timeyear++;
-								}
-								else{
-									timemonth++;
-								}
-							}
-							else {
-								timeday++;
-							}
-						}
-						else {
-							timehour++;
-						}
+			if (old_datasamples.datasamples.length != 0) {
+				//make sure the last minute has the right values
+				var counter = 0;
+				for (i = 0; i < old_sensorids.length; i++) {
+					//push 0's since this is the start of the minute
+					if (old_datasamples.datasamples[counter].SensorID != old_sensorids[i]) {
+						data.setValue(data.getNumberOfRows()-1, i+1, 0);
 					}
 					else {
-						timeminute++;
+						data.setValue(data.getNumberOfRows()-1, i+1, old_datasamples.datasamples[counter].Value);
+						counter += 1;
+						if (counter >= old_datasamples.datasamples.length) {
+							counter--;
+						}
 					}
-					datapoints[0].push(new Date(timeyear, timemonth, timeday, timehour, timeminute));
-				}						
-			}
-            
-			var counter = 0;
-            var testcount = 0;
-            if(minutedata.datasamples.length > 0){
-			    for(i = 0; i < sensorids.length; i++){
-				    datapoints.push([]);
-				    for(j = 0; j < datapoints[0].length; j++){
-
-					    var yearcompare = minutedata.datasamples[counter].CreationTimestamp.slice(0,4);
-					    var monthcompare = minutedata.datasamples[counter].CreationTimestamp.slice(5,7)-1;
-					    var daycompare = minutedata.datasamples[counter].CreationTimestamp.slice(8,10);
-					    var hourcompare = minutedata.datasamples[counter].CreationTimestamp.slice(11,13);
-					    var minutecompare = minutedata.datasamples[counter].CreationTimestamp.slice(14,16);
-					    var datecompare = new Date(yearcompare, monthcompare, daycompare, hourcompare, minutecompare);
-
-					    if(minutedata.datasamples[counter].SensorID != sensorids[i]){
-                          //  console.log(minutedata.datasamples[counter].SensorID);
-                           // console.log(sensorids[i]);
-						    for(j; j < datapoints[0].length; j++){
-							    datapoints[i+1].push(0);
-						    }
-						
-					    }
-
-
-					    else if(datapoints[0][j].getTime() != datecompare.getTime()){
-						    datapoints[i+1].push(0);
-					    }
-					    else{
-                            testcount++;
-						    datapoints[i+1].push(parseFloat(minutedata.datasamples[counter].Value));
-						    counter++;
-						    if(counter>=minutedata.datasamples.length){
-							    sensorids[i]=sensorids[i]+2;
-                                counter--;
-						    }
-					    }
-
-				    }
-			    }
-            }
-            else{
-               // console.log("gets here");
-		        for(i = 0; i < sensorids.length; i++){
-			        datapoints.push([]);
-	                for(j=0; j < datapoints[0].length; j++){
-		                datapoints[i+1].push(0);
-	                }
-                }
-            }
-           // var testDate1 = datapoints[0][500];
-            //var testDate2 = new Date(2016,4,24,5,12);
- //           console.log(testDate1);
-   //         console.log(testDate2);
-     //       console.log(testDate1.getTime() == testDate2.getTime());
-       //     console.log(counter);
-			//while(whilestop == false){
-			//	if(counter >= minutedata.datasamples.length){
-			//		whilestop = true;
-			//	}
-			//	if(minutedata.datasamples[counter+1].SensorID != firstID){
-			//		whilestop = true;
-			//	}
-			//	var timemonth = minutedata.datasamples[counter].CreationTimestamp.slice(5,7);
-			//	var timeday = minutedata.datasamples[counter].CreationTimestamp.slice(8,10);
-			//	var timehour = minutedata.datasamples[counter].CreationTimestamp.slice(11,13);
-			//	var timeminute = minutedata.datasamples[counter].CreationTimestamp.slice(14,16);
-			//	datapoints[0].push(new Date(timeyear, timemonth, timeday, timehour, timeminute));
-			//	counter++;
-			//}
-			// counter--;
-			//var columncounter =0;
-			//for (i = 0; i < minutedata.datasamples.length; i += counter) {
-			//	datapoints.push([]);
-			//	columncounter++;
-			//	for(j = 0; j < counter;j++){
-			//		datapoints[columncounter].push(parseFloat(minutedata.datasamples[i+j].Value));
-			//	}
-			//}
-			// console.log(counter);
-			// console.log(columncounter);
-			var total = [];
-			for(i = 0; i < datapoints[0].length; i++) {
-				var row = [];
-                var totalsum = 0;
-				// console.log(datapoints.length);
-                row.push(datapoints[0][i]);
-				for(j = 1; j < datapoints.length; j++) {
-					row.push(datapoints[j][i]);
-
-                    totalsum = totalsum + datapoints[j][i];
-                    
 				}
-                row.push(parseFloat(totalsum));
-				total.push(row);
+				data.setValue(data.getNumberOfRows()-1, data.getNumberOfColumns()-1, old_datasamples.Total);
 			}
-			data.addRows(total);
+
+			var newDatasamples = [[]];
+			var timestamp = dateAddMinutes(last_timestamp_in_data, 1);
+			// var timestamp = convertToDate(datasamples_update.datasamples[0].CreationTimestamp);
+			newDatasamples[0].push(timestamp);
+			last_timestamp_in_data = timestamp;
+
+			var counter = 0;
+			for (i = 0; i < sensorids_update.length; i++) {
+				//push 0's since this is the start of the minute
+				newDatasamples[0].push(0);
+			}
+			newDatasamples[0].push(0); //push the total
+			data.addRows(newDatasamples);
+			data.removeRow(0);
+			drawChart();
+		}
+		else if (seconds % 2 == 0 && seconds != 0 && seconds != 1 && seconds != 2) {
+			// console.log("Changing the current existing values.");
+
+			if (datasamples_update.datasamples.length == 0) {
+				return;
+			}
+
+			var counter = 0;
+			for (i = 0; i < sensorids_update.length; i++) {
+				if (datasamples_update.datasamples[counter].SensorID != sensorids_update[i]) {
+					data.setValue(data.getNumberOfRows()-1, i+1, 0);
+				}
+				else {
+					data.setValue(data.getNumberOfRows()-1, i+1, datasamples_update.datasamples[counter].Value * (seconds/60));
+					counter += 1;
+					if (counter >= datasamples_update.datasamples.length) {
+						counter--;
+					}
+				}
+			}
+			data.setValue(data.getNumberOfRows()-1, data.getNumberOfColumns()-1, datasamples_update.Total * (seconds/60));
+			drawChart();
+		}
+	}, 1000);
+	
+	function readSensorIDsUpdate() {
+		sensorids_update = []
+		$.ajax({
+			url:"/index/sensors/currentTitles",
+			method:"GET",
+			async: false,
+			success: function(text) {
+				var sensordata = JSON.parse(text);
+				for (i = 0; i < sensordata.sensors.length; i++) {
+					sensorids_update.push(sensordata.sensors[i].SensorID);
+				}
+			}
+		});	
+	}
+	function readDatasamplesUpdate() {
+		datasamples_update = []
+		$.ajax({
+			url:"currentMinute",
+			method:'Get',
+			async: false,
+			success: function(text) {
+				var datasamples = JSON.parse(text);
+				datasamples_update = datasamples;
+			}
+		});
+	}
+
+	window.onload = getdata();
+
+	//hier zit de nieuwe stuff
+	function getdata() {
+		data.addColumn('datetime', 'Time');
+		var sensorids = [];
+		$.ajax({
+			url:"/index/sensors/currentTitles/",
+			method:"GET",
+			async: false,
+			success: function(text) {
+				var sensordata = JSON.parse(text);
+				for (i = 0; i < sensordata.sensors.length; i++) {
+					data.addColumn("number", sensordata.sensors[i].Title);
+					sensorids.push(sensordata.sensors[i].SensorID);
+				}
+				data.addColumn("number", "Total");
+			}
+		});
+		$.ajax({
+			url:"current/",
+			method:"GET",
+			async: false,
+			success: function(text) {
+				var minutedata = JSON.parse(text);
+				var datapoints = [];
+				
+				//alle times aanmaken en in de table steken, mss nog inefficienter als ik eerst al vreesde :/
+				datapoints.push([]);	
+				var firsttime = convertToDate(minutedata.firstTimestamp);
+
+				datapoints[0].push(firsttime);
+				var lasttime = Date.now();
+				var totaltime = Math.floor((lasttime - firsttime.getTime())/60000)-1;
+
+				for (j = 0; j < totaltime; j++) {
+					datapoints[0].push(dateAddMinutes(firsttime, j+1));
+					if (j == totaltime-1) {
+						last_timestamp_in_data = dateAddMinutes(firsttime, j+1);
+					}
+				}
+				
+				var counter = 0;
+				if (minutedata.datasamples.length > 0) {
+					for (i = 0; i < sensorids.length; i++) {
+						datapoints.push([]);
+						for (j = 0; j < datapoints[0].length; j++) {
+							while (minutedata.datasamples[counter].SensorID < sensorids[i]) {
+								//skip the next values since we don't need them
+								counter++;
+								if (counter >= minutedata.datasamples.length) {
+									counter--;
+									break;
+								}
+							}
+							var datecompare = convertToDate(minutedata.datasamples[counter].CreationTimestamp);
+
+
+							if (minutedata.datasamples[counter].SensorID > sensorids[i]) {
+								//sensorid does not match anymore, means there are no datasamples left for the current sensor --> fill everything up with 0
+								for (j; j < datapoints[0].length; j++) {
+									datapoints[i+1].push(0);
+								}
+							}
+							else if (datapoints[0][j].getTime() != datecompare.getTime()) {
+								//The timestamp does not match the one you are checking --> push 0
+								datapoints[i+1].push(0);
+							}
+							else {
+								datapoints[i+1].push(parseFloat(minutedata.datasamples[counter].Value));
+								counter++;
+								if (counter >= minutedata.datasamples.length) {
+									sensorids[i]=sensorids[i]+2;
+									counter--;
+								}
+							}
+						}
+					}
+				}
+				else {
+					//No datasamples available -> fill everything with 0's
+					for (i = 0; i < sensorids.length; i++) {
+						datapoints.push([]);
+						for (j = 0; j < datapoints[0].length; j++) {
+							datapoints[i+1].push(0);
+						}
+					}
+				}
+				//Create the rows and the total values of each timestamp
+				var total = [];
+				for(i = 0; i < datapoints[0].length; i++) {
+					var row = [];
+					var totalsum = 0;
+
+					row.push(datapoints[0][i]);
+					for(j = 1; j < datapoints.length; j++) {
+						row.push(datapoints[j][i]);
+						totalsum = totalsum + datapoints[j][i];
+						
+					}
+					row.push(parseFloat(totalsum));
+					total.push(row);
+				}
+				data.addRows(total);
+			}
+		});
+	}
+	var columnsTable = new google.visualization.DataTable();
+	columnsTable.addColumn('number', 'colIndex');
+	columnsTable.addColumn('string', 'colLabel');
+	var initState= {selectedValues: []};
+	// put the columns into this data table (skip column 0)
+	for (var i = 1; i < data.getNumberOfColumns(); i++) {
+		columnsTable.addRow([i, data.getColumnLabel(i)]);
+	}
+	for (var i = 1; i < data.getNumberOfColumns(); i++) {
+		initState.selectedValues.push(data.getColumnLabel(i));
+	}
+	programmaticChart  = new google.visualization.ChartWrapper({
+		'chartType': 'LineChart',
+		'containerId': 'programmatic_chart_div',
+		 dataTable: data,
+		'options': {
+			vAxis: {
+				title: 'Watt'
+			},
+			hAxis: {
+				title: 'Tijd'
+			},
+			'width': 1500,
+			'height': 700,
+			'legend': {position : 'right'},
 		}
 	});
-}
-
-
-
-var columnsTable = new google.visualization.DataTable();
-columnsTable.addColumn('number', 'colIndex');
-columnsTable.addColumn('string', 'colLabel');
-var initState= {selectedValues: []};
-// put the columns into this data table (skip column 0)
-for (var i = 1; i < data.getNumberOfColumns(); i++) {
-		columnsTable.addRow([i, data.getColumnLabel(i)]);
-}
-for (var i = 1; i < data.getNumberOfColumns(); i++) {
-		initState.selectedValues.push(data.getColumnLabel(i));
-}
-
- programmaticChart  = new google.visualization.ChartWrapper({
-	'chartType': 'LineChart',
-	'containerId': 'programmatic_chart_div',
-	 dataTable: data,
-	'options': {
-		'width': 1500,
-		'height': 700,
-		'legend': {position : 'right'},
-	}
-});
-
-
-
-var columnFilter = new google.visualization.ControlWrapper({
+	var columnFilter = new google.visualization.ControlWrapper({
 		controlType: 'CategoryFilter',
 		containerId: 'colFilter_div',
 		dataTable: columnsTable,
 		options: {
-				filterColumnLabel: 'colLabel',
-				ui: {
-						label: '',
-						allowTyping: false,
-						allowMultiple: true,
-						allowNone: false,
-						selectedValuesLayout: 'belowStacked'
-				}
+			filterColumnLabel: 'colLabel',
+			ui: {
+				label: ' ',
+				allowTyping: false,
+				allowMultiple: true,
+				allowNone: false,
+				selectedValuesLayout: 'belowStacked'
+			}
 		},
 		state: initState
-});
-
-function setChartView () {
-	var state = columnFilter.getState();
-	var row;
-	var view = {
+	});
+	function setChartView () {
+		var state = columnFilter.getState();
+		var row;
+		var view = {
 			columns: [0]
-	};
-	for (var i = 0; i < state.selectedValues.length; i++) {
+		};
+		for (var i = 0; i < state.selectedValues.length; i++) {
 			row = columnsTable.getFilteredRows([{column: 1, value: state.selectedValues[i]}])[0];
 			view.columns.push(columnsTable.getValue(row, 0));
-	}
-	// sort the indices into their original order
-	view.columns.sort(function (a, b) {
+		}
+		// sort the indices into their original order
+		view.columns.sort(function (a, b) {
 			return (a - b);
-	});
-	programmaticChart.setView(view);
-	programmaticChart.draw();
-}
-google.visualization.events.addListener(columnFilter, 'statechange', setChartView);
-
-
-setChartView();
-columnFilter.draw();
+		});
+		programmaticChart.setView(view);
+		programmaticChart.draw();
+	}
+	google.visualization.events.addListener(columnFilter, 'statechange', setChartView);
+	setChartView();
+	columnFilter.draw();
 	dashboard.bind(programmaticSlider, programmaticChart, columnFilter);
 	dashboard.draw(data);
+
+	function drawChart() {
+		var currentState = programmaticSlider.getState();
+		var currentEndTime = currentState.range.end;
+		if (currentEndTime.getTime() >= last_timestamp_in_data.getTime()) {
+		}
+		else if (currentEndTime.getTime() > (dateAddMinutes(last_timestamp_in_data, -5)).getTime()) {
+			programmaticSlider.setState({
+				range: {
+					start: currentState.range.start ,
+					end: last_timestamp_in_data
+				}
+			});
+			programmaticSlider.draw();
+		}
+		dashboard.draw(data);
+	}
+}
+
+function convertToDate(timestamp) {
+	var timeyear = timestamp.slice(0,4);
+	var timemonth = timestamp.slice(5,7)-1;
+	var timeday = timestamp.slice(8,10);
+	var timehour = timestamp.slice(11,13);
+	var timeminute = timestamp.slice(14,16);
+	return (new Date(timeyear, timemonth, timeday, timehour, timeminute))
+}
+
+function dateAddMinutes(date, minutes) {
+	return new Date(date.getTime() + minutes * 60000);
 }
 
 </script>

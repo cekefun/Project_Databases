@@ -51,4 +51,7 @@ urlpatterns = [
     url(r'^changeHouse/$', views.ChangeHouse, name="changehouse"),
     url(r'^addHouse/$', views.addHouse, name="addhouse"),
     url(r'^about/$', views.aboutPage, name="about"),
+    url(r'^status/$', views.JSON_status, name="status"),
+
+    url(r'^status/neighbourhood/$', views.powerOutageNeighbourhood, name="poweroutage_neighbourhood"),
 ]

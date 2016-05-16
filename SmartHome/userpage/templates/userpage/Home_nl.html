@@ -6,108 +6,143 @@
 <style>
 div.img1 {
 position : absolute;
-    top:200px;
-    left:300px;
-    z-index: -1;
-    margin: 5px;
-    border: 1px solid #ccc;
-    float: left;
-    width: 500px;
-    transition: all 1s;
+  top:200px;
+  left:300px;
+  z-index: -1;
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 500px;
+  transition: all 1s;
 }
-
 div.img1:hover {
-    width: 1100px;
-    top:200px;
-    left:300px;
-    z-index: +1;
+  width: 1100px;
+  top:200px;
+  left:300px;
+  z-index: +1;
 }
-
 div.img1 img {
-    width: 100%;
-    height: auto;
+  width: 100%;
+  height: auto;
 }
-
 div.img2 {
 position : absolute;
-    top:200px;
-    left:850px;
-    z-index: -1;
-    margin: 5px;
-    border: 1px solid #ccc;
-    float: left;
-    width: 500px;
-    transition: all 1s;
+  top:200px;
+  left:850px;
+  z-index: -1;
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 500px;
+  transition: all 1s;
 }
-
 div.img2:hover {
-    width: 1100px;
-    top:200px;
-    left:300px;
-    z-index: +1;
+  width: 1100px;
+  top:200px;
+  left:300px;
+  z-index: +1;
 }
-
 div.img2 img {
-    width: 100%;
-    height: auto;
+  width: 100%;
+  height: auto;
 }
 div.img3 {
 position : absolute;
-    top:467px;
-    left:300px;
-    z-index: -1;
-    margin: 5px;
-    border: 1px solid #ccc;
-    float: left;
-    width: 500px;
-    height: 230px;
-    transition: all 1s;
+  top:467px;
+  left:300px;
+  z-index: -1;
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 500px;
+  height: 230px;
+  transition: all 1s;
 }
-
 div.img3:hover {
-    width: 1100px;
-    height:501px;
-    top:200px;
-    left:300px;
-    z-index: +1;
+  width: 1100px;
+  height:501px;
+  top:200px;
+  left:300px;
+  z-index: +1;
 }
-
 div.img3 img {
-    width: 100%;
-    height: 230px;
-    height:100%
+  width: 100%;
+  height: 230px;
+  height:100%
 }
 div.img4 {
 position : absolute;
-    top:467px;
-    left:850px;
-    z-index: -1;
-    margin: 5px;
-    border: 1px solid #ccc;
-    float: left;
-    width: 500px;
-    transition: all 1s;
+  top:467px;
+  left:850px;
+  z-index: -1;
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 500px;
+  transition: all 1s;
 }
-
 div.img4:hover {
-    width: 1100px;
-    top:200px;
-    left:300px;
-    z-index: +1;
+  width: 1100px;
+  top:200px;
+  left:300px;
+  z-index: +1;
 }
-
 div.img4 img {
-    width: 100%;
-    height: auto;
+  width: 100%;
+  height: auto;
+}
+div.desc {
+  padding: 10px;
+  text-align: center;
+  z-index: +1;
+  background-color: #000078;
+  color: white;
 }
 
-div.desc {
-    padding: 10px;
-    text-align: center;
-    z-index: +1;
-    background-color: #000078;
-    color: white;
+
+.info, .success, .warning, .error, .validation {
+  font-family:Arial, Helvetica, sans-serif; 
+  font-size:16px;
+  border: 1px solid;
+  margin: 10px 0px;
+  padding:15px 30px 15px 15px;
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  width: 30%;
+  position: absolute;
+  top: 100px;
+  left: 150px;
+  z-index: 1;
 }
+.info {
+  color: #00529B;
+  background-color: #BDE5F8;
+}
+.success {
+  color: #4F8A10;
+  background-color: #DFF2BF;
+}
+.warning {
+  color: #9F6000;
+  background-color: #FEEFB3;
+}
+.error {
+  color: #D8000C;
+  background-color: #FFBABA;
+}
+#close {
+  float:right;
+  /*display:inline-block;*/
+  color:#D8000C;
+  background:#FFBABA;
+}
+#close:hover {
+  float:right;
+  /*display:inline-block;*/
+  background:#FFBABA;
+  color:#000000;
+}
+
 </style>
 </head>
 <body>
@@ -128,42 +163,239 @@ div.desc {
   {% endif %}
   <li1><a href="about/">Over</a></li1>
 </ul1>
-<div class="dropdown" >
+<div class="dropdown">
   <button class="dropbtn" style="float:right">Account</button>
   <div class="dropdown-content a">
-      {% if request.session.Username|length > 0 %}
-      <a href="settings/">Instellingen</a>
-      <a href="addHouse/">Voeg huis toe</a>
-      <a href="/logout/">Log uit</a>
-      {% else %}
-      <a href='../login'>Inloggen</a>
-      {% endif %}
+{% if request.session.Username|length > 0 %}
+    <a href="settings/">Instellen</a>
+    <a href="addHouse/">Voeg huis toe</a>
+    <a href="/logout/">Uitloggen</a>
+{% else %}
+    <a href='../login'>Inloggen</a>
+{% endif %}
   </div>
 </div>
+{% if request.session.Username|length == 0 %}
 <div class="img1">
   <a target = "_blank" href="{% static 'img/graph.png' %}">
-    <img src="{% static 'img/graph.png' %}" alt="graph" width="600" height="400">
+  <img src="{% static 'img/graph.png' %}" alt="graph" width="600" height="400">
   </a>
   <div class ="desc">Makkelijk leesbare en interactieve grafieken</div>
 </div>
 <div class="img2">
   <a target = "_blank" href="{% static 'img/sensortable.png' %}">
-    <img src="{% static 'img/sensortable.png' %}" alt="graph" width="600" height="400">
+  <img src="{% static 'img/sensortable.png' %}" alt="graph" width="600" height="400">
   </a>
   <div class ="desc">Selecteer en bewerk uw sensors</div>
 </div>
 <div class="img3">
   <a target = "_blank" href="{% static 'img/forum.png' %}">
-    <img src="{% static 'img/forum.png' %}" alt="graph" width="600" height="400">
+  <img src="{% static 'img/forum.png' %}" alt="graph" width="600" height="400">
   </a>
   <div class ="desc">Deel tips en aanbevelingen met anderen</div>
 </div>
+
 <div class="img4">
   <a target = "_blank" href="{% static 'img/graph.png' %}">
-    <img src="{% static 'img/graph.png' %}" alt="graph" width="600" height="400">
+  <img src="{% static 'img/graph.png' %}" alt="graph" width="600" height="400">
   </a>
   <div class ="desc">Makkelijk leesbare en interactieve grafieken</div>
 </div>
+{% else %}
+<div id="chart_div" style="position: absolute; margin-top: 275px; margin-left: 75%;"></div>
+<div id="chart_weekdata_div" style="position: absolute ; margin-top: 200px;"></div>
+
+<div id="outage_yourhome" class="error" style="display: none;">
+Waarschuwing: u verbruikt momenteel veel energie. Dit kan een stroompanne veroorzaken. 
+<a href="status/powerSensors/">Klik hier</a> voor meer info.
+</div>
+
+<div id="outage_neighbourhood" class="warning" style="display: none;">
+Er lijkt een probleem te zijn met de stroom in uw buurt. 
+<a href="status/neighbourhood/">Klik hier</a> voor meer info.
+</div>
+
+{% endif %}
 </body>
 </html>
 
+{% if request.session.Username|length > 0 %}
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+google.charts.load('current', {'packages':['gauge', 'corechart']});
+google.charts.setOnLoadCallback(drawCharts);
+
+function drawCharts() {
+  drawGauge();
+  drawWeekChart();
+}
+
+function drawGauge() {
+  var redzone = 60;
+  $.ajax({
+    url:"/index/minute/currentMinute/",
+    method:"GET",
+    async: false,
+    success: function(text) {
+      var lastminute = JSON.parse(text);
+      if(lastminute.Dangerzone!=0){
+        redzone = Math.floor(lastminute.Dangerzone);
+        no_outage = false;
+      }
+    }
+  });
+  var data = google.visualization.arrayToDataTable([
+    ['Label', 'Value'],
+    ["Watt/uur", 0]
+  ]);
+  
+  var options = {
+    width: 500, height: 250,
+    minorTicks: 5,
+    redFrom: redzone-Math.floor(redzone/10), redTo: redzone+Math.floor(redzone/5),
+    yellowFrom:redzone-3*Math.floor(redzone/10), yellowTo: redzone-Math.floor(redzone/10),
+    greenFrom: 0, greenTo:redzone-3*Math.floor(redzone/10),
+    max: redzone+Math.floor(redzone/5),
+  };
+  var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+  chart.draw(data, options);
+  setInterval(function() {
+    $("#outage_yourhome").hide();
+    $("#outage_neighbourhood").hide();
+    $.ajax({
+      url:"/index/minute/currentMinute/",
+      method:"GET",
+      async: false,
+      success: function(text) {
+        var lastminute = JSON.parse(text);
+        var yearcompare = lastminute.datasamples[0].CreationTimestamp.slice(0,4);
+        var monthcompare = lastminute.datasamples[0].CreationTimestamp.slice(5,7)-1;
+        var daycompare = lastminute.datasamples[0].CreationTimestamp.slice(8,10);
+        var hourcompare = lastminute.datasamples[0].CreationTimestamp.slice(11,13);
+        var minutecompare = lastminute.datasamples[0].CreationTimestamp.slice(14,16);
+        var datecompare = new Date(yearcompare, monthcompare, daycompare, hourcompare, minutecompare);
+        
+        var Time_ticks = (Date.now() - datecompare.getTime())/3000; //aantal 20sten van een minuut we verder zijn dan de vorige timestamp
+        
+        data.setValue(0,1,parseFloat(Math.floor((Time_ticks * 1/20) * lastminute.Total)));
+
+        if (parseFloat(lastminute.Total) > redzone-Math.floor(redzone/10)) {
+          $("#outage_yourhome").show();
+        }
+      }
+    });
+    chart.draw(data, options);
+  }, 
+  3000);
+}
+
+function drawWeekChart() {
+  var data = new google.visualization.DataTable();
+  var options = {
+    width: 1000,
+    height: 400,
+    title: "Huidig weekverbruik",
+    bar: {groupWidth: "65%"},
+    legend: {position: "none"},
+    animation: {
+      duration: 2000,
+      easing: 'out',
+      startup: true,
+    },
+    vAxis: {
+      title: 'Watt'
+    },
+    hAxis: {
+      title: 'Tijd'
+    },
+  };
+  var chart = new google.visualization.ColumnChart(document.getElementById("chart_weekdata_div"));
+
+  function getDrawData() {
+    $.ajax({
+      url:"week/currentTotals/",
+      method:"GET",
+      async: true,
+      success: function(text) {
+        var weekdata = JSON.parse(text);
+        if (weekdata == undefined) {
+          return;
+        }
+
+        data.addColumn("datetime", "Time");
+        data.addColumn("number","Total");
+
+        var datapoints = [];
+        
+        datapoints.push([]);
+        var today = new Date(Date.now());
+        today.setMilliseconds(0);
+        today.setSeconds(0);
+        today.setMinutes(0);
+        today.setHours(0);
+        var startdate = new Date(today.getTime() - (7*24*60*60*1000));
+        
+        datapoints[0].push(startdate);
+        for (i = 0; i < 6; i++) {
+          datapoints[0].push(dateAddMinutes(startdate, (i+1)*24*60));
+        }
+        if (weekdata.datasamples.length > 0) {
+          datapoints.push([]);
+          var counter = 0;
+          for (j = 0; j < datapoints[0].length; j++) {
+            var timestamp = convertToDate(weekdata.datasamples[counter].CreationTimestamp);
+            if (timestamp.getTime() == datapoints[0][j].getTime()) {
+              datapoints[1].push(weekdata.datasamples[counter].Total);
+              counter++;
+
+              if (counter >= weekdata.datasamples.length) {
+                counter--;
+              }
+            }
+            else {
+              datapoints[1].push(0);
+            }
+          }
+        }
+        else {
+          datapoints.push([]);
+          for (i = 0; i < datapoints[0].length; i++) {
+            datapoints[1].push(0);
+          }
+        }
+
+        var total = []
+        for (i = 0; i < datapoints[0].length; i++) {
+          row = []
+          row.push(datapoints[0][i]);
+          row.push(datapoints[1][i]);
+          total.push(row);
+        }
+        data.addRows(total);
+
+        chart.draw(data, options);
+      }
+    });
+  }
+
+
+  getDrawData();
+
+}
+
+function convertToDate(timestamp) {
+  var timeyear = timestamp.slice(0,4);
+  var timemonth = timestamp.slice(5,7)-1;
+  var timeday = timestamp.slice(8,10);
+  var timehour = timestamp.slice(11,13);
+  var timeminute = timestamp.slice(14,16);
+  return (new Date(timeyear, timemonth, timeday, timehour, timeminute))
+}
+
+function dateAddMinutes(date, minutes) {
+  return new Date(date.getTime() + minutes * 60000);
+}
+
+</script>
+{% endif %}

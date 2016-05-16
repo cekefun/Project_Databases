@@ -89,6 +89,20 @@ def addComment(SensorID, Message):
 	dbCursor.execute("""insert into Comment values (0,"%s",%i);""" % (str(Message), int(SensorID)))
 
 
+def getAddressObj(householdID):
+	dbCursor = connection.cursor()
+	dbCursor.execute(""" select Address.StreetName as StreetName, Address.StreetNumber as StreetNumber, Address.City as City, Address.Country as Country from Address inner join House on House.AddressID = Address.ID where House.ID = %i; """ % householdID)
+	result = dictfetchall(dbCursor)
+	return Address(result[0])
+
+class Address:
+	def __init__(self, dictObj):
+		self.StreetName = dictObj["StreetName"]
+		self.StreetNumber = dictObj["StreetNumber"]
+		self.City = dictObj["City"]
+		self.Country = dictObj["Country"]
+
+
 
 class Sensor:
 	def __init__(self):

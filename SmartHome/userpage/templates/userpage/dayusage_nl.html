@@ -19,7 +19,6 @@
   <li2 style=float:left;><a href="../minute/">Minuutverbruik</a></li2>
   <li2><a href="../hour/">Uurverbruik</a></li2>
   <li2><a class="active" href="">Dagverbruik</a></li2>
-  <li2><a href="../week/">Weekverbruik</a></li2>
   <li2><a href="../month/">Maandverbruik</a></li2>
   <li2><a href="../year/">Jaarverbruik</a></li2>
 </ul2>
@@ -32,8 +31,7 @@
 	</div>
 </div>
 <br><br><br><br><br><br>
-
-<div id="programmatic_dashboard_div" style="padding-top:80px ;border: 1px solid #ccc">
+<div id="programmatic_dashboard_div" style="padding-top:80px ;">
 	<table class="columns">
 		<tr>
 			<td>
@@ -51,9 +49,10 @@
 			</td>
 	</table>
 </div>
+
+
 </body>
 </html>
-
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
@@ -83,34 +82,6 @@ function drawStuff() {
 var data = new google.visualization.DataTable();
 window.onload = getdata();
 	
-//      var data = new google.visualization.DataTable();
-//  data.addColumn('datetime', 'Time');
-//      data.addColumn('number', 'Electric shower');
-//  data.addColumn('number', 'Microwave');
-//  data.addColumn('number', 'Lamp1');
-//  data.addColumn('number', 'Lamp2');
-//  data.addColumn('number', 'Oven');
-//  data.addColumn('number', 'Tesla coil');
-//  data.addColumn('number', 'fusion furnace');
-//
-//  data.addRows([
-//        [new Date(2016, 0, 1, 1, 1),              120,       190,     400,    700,   1000,   20000,     900       ],
-//        [new Date(2016, 0, 1, 1, 2),              170,         240,      0,     600,   100,      50000,     900       ],
-//        [new Date(2016, 0, 1, 1, 3),              300,       300,      0,     600,   100,      30000,       1000      ],
-//        [new Date(2016, 0, 1, 1, 4),              500,         300,        0,      0,    100,      25000,     4500      ],
-//        [new Date(2016, 0, 1, 1, 5),              500,         360,     650,     0,    1000,     30000,   3500      ],
-//        [new Date(2016, 0, 1, 1, 6),              1000,        1000,    600,    800,   1000,     50000,   10000     ],
-//        [new Date(2016, 0, 1, 1, 7),              1000,        766,     400,    800,   900,  10000,     7000      ],
-//  [new Date(2016, 0, 1, 1, 8),              800,       700, 400,    700,   1000,     50000,   7000      ],
-//  [new Date(2016, 0, 1, 1, 9),              500,       600,       400,    600,   1000,     45000,     6500      ],
-//  [new Date(2016, 0, 1, 1, 10),             70,          60,  0,  600,   50,   15000,   3000    ],
-//
-//      ]);
-
-//hier zit de nieuwe stuff
-
-
-
 
 function getdata() {
 	data.addColumn('datetime', 'Time');
@@ -139,12 +110,6 @@ function getdata() {
 			// function here with minutedata
 			var datapoints = [];
 
-			//var whilestop = false;
-			//var firstID = minutedata.datasamples[0].SensorID;
-			
-			// var temptimearray = [minutedata.datasamples[counter].CreationTimestamp];
-			// datapoints.push(temptimearray)
-
 //alle times aanmaken en in de table steken, mss nog inefficienter als ik eerst al vreesde :/
 
 			datapoints.push([]);	
@@ -153,7 +118,7 @@ function getdata() {
 			var timeday = minutedata.firstTimestamp.slice(8,10);
 			datapoints[0].push(new Date(timeyear, timemonth, timeday));
 
-				for(k=0;k < 365; k++){
+				for(k=0;k < 396; k++){
 						if(timeday >= 31){
 							timeday = 1;
 							if(timemonth>=11){
@@ -200,7 +165,7 @@ function getdata() {
 				    for(j = 0; j < datapoints[0].length; j++){
 
 					    var yearcompare = minutedata.datasamples[counter].CreationTimestamp.slice(0,4);
-					    var monthcompare = minutedata.datasamples[counter].CreationTimestamp.slice(5,7);
+					    var monthcompare = minutedata.datasamples[counter].CreationTimestamp.slice(5,7)-1;
 					    var daycompare = minutedata.datasamples[counter].CreationTimestamp.slice(8,10);
 					    var datecompare = new Date(yearcompare, monthcompare, daycompare);
                         
@@ -237,37 +202,7 @@ function getdata() {
 	                }
                 }
             }
-           // var testDate1 = datapoints[0][500];
-            //var testDate2 = new Date(2016,4,24,5,12);
- //           console.log(testDate1);
-   //         console.log(testDate2);
-     //       console.log(testDate1.getTime() == testDate2.getTime());
-       //     console.log(counter);
-			//while(whilestop == false){
-			//	if(counter >= minutedata.datasamples.length){
-			//		whilestop = true;
-			//	}
-			//	if(minutedata.datasamples[counter+1].SensorID != firstID){
-			//		whilestop = true;
-			//	}
-			//	var timemonth = minutedata.datasamples[counter].CreationTimestamp.slice(5,7);
-			//	var timeday = minutedata.datasamples[counter].CreationTimestamp.slice(8,10);
-			//	var timehour = minutedata.datasamples[counter].CreationTimestamp.slice(11,13);
-			//	var timeminute = minutedata.datasamples[counter].CreationTimestamp.slice(14,16);
-			//	datapoints[0].push(new Date(timeyear, timemonth, timeday, timehour, timeminute));
-			//	counter++;
-			//}
-			// counter--;
-			//var columncounter =0;
-			//for (i = 0; i < minutedata.datasamples.length; i += counter) {
-			//	datapoints.push([]);
-			//	columncounter++;
-			//	for(j = 0; j < counter;j++){
-			//		datapoints[columncounter].push(parseFloat(minutedata.datasamples[i+j].Value));
-			//	}
-			//}
-			// console.log(counter);
-			// console.log(columncounter);
+
 			var total = [];
 			for(i = 0; i < datapoints[0].length; i++) {
 				var row = [];
@@ -306,6 +241,12 @@ for (var i = 1; i < data.getNumberOfColumns(); i++) {
 	'containerId': 'programmatic_chart_div',
 	 dataTable: data,
 	'options': {
+		vAxis: {
+			title: 'Watt'
+		},
+		hAxis: {
+			title: 'Tijd'
+		},
 		'width': 1500,
 		'height': 700,
 		'legend': {position : 'right'},

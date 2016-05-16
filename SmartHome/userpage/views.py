@@ -415,6 +415,20 @@ def addCommentSensor(request):
 	response.status_code = 400
 	return response
 
+def powerOutageNeighbourhood(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+
+	# household = request.session["HouseHold"]
+	language = request.session["Language"]
+	htmlfile = "userpage/outage_neighbourhood.html"
+
+	if (language == "nl"):
+		htmlfile = "userpage/outage_neighbourhood_nl.html"
+
+	template = loader.get_template(htmlfile)
+	context = {'own_address': getAddressObj(request.session["HouseID"])}
+	return HttpResponse(template.render(context, request))
 
 
 
@@ -578,3 +592,11 @@ def JSON_usageSensors(request):
 
 	household = request.session["HouseID"]
 	return HttpResponse(HighMinuteUsage(household).getJSON())
+
+
+def JSON_status(request):
+	if (IsLoggedIn(request) == False):
+		return RedirectNotLoggedIn(request)
+
+	household = request.session["HouseID"]
+	return HttpResponse("{}")

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+ul1 {
+    position:fixed;
+    top: 0;
+    z-index: 1;
+    width: 100%;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #000078;
+}
+
+li1 {
+    float: left;
+}
+
+li1 a {
+    z-index:1;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li1 a:hover{
+    background-color: #0000C0;
+}
+
+
+li1 .active:hover {
+    background-color: #4CAF50;
+}
+
+li1 .active {
+    background-color: green;
+}
+
+li1 .greyed-out {
+    background-color: #7a7a7a;
+}
+li1 .greyed-out:hover {
+    background-color: #747474;
+}
+.dropbtn {
+    position:fixed;
+    top: 0;
+    right: 0;
+    z-index:1;
+    background-color: #000078;
+    color: white;
+    padding: 14px 31px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown {
+    position:fixed;
+    top:0;
+    right: 0;
+    z-index:1;
+    padding: 46px 4px;
+    display: inline-block;
+}
+
+.dropdown-content {
+    z-index:1;
+    display: none;
+    background-color: #f9f9f9;
+    min-width: 0;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a {
+    z-index:1;
+    text-align:right;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #0000C0;
+}
+
+div#housetable {
+	width: 1000px;
+	border: 3px solid #060;
+	border-radius: 5px;
+}
+
+div#explanationtext {
+	margin-left: 20px;
+	width: 600px;
+	font-size: 20px;
+}
+
+body {
+	background: #fafafa ;
+	color: #444;
+}
+
+strong {
+	font-weight: bold; 
+}
+
+em {
+	font-style: italic; 
+}
+
+table {
+	font: 100%/30px 'Helvetica Neue', helvetica, arial, sans-serif;
+	text-shadow: 0 1px 0 #fff;
+	background: #f5f5f5;
+	border-collapse: separate;
+	box-shadow: inset 0 1px 0 #fff;
+	font-size: 12px;
+	line-height: 24px;
+	margin: 30px auto;
+	text-align: left;
+	width: 800px;
+}	
+
+th {
+	/*background:  linear-gradient(#888, #111);*/
+	background:  linear-gradient(#063, #060, #070);
+	border-left: 1px solid #555;
+	border-right: 1px solid #777;
+	border-top: 1px solid #555;
+	border-bottom: 1px solid #333;
+	box-shadow: inset 0 1px 0 #999;
+	color: #fff;
+  font-weight: bold;
+	padding: 10px 15px;
+	position: relative;
+	text-shadow: 0 1px 0 #000;	
+}
+
+th:after {
+	background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.08));
+	content: '';
+	display: block;
+	height: 25%;
+	left: 0;
+	margin: 1px 0 0 0;
+	position: absolute;
+	top: 25%;
+	width: 100%;
+}
+
+th:first-child {
+	border-left: 1px solid #777;	
+	box-shadow: inset 1px 1px 0 #999;
+}
+
+th:last-child {
+	box-shadow: inset -1px 1px 0 #999;
+}
+
+td {
+	border-right: 1px solid #fff;
+	border-left: 1px solid #e8e8e8;
+	border-top: 1px solid #fff;
+	border-bottom: 1px solid #e8e8e8;
+	padding: 10px 15px;
+	position: relative;
+	transition: all 300ms;
+}
+
+td:first-child {
+	box-shadow: inset 1px 0 0 #fff;
+}	
+
+td:last-child {
+	border-right: 1px solid #e8e8e8;
+	box-shadow: inset -1px 0 0 #fff;
+}	
+
+
+tr:nth-child(odd) td {
+	background: #f1f1f1 ;	
+}
+
+tr:last-of-type td {
+	box-shadow: inset 0 -1px 0 #fff; 
+}
+
+tr:last-of-type td:first-child {
+	box-shadow: inset 1px -1px 0 #fff;
+}	
+
+tr:last-of-type td:last-child {
+	box-shadow: inset -1px -1px 0 #fff;
+}	
+
+tbody:hover td {
+	color: transparent;
+	text-shadow: 0 0 3px #aaa;
+}
+
+tbody:hover tr:hover td {
+	color: #444;
+	text-shadow: 0 1px 0 #fff;
+}
+</style>
+</head>
+<body>
+<ul1>
+	<li1 style=float:left;><a href="../../">Home</a></li1>
+	<li1><a href="../../sensors/">Sensors</a></li1>
+	<li1><a href="../../minute">Power Usage</a></li1>
+	{% if request.session.IsAdmin %}
+	<li1><a href="../../../admin/users">Users</a></li1>
+	<li1><a href="../../../admin/report">Report</a></li1>
+	{% endif %}
+	<li1><a href="../../about/">About</a></li1>
+</ul1>
+<div class="dropdown" >
+<button class="dropbtn" style="float:right">Account</button>
+	<div class="dropdown-content a">
+			<a href="../../settings/">Settings</a>
+			<a href="../../addHouse/">Add a House</a>
+			<a href="/logout/">Log out</a>
+	</div>
+</div>
+<br><br><br><br><br><br>
+<section>
+<div id="explanationtext">
+	<p>
+		There seems to be a power outage in the neighbourhood at the moment. We have found some houses in your vicinity who don't have power either. These houses are listed in the table below.
+	</p>
+</div>
+</section>
+<br><br>
+<div id="housetable">
+	<table>
+		<thead>
+			<tr>
+				<th>Streetname</th>
+				<th>Streetnumber</th>
+				<th>City</th>
+				<th>Country</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>{{own_address.StreetName}}</td>
+				<td>{{own_address.StreetNumber}}</td>
+				<td>{{own_address.City}}</td>
+				<td>{{own_address.Country}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+
+</body>
+
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script>
+
+function getData() {
+	var data = undefined;
+
+	$.ajax({
+		url: "/index/status/",
+		method: "get",
+		async: true,
+		success: function(text) {
+			statusObject = JSON.parse(text);
+			if (statusObject === undefined) {
+				return undefined;
+			}
+
+
+			return data;
+		},
+		error: function(text) {
+			return undefined;
+		}
+	});
+
+}
+
+
+function DisplayHouses() {
+	var data = getData();
+	if (data == undefined) {
+		console.log("No other houses found that have power outages.");
+		// return;
+	}
+	else {
+		console.log("The data object exists.");
+	}
+
+	var datapoint1 = {StreetName:"Apollostraat", StreetNumber:10, City:"Borgerhout", Country:"Belgium"};
+	var datapoint2 = {StreetName:"Apollostraat", StreetNumber:20, City:"Borgerhout", Country:"Belgium"};
+	var datapoint3 = {StreetName:"Apollostraat", StreetNumber:30, City:"Borgerhout", Country:"Belgium"};
+
+	AddTableRow(datapoint1);
+	AddTableRow(datapoint2);
+	AddTableRow(datapoint3);
+
+	//do something with the data here
+}
+
+function AddTableRow(datapoint) {
+	$("#housetable tr:last").after('<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>'.format(datapoint.StreetName, datapoint.StreetNumber, datapoint.City, datapoint.Country));
+}
+
+
+if (!String.prototype.format) { //function from stackoverflow: http://stackoverflow.com/questions/18405736/is-there-a-c-sharp-string-format-equivalent-in-javascript
+  String.prototype.format = function() {
+    var args = arguments;
+    return this.replace(/{(\d+)}/g, function(match, number) { 
+      return typeof args[number] != 'undefined'
+        ? args[number]
+        : match
+      ;
+    });
+  };
+}
+
+
+window.onload = DisplayHouses;
+
+</script>
