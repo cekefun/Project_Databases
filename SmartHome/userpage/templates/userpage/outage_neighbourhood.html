@@ -285,9 +285,12 @@ function getData() {
 			if (statusObject === undefined) {
 				return undefined;
 			}
-
-
-			return data;
+			if (statusObject.status != "OutageNeighbourhood") {
+				window.location = "/index/";
+			}
+			
+			data = statusObject.houses;
+			DisplayHouses(data);
 		},
 		error: function(text) {
 			return undefined;
@@ -297,23 +300,22 @@ function getData() {
 }
 
 
-function DisplayHouses() {
-	var data = getData();
+function DisplayHouses(data) {
 	if (data == undefined) {
 		console.log("No other houses found that have power outages.");
-		// return;
-	}
-	else {
-		console.log("The data object exists.");
 	}
 
-	var datapoint1 = {StreetName:"Apollostraat", StreetNumber:10, City:"Borgerhout", Country:"Belgium"};
-	var datapoint2 = {StreetName:"Apollostraat", StreetNumber:20, City:"Borgerhout", Country:"Belgium"};
-	var datapoint3 = {StreetName:"Apollostraat", StreetNumber:30, City:"Borgerhout", Country:"Belgium"};
+	for (i = 0; i < data.length; i++) {
+		AddTableRow(data[i]);
+	}
 
-	AddTableRow(datapoint1);
-	AddTableRow(datapoint2);
-	AddTableRow(datapoint3);
+	// var datapoint1 = {StreetName:"Apollostraat", StreetNumber:10, City:"Borgerhout", Country:"Belgium"};
+	// var datapoint2 = {StreetName:"Apollostraat", StreetNumber:20, City:"Borgerhout", Country:"Belgium"};
+	// var datapoint3 = {StreetName:"Apollostraat", StreetNumber:30, City:"Borgerhout", Country:"Belgium"};
+
+	// AddTableRow(datapoint1);
+	// AddTableRow(datapoint2);
+	// AddTableRow(datapoint3);
 
 	//do something with the data here
 }
@@ -336,6 +338,6 @@ if (!String.prototype.format) { //function from stackoverflow: http://stackoverf
 }
 
 
-window.onload = DisplayHouses;
+window.onload = getData;
 
 </script>

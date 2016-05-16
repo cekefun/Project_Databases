@@ -799,6 +799,8 @@ class Status:
 			resultPeakValue = float(resultTemp[0])
 
 
+		
+		
 		if (len(resultNeighbour) >= 3):
 			resultingJSON["status"] = "OutageNeighbourhood"
 			resultingJSON["houses"] = []
@@ -814,8 +816,7 @@ class Status:
 			resultingJSON["status"] = "HighUsage"
 		else:
 			resultingJSON["status"] = "Normal"
-
-
+		
 		return json.dumps(resultingJSON)
 
 
