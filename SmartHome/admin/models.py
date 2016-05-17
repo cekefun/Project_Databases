@@ -177,11 +177,22 @@ class HistoryOutages:
 
         selectOutage = self.form.cleaned_data['selectOutage']
         if (selectOutage == "house"):
-            pass
+            selectRegion = self.form.cleaned_data['selectRegion']
+
+            if (selectRegion == "streetnamenumber"):
+                pass
+            elif (selectRegion == "city"):
+                pass
+            elif (selectRegion == "country"):
+                pass
+            else:
+                return self.returnWrong()
+
+
         elif (selectOutage == "neighbourhood"):
             pass
         else:
             return self.returnWrong()
 
-
+        resultingJSON['testing'] = True
         return json.dumps(resultingJSON)

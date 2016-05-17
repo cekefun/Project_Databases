@@ -216,6 +216,7 @@ $("body").on("submit", $("#formOutages"), function(eventobject) {
 		data:($("#formOutages").serialize()),
 		success: function(response) {
 			var datajson = JSON.parse(response);
+			console.log(datajson);
 			if (datajson == undefined) {
 				return;
 			}
@@ -245,8 +246,8 @@ function getCookie(name) {
 	return cookieValue;
 }
 function fillTable(datajson) {
-
 	$("#resultTable").show();
+	
 }
 
 if (!String.prototype.format) { //function from stackoverflow: http://stackoverflow.com/questions/18405736/is-there-a-c-sharp-string-format-equivalent-in-javascript
