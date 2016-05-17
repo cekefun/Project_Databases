@@ -4,7 +4,14 @@ from django.db import models, connection
 
 import json
 
-# Create your models here.
+
+def dictfetchall(cursor):
+    "function that returns the results from an SQL query in dictionary format"
+    desc = cursor.description
+    return [
+        dict(zip([col[0] for col in desc], row))
+        for row in cursor.fetchall()
+    ]
 
 class DataSample:
 	def __init__(self):
@@ -149,3 +156,32 @@ class AdminSearch:
     
     def makeAdmin(self,UserName):
         self.cursor.execute('''INSERT INTO Admin SELECT ID FROM User WHERE UserName = %s''',[UserName])
+
+
+
+class HistoryOutages:
+    def __init__(self, data):
+        self.cursor = connection.cursor()
+        self.form = data
+
+    def returnWrong(self):
+        return json.dumps({})
+
+    def toJSON(self):
+        resultingJSON = {}
+        startDate = self.form.cleaned_data['start']
+        toDate = self.form.cleaned_data['to']
+
+        if (toDate < startDate):
+            return self.returnWrong()
+
+        selectOutage = self.form.cleaned_data['selectOutage']
+        if (selectOutage == "house"):
+            pass
+        elif (selectOutage == "neighbourhood"):
+            pass
+        else:
+            return self.returnWrong()
+
+
+        return json.dumps(resultingJSON)
