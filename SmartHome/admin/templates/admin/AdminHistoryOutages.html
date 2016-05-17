@@ -266,13 +266,13 @@ function fillTable(datajson) {
     };
     else if(datajson.neighbourhood == undefined){
         for(i = 0; i < datajson.house.length; i++){
-            AddTableRowHouse(data.house[i]);
+            AddTableRowHouse(datajson.house[i]);
         }
 	    $("#resultTableHouse").show();
     };
     else{
-        for(i = 0; i < data.neighbourhood.length; i++){
-            AddTableRowNeigh(data.neighbourhood[i]);
+        for(i = 0; i < datajson.neighbourhood.length; i++){
+            AddTableRowNeigh(datajson.neighbourhood[i]);
         }
 	    $("#resultTableNeighbourhood").show();
     }
@@ -285,6 +285,7 @@ function AddTableRowHouse(datapoint) {
 function AddTableRowNeigh(datapoint) {
 	$("#resultTableNeighbourhood tr:last").after('<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>'.format(datapoint.StreetName, datapoint.City, datapoint.Country ,datapoint.TimeStamp));
 }
+
 if (!String.prototype.format) { //function from stackoverflow: http://stackoverflow.com/questions/18405736/is-there-a-c-sharp-string-format-equivalent-in-javascript
 	String.prototype.format = function() {
 		var args = arguments;
