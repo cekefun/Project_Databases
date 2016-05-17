@@ -178,21 +178,64 @@ class HistoryOutages:
         selectOutage = self.form.cleaned_data['selectOutage']
         if (selectOutage == "house"):
             selectRegion = self.form.cleaned_data['selectRegion']
-
+            result = None
             if (selectRegion == "streetnamenumber"):
-                pass
+                streetname = self.form.cleaned_data['streetname']
+                streetnumber = self.form.cleaned_data['streetnumber']
+                self.cursor.execute(""" select Crashes.CrashDate as CrashDate, Address.StreetName as StreetName, Address.StreetNumber as StreetNumber, Address.City as City, Address.Country as Country, PeakCrashes.PeakValue as PeakValue from PeakCrashes, Crashes, Address, House where PeakCrashes.CrashID = Crashes.ID and Crashes.HouseID = House.ID and House.AddressID = Address.ID and Address.StreetName="%s" and Address.StreetNumber=%i;""" % (streetname, streetnumber))
+                result = dictfetchall(self.cursor)
+
             elif (selectRegion == "city"):
-                pass
+                city = self.form.cleaned_data['city']
+                self.cursor.execute(""" select Crashes.CrashDate as CrashDate, Address.StreetName as StreetName, Address.StreetNumber as StreetNumber, Address.City as City, Address.Country as Country, PeakCrashes.PeakValue as PeakValue from PeakCrashes, Crashes, Address, House where PeakCrashes.CrashID = Crashes.ID and Crashes.HouseID = House.ID and House.AddressID = Address.ID and Address.City="%s";""" % (city))
+                self.cursor.excute(""" select Crashes.CrashDate as CrashDate, Address.StreetName as StreetName, Address.StreetNumber as StreetNumber, Address.City as City, Address.Country as Country, PeakCrashes.PeakValue as PeakValue from PeakCrashes, Crashes, Address, House where PeakCrashes.CrashID = Crashes.ID and Crashes.HouseID = House.ID and House.AddressID = Address.ID and Address.City="%s";""" % (city))
+                result = dictfetchall(self.cursor)
             elif (selectRegion == "country"):
-                pass
+                country = self.form.cleaned_data['country']
+                self.cursor.execute(""" select Crashes.CrashDate as CrashDate, Address.StreetName as StreetName, Address.StreetNumber as StreetNumber, Address.City as City, Address.Country as Country, PeakCrashes.PeakValue as PeakValue from PeakCrashes, Crashes, Address, House where PeakCrashes.CrashID = Crashes.ID and Crashes.HouseID = House.ID and House.AddressID = Address.ID and Address.Country="%s";""" % (country))
+                result = dictfetchall(self.cursor)
             else:
                 return self.returnWrong()
 
+            resultingJSON["house"] = []
+            for i in result:
+                tempObj = {}
+                tempObj["StreetName"] = i["StreetName"]
+                tempObj["StreetNumber"] = i["StreetNumber"]
+                tempObj["City"] = i["City"]
+                tempObj["Country"] = i["Country"]
+                tempObj["Timestamp"] = str(i["Timestamp"])
+                tempObj["PeakValue"] = i["PeakValue"]
+                resultingJSON["house"].append(tempObj)
 
         elif (selectOutage == "neighbourhood"):
-            pass
+            selectRegion = self.form.cleaned_data['selectRegion']
+            result = None
+            if (selectRegion == "streetnamecity"):
+                streetname = self.form.cleaned_data['streetname']
+                city = self.form.cleaned_data['city']
+                if (streetname == ""):
+                    self.cursor.execute(""" select distinct Crashes.CrashDate as CrashDate, Address.StreetName as StreetName, Address.City as City, Address.Country as Country from StreetCrashes, Crashes, Address, House where StreetCrashes.CrashID = Crashes.ID and Crashes.HouseID = House.ID and House.AddressID = Address.ID and Address.City="%s";""" % (city))
+                else:
+                    self.cursor.execute(""" select distinct Crashes.CrashDate as CrashDate, Address.StreetName as StreetName, Address.City as City, Address.Country as Country from StreetCrashes, Crashes, Address, House where StreetCrashes.CrashID = Crashes.ID and Crashes.HouseID = House.ID and House.AddressID = Address.ID and Address.City="%s" and Address.StreetName="%s";""" % (city, streetname))
+
+                result = dictfetchall(self.cursor)
+            elif (selectRegion == "country"):
+                country = self.form.cleaned_data['country']
+                self.cursor.execute(""" select distinct Crashes.CrashDate as CrashDate, Address.StreetName as StreetName, Address.City as City, Address.Country as Country from StreetCrashes, Crashes, Address, House where StreetCrashes.CrashID = Crashes.ID and Crashes.HouseID = House.ID and House.AddressID = Address.ID and Address.Country="%s";""" % (country))
+                result = dictfetchall(self.cursor)
+            else:
+                self.returnWrong()
+            resultingJSON["neighbourhood"] = []
+            for i in result:
+                tempObj = {}
+                tempObj["StreetName"] = i["StreetName"]
+                tempObj["City"] = i["City"]
+                tempObj["Country"] = i["Country"]
+                tempObj["Timestamp"] = str(i["Timestamp"])
+                resultingJSON["neighbourhood"].append(tempObj)
+
         else:
             return self.returnWrong()
 
-        resultingJSON['testing'] = True
         return json.dumps(resultingJSON)
