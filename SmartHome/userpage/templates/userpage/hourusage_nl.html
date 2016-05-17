@@ -283,9 +283,17 @@ function drawStuff() {
 					for(i = 0; i < sensorids.length; i++){
 						datapoints.push([]);
 						for(j = 0; j < datapoints[0].length; j++){
+							while (hourdata.datasamples[counter].SensorID < sensorids[i]) {
+								//skip the next values since we don't need them
+								counter++;
+								if (counter >= hourdata.datasamples.length) {
+									counter--;
+									break;
+								}
+							}
 							var datecompare = convertToDate(hourdata.datasamples[counter].CreationTimestamp);
 							
-							if(hourdata.datasamples[counter].SensorID != sensorids[i]){
+							if(hourdata.datasamples[counter].SensorID > sensorids[i]){
 								for(j; j < datapoints[0].length; j++){
 									datapoints[i+1].push(0);
 								}

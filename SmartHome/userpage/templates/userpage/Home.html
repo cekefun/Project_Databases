@@ -284,6 +284,22 @@ function drawGauge() {
 				if (parseFloat(lastminute.Total) > redzone-Math.floor(redzone/10)) {
 					$("#outage_yourhome").show();
 				}
+				else {
+					$.ajax({
+						url:"status/",
+						method:"GET",
+						async: true,
+						success: function(text) {
+							var status = JSON.parse(text);
+							if (status.status == undefined) {
+								return;
+							}
+							else if (status.status == "OutageNeighbourhood") {
+								$("#outage_neighbourhood").show();
+							}
+						}
+					});
+				}
 			}
 		});
 		chart.draw(data, options);

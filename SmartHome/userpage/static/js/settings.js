@@ -47,7 +47,6 @@ function loadHouseholds() {
 		url:"currentHouseholds/",
 		type:"get",
 		success: function(text) {
-			console.log(text);
 			var dataobject = JSON.parse(text);
 			insertAllHousesTable(dataobject);
 			setupChangeHouseholds(dataobject);

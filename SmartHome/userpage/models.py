@@ -348,7 +348,8 @@ class DayData:
 
 	def selectByHouseholdID(self, householdID):
 		self.clean()
-		self.cursor.execute(SQL_SensorDataByHouseholdID("DayData", householdID))
+		command = """ select distinct DayData.CreationTimestamp as CreationTimestamp, DayData.SensorID as SensorID, DayData.Value as Value from DayData inner join Sensor on Sensor.ID = DayData.SensorID where Sensor.InstalledOn = %i order by SensorID, CreationTimestamp;""" % householdID
+		self.cursor.execute(command)
 
 		rows = self.cursor.fetchall()
 		for i in rows:
@@ -388,7 +389,8 @@ class MonthData:
 
 	def selectByHouseholdID(self, householdID):
 		self.clean()
-		self.cursor.execute(SQL_SensorDataByHouseholdID("MonthData", householdID))
+		command = """ select distinct MonthData.CreationTimestamp as CreationTimestamp, MonthData.SensorID as SensorID, MonthData.Value as Value from MonthData inner join Sensor on Sensor.ID = MonthData.SensorID where Sensor.InstalledOn = %i order by SensorID, CreationTimestamp;""" % householdID
+		self.cursor.execute(command)
 
 		rows = self.cursor.fetchall()
 		for i in rows:
@@ -429,7 +431,8 @@ class YearData:
 
 	def selectByHouseholdID(self, householdID):
 		self.clean()
-		self.cursor.execute(SQL_SensorDataByHouseholdID("YearData", householdID))
+		command = """ select distinct YearData.CreationTimestamp as CreationTimestamp, YearData.SensorID as SensorID, YearData.Value as Value from YearData inner join Sensor on Sensor.ID = YearData.SensorID where Sensor.InstalledOn = %i order by SensorID, CreationTimestamp;""" % householdID
+		self.cursor.execute(command)
 
 		rows = self.cursor.fetchall()
 		for i in rows:
