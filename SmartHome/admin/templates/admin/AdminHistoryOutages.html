@@ -287,7 +287,7 @@ function showRestForm(element) {
 		$(element).after('<label>Area:</label><select name="selectRegion" onchange="showInput(this)"><option value="streetnamenumber">Streetname-number</option><option value="city">City</option><option value="country">Country</option></select><p><label>Streetname: </label><input type="text" name="streetname"></p><p><label> Street number: </label><input type="number" name="streetnumber"></p> <br><input type="submit">');
 	}
 	else if ($(element).val() == "neighbourhood") {
-		$(element).after('<label>Area:</label><select name="selectRegion" onchange="showInput(this)"><option value="streetnamecity">Streetname/City</option><option value="city">City</option><option value="country">Country</option></select><p><label> City: </label><input type="text" name="city"></p> <p><label>Streetname (optional): </label><input type="text" name="streetname"></p><br><input type="submit">');
+		$(element).after('<label>Area:</label><select name="selectRegion" onchange="showInput(this)"><option value="streetnamecity">Streetname/City</option><option value="country">Country</option></select><p><label> City: </label><input type="text" name="city"></p> <p><label>Streetname (optional): </label><input type="text" name="streetname"></p><br><input type="submit">');
 	}
 }
 function showInput(element) {
