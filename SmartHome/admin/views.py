@@ -182,3 +182,20 @@ def getreport(request):
     context = {'message': ''}
     return HttpResponse(template.render(context, request))
 
+
+def formOutages(request):
+    if (request.method == 'GET'):
+        language = request.session["Language"]
+        htmlfile = "admin/AdminHistoryOutages.html"
+
+        if (language == "nl"):
+            htmlfile = "admin/AdminHistoryOutages_nl.html"
+
+        template = loader.get_template(htmlfile)
+        context = {}
+
+        return HttpResponse(template.render(context, request))
+
+    elif (request.method == 'POST'):
+        return HttpResponse('{}')
+
