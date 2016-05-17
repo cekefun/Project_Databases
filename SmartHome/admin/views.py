@@ -197,5 +197,9 @@ def formOutages(request):
         return HttpResponse(template.render(context, request))
 
     elif (request.method == 'POST'):
-        return HttpResponse('{}')
+        form = OutageForm(request.POST)
+        if(form.is_valid()):
+            return HistoryOutages(form).toJSON()
+        else:
+            return HttpResponse('{}')
 

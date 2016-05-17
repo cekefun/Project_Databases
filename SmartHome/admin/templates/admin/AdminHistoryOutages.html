@@ -141,17 +141,18 @@ padding:12px;
 
 <div>
 	<form id="formOutages" action="" method="POST" class=bootstrap-frm>{% csrf_token %}
-	<p><label>from: </label> 
+	<p><label>From: </label> 
 	<input type="date" name="start"></p>
-	<p><label>to: </label>
+	<p><label>To: </label>
 	<input type="date" name="to"></p><br>
 
-	<label>type of outage: </label>
+	<label>Type of outage: </label>
 	<select name="selectOutage" onchange="showRestForm(this)">
 		<option value="house" onfocus='showHouseSelect(this)'>Home</option>
 		<option value="neighbourhood" onfocus="showNeighbourhoodSelect(this)">Neighbourhood</option>
 	</select>
 
+	<label>Area:</label>
 	<select name="selectRegion" onchange="showInput(this)">
 		<option value="streetnamenumber">Streetname-number</option>
 		<option value="city">City</option>
@@ -182,10 +183,10 @@ padding:12px;
 function showRestForm(element) {
 	$(element).nextAll().remove();
 	if ($(element).val() == "house") {
-		$(element).after('<select name="selectRegion" onchange="showInput(this)"><option value="streetnamenumber">Streetname-number</option><option value="city">City</option><option value="country">Country</option></select><p><label>Streetname: </label><input type="text" name="streetname"></p><p><label> Street number: </label><input type="number" name="streetnumber"></p> <br><input type="submit">');
+		$(element).after('<label>Area:</label><select name="selectRegion" onchange="showInput(this)"><option value="streetnamenumber">Streetname-number</option><option value="city">City</option><option value="country">Country</option></select><p><label>Streetname: </label><input type="text" name="streetname"></p><p><label> Street number: </label><input type="number" name="streetnumber"></p> <br><input type="submit">');
 	}
 	else if ($(element).val() == "neighbourhood") {
-		$(element).after('<select name="selectRegion" onchange="showInput(this)"><option value="streetnamecity">Streetname/City</option><option value="city">City</option><option value="country">Country</option></select><p><label> City: </label><input type="text" name="city"></p> <p><label>Streetname (optional): </label><input type="text" name="streetname"></p><br><input type="submit">');
+		$(element).after('<label>Area:</label><select name="selectRegion" onchange="showInput(this)"><option value="streetnamecity">Streetname/City</option><option value="city">City</option><option value="country">Country</option></select><p><label> City: </label><input type="text" name="city"></p> <p><label>Streetname (optional): </label><input type="text" name="streetname"></p><br><input type="submit">');
 	}
 }
 
@@ -215,6 +216,9 @@ $("body").on("submit", $("#formOutages"), function(eventobject) {
 		data:($("#formOutages").serialize()),
 		success: function(response) {
 			var datajson = JSON.parse(response);
+			if (datajson == undefined) {
+				return;
+			}
 			$("#formOutages").remove();
 			fillTable(datajson);
 		}
