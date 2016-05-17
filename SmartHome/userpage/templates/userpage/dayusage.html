@@ -131,7 +131,8 @@ function getdata() {
 							}
 						}
                         else if(timeday >=29 && timemonth == 1 && timeyear%4 == 0){
-
+                            timeday=1;
+                            timemonth++;
                         }
 						else if(timeday >=28 && timemonth == 1 ){
 							timeday = 1; //does not give a single f*ck about leap years... my bad :p

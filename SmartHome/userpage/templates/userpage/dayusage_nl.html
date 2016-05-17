@@ -104,8 +104,11 @@ function getdata() {
 			var timeyear = minutedata.firstTimestamp.slice(0,4);
 			var timemonth = minutedata.firstTimestamp.slice(5,7)-1;
 			var timeday = minutedata.firstTimestamp.slice(8,10);
-			datapoints[0].push(new Date(timeyear, timemonth, timeday));
-				for(k=0;k < 396; k++){
+			var firsttime = new Date(timeyear, timemonth, timeday);
+		    datapoints[0].push(firsttime);
+            var lasttime = Date.now();
+            var totaltime = Math.floor((lasttime - firsttime.getTime())/(60*60*24*1000));
+				for(k=0;k < totaltime-1; k++){
 						if(timeday >= 31){
 							timeday = 1;
 							if(timemonth>=11){
@@ -126,6 +129,10 @@ function getdata() {
 								timemonth++;
 							}
 						}
+                        else if(timeday >=29 && timemonth == 1 && timeyear%4 == 0){
+                            timeday=1;
+                            timemonth++;
+                        }
 						else if(timeday >=28 && timemonth == 1 ){
 							timeday = 1; //does not give a single f*ck about leap years... my bad :p
 							if(timemonth>=11){
