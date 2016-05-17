@@ -62,15 +62,9 @@
 google.charts.load('current', {'packages':['corechart', 'controls','timeline']});
 google.charts.setOnLoadCallback(drawStuff);
 //hier is de call
-
-
-
-
 function drawStuff() {
-
 	var dashboard = new google.visualization.Dashboard(
 		document.getElementById('programmatic_dashboard_div'));
-
 	programmaticSlider = new google.visualization.ControlWrapper({
 		'controlType': 'ChartRangeFilter',
 		'containerId': 'programmatic_control_div',
@@ -79,18 +73,12 @@ function drawStuff() {
 			'ui': {'labelStacking': 'Vertical'}
 		}
 });
-
-
 var data = new google.visualization.DataTable();
 window.onload = getdata();
 	
-
-
-
 function getdata() {
 	data.addColumn('datetime', 'Time');
 	var sensorids = [];
-
 	$.ajax({
 		url:"/index/sensors/currentTitles/",
 		method:"GET",
@@ -102,10 +90,8 @@ function getdata() {
 				sensorids.push(sensordata.sensors[i].SensorID);
 			}
             data.addColumn("number", "Total");
-
 		}
 	});
-
 	$.ajax({
 		url:"current/",
 		method:"GET",
@@ -114,15 +100,20 @@ function getdata() {
 			var minutedata = JSON.parse(text);
 			// function here with minutedata
 			var datapoints = [];
-
 //alle times aanmaken en in de table steken, mss nog inefficienter als ik eerst al vreesde :/
-
 			datapoints.push([]);	
 			var timeyear = minutedata.firstTimestamp.slice(0,4);
 			var timemonth = minutedata.firstTimestamp.slice(5,7) -1;
-			datapoints[0].push(new Date(timeyear, timemonth));
-
-			for(j = 0; j <132;j++){
+			var firsttime = new Date(timeyear, timemonth, 0);
+		    datapoints[0].push(firsttime);
+            var lasttime = Date.now();
+            //var totaltime = Math.floor((lasttime - firsttime.getTime())/(60*60*24*28*1000));
+            var _current_month = lasttime.getMonth();
+            var _current_year = lasttime.getYear();
+            var _current_timestamp = new Date(_current_year,_current_month,0);
+            var _current_time = _current_timestamp.getTime();
+            var addmonths = true;
+			while(addmonths == true){
 					if(timemonth>=11){
 						timemonth = 0;
 						timeyear++;
@@ -130,7 +121,12 @@ function getdata() {
 					else{
 						timemonth++;
 					}
-    				datapoints[0].push(new Date(timeyear, timemonth));
+                    var pushdate = new Date(timeyear, timemonth, 0);
+               
+    				datapoints[0].push(pushdate);
+                    if(pushdate.getTime() >= _current_time){
+                        addmonths = false;
+                    }
 										
 			}
 			var counter = 0;
@@ -139,7 +135,6 @@ function getdata() {
 			    for(i = 0; i < sensorids.length; i++){
 				    datapoints.push([]);
 				    for(j = 0; j < datapoints[0].length; j++){
-
 					    var yearcompare = minutedata.datasamples[counter].CreationTimestamp.slice(0,4);
 					    var monthcompare = minutedata.datasamples[counter].CreationTimestamp.slice(5,7)-1;
 					    var datecompare = new Date(yearcompare, monthcompare);
@@ -150,8 +145,6 @@ function getdata() {
 						    }
 						
 					    }
-
-
 					    else if(datapoints[0][j].getTime() != datecompare.getTime()){
 						    datapoints[i+1].push(0);
 					    }
@@ -164,7 +157,6 @@ function getdata() {
                                 counter--;
 						    }
 					    }
-
 				    }
 			    }
             }
@@ -176,7 +168,6 @@ function getdata() {
 	                }
                 }
             }
-
 			var total = [];
 			for(i = 0; i < datapoints[0].length; i++) {
 				var row = [];
@@ -194,10 +185,7 @@ function getdata() {
 		}
 	});
 }
-
-
 //tot hier
-
 var columnsTable = new google.visualization.DataTable();
 columnsTable.addColumn('number', 'colIndex');
 columnsTable.addColumn('string', 'colLabel');
@@ -209,7 +197,6 @@ for (var i = 1; i < data.getNumberOfColumns(); i++) {
 for (var i = 1; i < data.getNumberOfColumns(); i++) {
 		initState.selectedValues.push(data.getColumnLabel(i));
 }
-
 programmaticChart  = new google.visualization.ChartWrapper({
 	'chartType': 'LineChart',
 	'containerId': 'programmatic_chart_div',
@@ -226,9 +213,6 @@ programmaticChart  = new google.visualization.ChartWrapper({
 		'legend': {position : 'right'},
 	}
 });
-
-
-
 var columnFilter = new google.visualization.ControlWrapper({
 		controlType: 'CategoryFilter',
 		containerId: 'colFilter_div',
@@ -245,7 +229,6 @@ var columnFilter = new google.visualization.ControlWrapper({
 		},
 		state: initState
 });
-
 function setChartView () {
 	var state = columnFilter.getState();
 	var row;
@@ -264,12 +247,9 @@ function setChartView () {
 	programmaticChart.draw();
 }
 google.visualization.events.addListener(columnFilter, 'statechange', setChartView);
-
-
 setChartView();
 columnFilter.draw();
 	dashboard.bind(programmaticSlider, programmaticChart, columnFilter);
 	dashboard.draw(data);
 }
-
 </script>
