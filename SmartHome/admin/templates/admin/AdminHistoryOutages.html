@@ -166,8 +166,26 @@ padding:12px;
 
 	</form>
 </div>
-<div id="resultTable" style="display: none;">
+<div id="resultTableHouse" style="display: none;position:absolute;width:60%;margin-left:20%;margin-top:120px;">
 	<table>
+        <tr>
+            <th>StreetName</th>
+            <th>StreetNumber</th>
+            <th>City</th>
+            <th>Country</th>
+            <th>TimeStamp</th>
+            <th>PeakValue</th>
+        </tr>
+	</table>
+</div>
+<div id="resultTableNeighbourhood" style="display: none;position:absolute;width:60%;margin-left:20%;margin-top:120px;">
+	<table>
+        <tr>
+            <th>StreetName</th>
+            <th>City</th>
+            <th>Country</th>
+            <th>TimeStamp</th>
+        </tr>
 	</table>
 </div>
 
@@ -179,7 +197,6 @@ padding:12px;
 	<script type="text/javascript">google.charts.load('current', {'packages':['corechart', 'controls']});</script>
 	  
 <script>
-
 function showRestForm(element) {
 	$(element).nextAll().remove();
 	if ($(element).val() == "house") {
@@ -189,10 +206,8 @@ function showRestForm(element) {
 		$(element).after('<label>Area:</label><select name="selectRegion" onchange="showInput(this)"><option value="streetnamecity">Streetname/City</option><option value="city">City</option><option value="country">Country</option></select><p><label> City: </label><input type="text" name="city"></p> <p><label>Streetname (optional): </label><input type="text" name="streetname"></p><br><input type="submit">');
 	}
 }
-
 function showInput(element) {
 	$(element).nextAll().remove();
-
 	var type = $(element).val();
 	if (type == "streetnamenumber") {
 		$(element).after("<p><label>Streetname: </label><input type='text' name='streetname'></p><p><label> Street number: </label><input type='number' name='streetnumber'></p> <br><input type='submit'>");
@@ -207,7 +222,6 @@ function showInput(element) {
 		$(element).after("<p><label>Country: </label> <input type='text' name='country'> </p><br><input type='submit'>");
 	}
 }
-
 $("body").on("submit", $("#formOutages"), function(eventobject) {
 	eventobject.preventDefault();
 	$.ajax({
@@ -246,10 +260,31 @@ function getCookie(name) {
 	return cookieValue;
 }
 function fillTable(datajson) {
-	$("#resultTable").show();
-	
+    if(datajson.house == undefined && datajson.neighbourhood == undefined){
+        //empty table ofzo
+        console.log("No house nor neighbourhood found with an outage");
+    };
+    else if(datajson.neighbourhood == undefined){
+        for(i = 0; i < datajson.house.length; i++){
+            AddTableRowHouse(data.house[i]);
+        }
+	    $("#resultTableHouse").show();
+    };
+    else{
+        for(i = 0; i < data.neighbourhood.length; i++){
+            AddTableRowNeigh(data.neighbourhood[i]);
+        }
+	    $("#resultTableNeighbourhood").show();
+    }
 }
 
+
+function AddTableRowHouse(datapoint) {
+	$("#resultTableHouse tr:last").after('<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td></tr>'.format(datapoint.StreetName, datapoint.StreetNumber, datapoint.City, datapoint.Country, datapoint.TimeStamp, datapoint.PeakValue));
+}
+function AddTableRowNeigh(datapoint) {
+	$("#resultTableNeighbourhood tr:last").after('<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>'.format(datapoint.StreetName, datapoint.City, datapoint.Country ,datapoint.TimeStamp));
+}
 if (!String.prototype.format) { //function from stackoverflow: http://stackoverflow.com/questions/18405736/is-there-a-c-sharp-string-format-equivalent-in-javascript
 	String.prototype.format = function() {
 		var args = arguments;
