@@ -8,41 +8,10 @@ create table User(
 	unique (Email),
 	unique (UserName)
 );
-create table Friends(
-	UserID1 int references User(ID),
-	UserID2 int references User(ID),
-	primary key(UserID1, UserID2),
-	constraint differentusers CHECK (UserID1 <> UserID2)
-);
 
 create table Admin(
 	ID int references User(ID),
 	primary key (ID)
-);
-
-create table Wall(
-	Name varchar(50) primary key
-);
-
-create table SubWallOf(
-	WallName1 varchar(50) references Wall(Name),
-	WallName2 varchar(50) references Wall(Name), 
-	primary key (WallName1, WallName2)
-);
-
-create table Moderates(
-	AdminID int references Admin(ID),
-	WallName varchar(50) references Wall(Name),
-	primary key(AdminID, WallName)
-);
-
-create table Message(
-	ID int auto_increment primary key,
-	Content varchar(255),
-	CreationTimestamp datetime not null,
-	PostedBy int references User(ID),
-	PostedOn varchar(50) references Wall(Name),
-	Graph MEDIUMBLOB
 );
 
 create table Address(
