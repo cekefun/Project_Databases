@@ -377,24 +377,16 @@ function drawStuff() {
                             if(currentdatapoints[i] >= _min){
                                 if(currentdatapoints[i] < _max){
                                     //the value chosen is the highest value that is lower than the other selected values
-<<<<<<< HEAD
-                                    currentdatapoints[i] = _min;
-=======
                                     _min = currentdatapoints[i];
->>>>>>> 044e68a35329a20d7ab8d9faf7cb22ee2ee6e041
                                     to_init = i;
                                     found_one = true;
                                 }
                             }
 
                         }
-<<<<<<< HEAD
-                        if(found_one == true;){
-                            initState.selectedValues.push(data.getColumnLabel(to_init+1))
-=======
+
                         if(found_one == true){
                             initState.selectedValues.push(data.getColumnLabel(to_init+1));
->>>>>>> 044e68a35329a20d7ab8d9faf7cb22ee2ee6e041
                             _max = currentdatapoints[to_init];
                         }
                         else{
