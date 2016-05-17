@@ -199,7 +199,7 @@ def formOutages(request):
     elif (request.method == 'POST'):
         form = OutageForm(request.POST)
         if(form.is_valid()):
-            return HistoryOutages(form).toJSON()
+            return HttpResponse(HistoryOutages(form).toJSON())
         else:
             return HttpResponse('{}')
 

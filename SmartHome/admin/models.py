@@ -204,7 +204,7 @@ class HistoryOutages:
                 tempObj["StreetNumber"] = i["StreetNumber"]
                 tempObj["City"] = i["City"]
                 tempObj["Country"] = i["Country"]
-                tempObj["Timestamp"] = str(i["Timestamp"])
+                tempObj["Timestamp"] = str(i["CrashDate"])
                 tempObj["PeakValue"] = i["PeakValue"]
                 resultingJSON["house"].append(tempObj)
 
@@ -232,7 +232,7 @@ class HistoryOutages:
                 tempObj["StreetName"] = i["StreetName"]
                 tempObj["City"] = i["City"]
                 tempObj["Country"] = i["Country"]
-                tempObj["Timestamp"] = str(i["Timestamp"])
+                tempObj["Timestamp"] = str(i["CrashDate"])
                 resultingJSON["neighbourhood"].append(tempObj)
 
         else:
