@@ -7,5 +7,6 @@ urlpatterns = [
     url(r'^users/$', views.users, name='Users'),
     url(r'^users/updateAdmin/$', views.UpdateAdmin, name='Admin'),
     url(r'^report/$', views.getreport, name='reppage'),
+    url(r'^reportoutages/$', views.formOutages, name='formOutages'),
 ]
 

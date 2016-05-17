@@ -260,6 +260,9 @@ tbody:hover tr:hover td {
 </div>
 
 <br><br><br><br><br>
+{% else %}
+<p> You haven't had any outages in this home yet due to high power consumption.</p>
+<br><br><br><br><br>
 {% endif %}
 {% if objects_neighbourhoodoutages %}
 <div> 
@@ -280,4 +283,6 @@ tbody:hover tr:hover td {
     {% endfor %}
   </table>
 </div>
+{% else %}
+<p>There haven't been any outages in your neighbourhood yet.</p>
 {% endif %}
