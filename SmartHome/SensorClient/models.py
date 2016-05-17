@@ -70,7 +70,8 @@ class CrashThread:
     
     def run(self):
         self.getPrevDate()
-        if(self.Moment == self.prevMoment and int(self.currentValue) != 0):
+        chance = norm.cdf(float(self.currentValue),self.Mean,self.SD)
+        if self.Moment == self.prevMoment and int(self.currentValue) != 0 and chance > 0.05 :
             return
         command = '''INSERT INTO Crashes (HouseID,CrashDate) VALUES (%s,date_sub(%s,interval 1 minute));'''
         self.cursor.execute(command,[self.House,self.prevMoment])
@@ -79,7 +80,6 @@ class CrashThread:
         IDrow = self.cursor.fetchone()
         self.ID = IDrow[0]
         chance = 1 - norm.cdf(self.Total,self.Mean,self.SD)
-	    
         if(chance < 0.05):
             command = '''SELECT SensorID, Value FROM MinuteData WHERE CreationTimestamp = date_sub(%s,interval 1 minute) AND SensorID in (SELECT ID from Sensor WHERE InstalledOn = %s) ORDER BY Value DESC LIMIT 3;'''
             self.cursor.execute(command,[self.prevMoment,self.House])
@@ -148,11 +148,7 @@ class CSVDecoder:
                     if column == timeColumn:
                         column += 1
                         continue
-                    if rownum == 1 and column == totalColumn and info != None:
-                        column += 1
-                        CrashThread(col,str(row[timeColumn]),HouseID,Mean,SD)
-                        continue
-                    elif column == totalColumn and info != None and int(float(col)) == 0:
+                    if column == totalColumn and info != None:
                         column += 1
                         CrashThread(col,str(row[timeColumn]),HouseID,Mean,SD)
                         continue
