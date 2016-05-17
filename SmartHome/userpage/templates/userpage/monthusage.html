@@ -106,7 +106,7 @@ function getdata() {
 			var timemonth = minutedata.firstTimestamp.slice(5,7) -1;
 			var firsttime = new Date(timeyear, timemonth, 0);
 		    datapoints[0].push(firsttime);
-            var lasttime = Date.now();
+            var lasttime = new Date(Date.now());
             //var totaltime = Math.floor((lasttime - firsttime.getTime())/(60*60*24*28*1000));
             var _current_month = lasttime.getMonth();
             var _current_year = lasttime.getYear();
@@ -138,13 +138,23 @@ function getdata() {
 					    var yearcompare = minutedata.datasamples[counter].CreationTimestamp.slice(0,4);
 					    var monthcompare = minutedata.datasamples[counter].CreationTimestamp.slice(5,7)-1;
 					    var datecompare = new Date(yearcompare, monthcompare);
-                        
-					    if(minutedata.datasamples[counter].SensorID != sensorids[i]){
+
+						while (minutedata.datasamples[counter].SensorID < sensorids[i]) {
+							//skip the next values since we don't need them
+							counter++;
+							if (counter >= minutedata.datasamples.length) {
+								counter--;
+								break;
+							}
+						}
+
+					    if(minutedata.datasamples[counter].SensorID > sensorids[i]){
 						    for(j; j < datapoints[0].length; j++){
 							    datapoints[i+1].push(0);
 						    }
 						
 					    }
+
 					    else if(datapoints[0][j].getTime() != datecompare.getTime()){
 						    datapoints[i+1].push(0);
 					    }

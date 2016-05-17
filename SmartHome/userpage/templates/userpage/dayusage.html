@@ -109,7 +109,7 @@ function getdata() {
 		    datapoints[0].push(firsttime);
             var lasttime = Date.now();
             var totaltime = Math.floor((lasttime - firsttime.getTime())/(60*60*24*1000));
-				for(k=0;k < totaltime; k++){
+				for(k=0;k < totaltime-1; k++){
 						if(timeday >= 31){
 							timeday = 1;
 							if(timemonth>=11){
@@ -130,6 +130,9 @@ function getdata() {
 								timemonth++;
 							}
 						}
+                        else if(timeday >=29 && timemonth == 1 && timeyear%4 == 0){
+
+                        }
 						else if(timeday >=28 && timemonth == 1 ){
 							timeday = 1; //does not give a single f*ck about leap years... my bad :p
 							if(timemonth>=11){
@@ -158,8 +161,18 @@ function getdata() {
 					    var monthcompare = minutedata.datasamples[counter].CreationTimestamp.slice(5,7)-1;
 					    var daycompare = minutedata.datasamples[counter].CreationTimestamp.slice(8,10);
 					    var datecompare = new Date(yearcompare, monthcompare, daycompare);
-                        
-					    if(minutedata.datasamples[counter].SensorID != sensorids[i]){
+
+						while (minutedata.datasamples[counter].SensorID < sensorids[i]) {
+							//skip the next values since we don't need them
+							counter++;
+							if (counter >= minutedata.datasamples.length) {
+								counter--;
+								break;
+							}
+						}                        
+
+
+					    if(minutedata.datasamples[counter].SensorID > sensorids[i]){
 						    for(j; j < datapoints[0].length; j++){
 							    datapoints[i+1].push(0);
 						    }
