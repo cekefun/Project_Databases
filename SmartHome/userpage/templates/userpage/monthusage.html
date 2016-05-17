@@ -109,7 +109,7 @@ function getdata() {
             var lasttime = new Date(Date.now());
             //var totaltime = Math.floor((lasttime - firsttime.getTime())/(60*60*24*28*1000));
             var _current_month = lasttime.getMonth();
-            var _current_year = lasttime.getYear();
+            var _current_year = lasttime.getFullYear();
             var _current_timestamp = new Date(_current_year,_current_month,0);
             var _current_time = _current_timestamp.getTime();
             var addmonths = true;
